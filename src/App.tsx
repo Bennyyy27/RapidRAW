@@ -852,7 +852,7 @@ function App() {
       <ImageLoaderManager cachedEditStateRef={cachedEditStateRef} />
       <div
         className={clsx(
-          'flex flex-col h-screen font-sans text-text-primary overflow-hidden select-none',
+          'density-compact flex flex-col h-screen font-sans text-text-primary overflow-hidden select-none',
           useMacWindowShell && 'macos-window-shell',
           isWgpuActive ? 'bg-transparent' : 'bg-bg-primary',
         )}

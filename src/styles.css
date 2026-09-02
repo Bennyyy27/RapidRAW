@@ -152,6 +152,68 @@
 }
 
 @layer components {
+  /*
+   * RapidRAW-SCS desktop density layer. Keep these overrides rooted in one
+   * class so upstream component changes remain easy to merge and inspect.
+   */
+  .density-compact {
+    --density-panel-padding: 0.5rem;
+    --density-control-gap: 0.25rem;
+    --density-label-width: 5.75rem;
+    --density-value-width: 2.75rem;
+  }
+
+  .density-compact .adjustments-toolbar,
+  .density-compact .adjustments-scroll {
+    padding: var(--density-panel-padding);
+  }
+
+  .density-compact .adjustments-scroll {
+    gap: var(--density-control-gap);
+  }
+
+  .density-compact .adjustment-slider {
+    display: grid;
+    grid-template-columns: var(--density-label-width) minmax(5rem, 1fr) var(--density-value-width);
+    align-items: center;
+    column-gap: 0.5rem;
+    margin-bottom: 0.125rem;
+    min-height: 1.625rem;
+  }
+
+  .density-compact .adjustment-slider-row {
+    display: contents;
+  }
+
+  .density-compact .adjustment-slider-label {
+    grid-column: 1;
+    min-width: 0;
+  }
+
+  .density-compact .adjustment-slider-label > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+  }
+
+  .density-compact .adjustment-slider-value {
+    grid-column: 3;
+    grid-row: 1;
+    width: var(--density-value-width);
+  }
+
+  .density-compact .adjustment-slider-value > span,
+  .density-compact .adjustment-slider-value > input {
+    font-size: 0.75rem;
+  }
+
+  .density-compact .adjustment-slider-track {
+    grid-column: 2;
+    grid-row: 1;
+    height: 1.5rem;
+  }
+
   .slider-input::-webkit-slider-thumb {
     @apply h-4 w-4 appearance-none rounded-full bg-accent;
     transition:

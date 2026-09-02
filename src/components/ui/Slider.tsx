@@ -521,10 +521,13 @@ const Slider = ({
   const numericValue = isNaN(Number(value)) ? 0 : Number(value);
 
   return (
-    <div className={`mb-2 group ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} ref={containerRef}>
-      <div className="flex justify-between items-center mb-1">
+    <div
+      className={`adjustment-slider mb-2 group ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      ref={containerRef}
+    >
+      <div className="adjustment-slider-row flex justify-between items-center mb-1">
         <div
-          className={`grid ${typeof label === 'string' && !disabled ? 'cursor-pointer' : ''}`}
+          className={`adjustment-slider-label grid ${typeof label === 'string' && !disabled ? 'cursor-pointer' : ''}`}
           onClick={typeof label === 'string' && !disabled ? handleReset : undefined}
           onDoubleClick={typeof label === 'string' && !disabled ? handleReset : undefined}
           onMouseEnter={typeof label === 'string' && !disabled ? () => setIsLabelHovered(true) : undefined}
@@ -549,7 +552,7 @@ const Slider = ({
             </span>
           )}
         </div>
-        <div className="w-12 text-right">
+        <div className="adjustment-slider-value w-12 text-right">
           {isEditing ? (
             <input
               className="w-full text-sm text-right bg-card-active border border-gray-500 rounded-sm px-1 py-0 outline-none focus:ring-1 focus:ring-blue-500 text-text-primary"
@@ -578,7 +581,7 @@ const Slider = ({
         </div>
       </div>
 
-      <div className="relative w-full h-5">
+      <div className="adjustment-slider-track relative w-full h-5">
         <div
           className={`absolute top-1/2 left-0 w-full h-1.5 -translate-y-1/2 rounded-full pointer-events-none ${
             trackClassName || 'bg-card-active'
