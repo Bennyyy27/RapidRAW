@@ -157,28 +157,82 @@
    * class so upstream component changes remain easy to merge and inspect.
    */
   .density-compact {
-    --density-panel-padding: 0.5rem;
-    --density-control-gap: 0.25rem;
-    --density-label-width: 5.75rem;
-    --density-value-width: 2.75rem;
+    --density-panel-padding: 0.375rem;
+    --density-control-gap: 0.1875rem;
+    --density-label-width: 5.25rem;
+    --density-value-width: 2.5rem;
+    --density-hairline: color-mix(in srgb, var(--app-text-secondary) 20%, transparent);
+    --density-control-surface: color-mix(in srgb, var(--app-card-active) 72%, transparent);
   }
 
-  .density-compact .adjustments-toolbar,
+  .density-compact .adjustments-toolbar {
+    padding: var(--density-panel-padding);
+    min-height: 2.125rem;
+    border-color: var(--density-hairline);
+  }
+
+  .density-compact .adjustments-toolbar button {
+    padding: 0.3125rem;
+    border-radius: 0.1875rem;
+  }
+
+  .density-compact .adjustments-toolbar svg {
+    width: 0.9375rem;
+    height: 0.9375rem;
+  }
+
   .density-compact .adjustments-scroll {
     padding: var(--density-panel-padding);
+    gap: var(--density-control-gap);
+    scrollbar-width: thin;
   }
 
-  .density-compact .adjustments-scroll {
-    gap: var(--density-control-gap);
+  .density-compact .collapsible-section {
+    border: 1px solid var(--density-hairline);
+    border-radius: 0.25rem;
+    background: color-mix(in srgb, var(--app-surface) 90%, transparent);
+  }
+
+  .density-compact .collapsible-section-header {
+    min-height: 1.875rem;
+    padding: 0.25rem 0.4375rem;
+    border-radius: 0;
+  }
+
+  .density-compact .collapsible-section-header > div {
+    gap: 0.25rem;
+  }
+
+  .density-compact .collapsible-section-header p,
+  .density-compact .collapsible-section-header span {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  .density-compact .collapsible-section-header svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .density-compact .collapsible-section-header .w-6 {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .density-compact .collapsible-section-content {
+    padding: 0.3125rem 0.4375rem 0.375rem;
+    border-top: 1px solid var(--density-hairline);
   }
 
   .density-compact .adjustment-slider {
     display: grid;
     grid-template-columns: var(--density-label-width) minmax(5rem, 1fr) var(--density-value-width);
     align-items: center;
-    column-gap: 0.5rem;
-    margin-bottom: 0.125rem;
-    min-height: 1.625rem;
+    column-gap: 0.375rem;
+    margin-bottom: 0;
+    min-height: 1.375rem;
   }
 
   .density-compact .adjustment-slider-row {
@@ -194,7 +248,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 450;
   }
 
   .density-compact .adjustment-slider-value {
@@ -203,15 +258,109 @@
     width: var(--density-value-width);
   }
 
+  .density-compact .adjustment-slider-value > span {
+    display: inline-block;
+    padding: 0.0625rem 0.1875rem;
+    border: 1px solid transparent;
+    border-radius: 0.125rem;
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color: var(--app-text-secondary);
+  }
+
+  .density-compact .adjustment-slider-value > span:hover {
+    border-color: var(--density-hairline);
+    background: var(--density-control-surface);
+    color: var(--app-text-primary);
+  }
+
   .density-compact .adjustment-slider-value > span,
   .density-compact .adjustment-slider-value > input {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
   }
 
   .density-compact .adjustment-slider-track {
     grid-column: 2;
     grid-row: 1;
-    height: 1.5rem;
+    height: 1.375rem;
+  }
+
+  .density-compact .adjustment-slider-track > div {
+    height: 0.1875rem;
+    border-radius: 0;
+  }
+
+  .density-compact .slider-input::-webkit-slider-thumb {
+    width: 0.625rem;
+    height: 0.875rem;
+    border: 1px solid color-mix(in srgb, var(--app-text-primary) 45%, transparent);
+    border-radius: 0.125rem;
+    background: var(--app-accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, black 22%, transparent);
+  }
+
+  .density-compact .slider-input::-moz-range-thumb {
+    width: 0.625rem;
+    height: 0.875rem;
+    border: 1px solid color-mix(in srgb, var(--app-text-primary) 45%, transparent);
+    border-radius: 0.125rem;
+    background: var(--app-accent);
+  }
+
+  .density-compact .basic-adjustments {
+    display: flex;
+    flex-direction: column;
+    gap: 0.0625rem;
+  }
+
+  .density-compact .tone-mapper {
+    display: grid;
+    grid-template-columns: var(--density-label-width) minmax(5rem, 1fr) var(--density-value-width);
+    align-items: start;
+    column-gap: 0.375rem;
+    margin-bottom: 0.1875rem;
+    padding-bottom: 0.3125rem;
+    border-bottom: 1px solid var(--density-hairline);
+  }
+
+  .density-compact .tone-mapper-label {
+    align-self: center;
+    margin: 0;
+  }
+
+  .density-compact .tone-mapper-label span {
+    font-size: 0.6875rem;
+  }
+
+  .density-compact .tone-mapper-control {
+    grid-column: 2 / 4;
+    display: grid;
+    grid-template-columns: minmax(5rem, 1fr) var(--density-value-width);
+    column-gap: 0.375rem;
+    padding: 0;
+    border: 1px solid var(--density-hairline);
+    border-radius: 0.1875rem;
+    background: var(--density-control-surface);
+  }
+
+  .density-compact .tone-mapper-control > .relative {
+    grid-column: 1 / 3;
+    min-height: 1.375rem;
+  }
+
+  .density-compact .tone-mapper-control button {
+    padding: 0.1875rem 0.375rem;
+    border-radius: 0.125rem;
+    font-size: 0.6875rem;
+  }
+
+  .density-compact .tone-mapper-control .absolute {
+    border-radius: 0.125rem !important;
+  }
+
+  .density-compact .tone-mapper-exposure {
+    grid-column: 1 / 3;
+    margin: 0;
+    padding: 0 0.25rem 0.125rem;
   }
 
   .slider-input::-webkit-slider-thumb {

@@ -84,8 +84,8 @@ const ToneMapperSwitch = ({
   }, [selectedMapper, toneMapperOptions]);
 
   return (
-    <div className="group mb-3">
-      <div className="flex justify-between items-center mb-2">
+    <div className="tone-mapper group mb-3">
+      <div className="tone-mapper-label flex justify-between items-center mb-2">
         <div
           className="grid cursor-pointer"
           onClick={handleReset}
@@ -111,7 +111,7 @@ const ToneMapperSwitch = ({
           </span>
         </div>
       </div>
-      <div className="w-full p-2 pb-1 bg-card-active rounded-md">
+      <div className="tone-mapper-control w-full p-2 pb-1 bg-card-active rounded-md">
         <div className="relative flex w-full">
           <motion.div
             className="absolute top-0 bottom-0 z-0 bg-accent"
@@ -137,7 +137,7 @@ const ToneMapperSwitch = ({
             </button>
           ))}
         </div>
-        <div className="mt-2.5 px-1">
+        <div className="tone-mapper-exposure mt-2.5 px-1">
           <Slider
             label={t('adjustments.basic.evShift')}
             max={5}
@@ -178,7 +178,7 @@ export default function BasicAdjustments({
   const hideTonemapper = isForMask || appSettings?.tonemapperOverrideEnabled;
 
   return (
-    <div>
+    <div className="basic-adjustments">
       {hideTonemapper ? (
         <Slider
           label={t('adjustments.basic.evShift')}

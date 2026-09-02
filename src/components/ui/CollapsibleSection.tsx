@@ -79,9 +79,9 @@ export default function CollapsibleSection({
   };
 
   return (
-    <div className="bg-surface rounded-lg overflow-hidden shrink-0" onContextMenu={onContextMenu}>
+    <div className="collapsible-section bg-surface rounded-lg overflow-hidden shrink-0" onContextMenu={onContextMenu}>
       <div
-        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
+        className="collapsible-section-header w-full px-4 py-3 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
         onClick={onToggle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -117,6 +117,7 @@ export default function CollapsibleSection({
       <div ref={wrapperRef} className="overflow-hidden transition-all duration-300 ease-in-out">
         <div
           className={clsx(
+            'collapsible-section-content',
             'px-4 pb-4 transition-opacity duration-300',
             !isContentVisible && 'opacity-30 pointer-events-none',
           )}
