@@ -870,7 +870,7 @@ function App() {
         )}
         <div
           className={clsx(
-            'flex-1 flex flex-col min-h-0',
+            'app-workspace flex-1 flex flex-col min-h-0',
             isLayoutReady && hasMainContent && !isInstantTransition && 'transition-all duration-300 ease-in-out',
             [hasMainContent && (isFullScreen ? 'p-0 gap-0' : 'p-2 gap-2')],
           )}
@@ -886,7 +886,7 @@ function App() {
               },
             }}
           >
-            <div className="flex flex-row grow h-full min-h-0">
+            <div className="app-workspace-row flex flex-row grow h-full min-h-0">
               {!shouldHideFolderTree && hasMainContent && (
                 <SidePanelArea
                   side="left"
@@ -899,7 +899,7 @@ function App() {
                   isResizing={isResizing}
                 />
               )}
-              <div className="relative flex-1 flex flex-col min-w-0">
+              <div className="workspace-main relative flex-1 flex flex-col min-w-0">
                 {selectedImage && externalEditSession && (
                   <ExternalEditBar
                     session={externalEditSession}

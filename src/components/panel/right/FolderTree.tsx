@@ -829,14 +829,14 @@ export default function FolderTree({
   return (
     <div
       className={clsx(
-        'relative bg-bg-secondary rounded-lg shrink-0 flex flex-col h-full',
+        'folder-tree-panel relative bg-bg-secondary rounded-lg shrink-0 flex flex-col h-full',
         !isResizing && 'transition-[width] duration-300 ease-in-out',
       )}
       style={style}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="p-3 flex justify-between items-center shrink-0 border-b border-surface">
+      <div className="folder-tree-header p-3 flex justify-between items-center shrink-0 border-b border-surface">
         <Text variant={TextVariants.title}>{t('library.folders.sourcesTitle', 'Sources')}</Text>
       </div>
 

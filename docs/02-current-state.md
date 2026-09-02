@@ -27,6 +27,10 @@
   dehaze no longer repeat in global Details. Their local-mask variants remain available.
 - Develop section cards, headers, toolbar actions, numeric fields, and slider thumbs use a sharper
   SCS/Vercel-like hairline treatment with smaller typography and substantially reduced rounding.
+- The desktop workspace shell is compact too: outer gutters, panel gaps, library/source headers,
+  panel switchers, bottom actions, borders, corner radii, and toolbar hit areas use a denser rhythm.
+- The Standard/AgX selector uses a static segmented control; the fragile animated indicator was
+  removed after it clipped and overflowed at the compact right-panel width.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
   behavior changed.
 

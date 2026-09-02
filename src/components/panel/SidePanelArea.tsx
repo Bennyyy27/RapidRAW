@@ -122,7 +122,7 @@ function RegionDroppableContainer({
     <div
       ref={setRefs}
       className={clsx(
-        'flex h-full w-full bg-bg-secondary rounded-lg overflow-hidden border transition-colors shadow-xs relative',
+        'side-panel-shell flex h-full w-full bg-bg-secondary rounded-lg overflow-hidden border transition-colors shadow-xs relative',
         isFlexRow ? 'flex-row' : 'flex-col',
         isActualOver && !hoverPlacement ? 'border-accent' : 'border-surface',
       )}

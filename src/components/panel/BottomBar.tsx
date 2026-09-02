@@ -323,7 +323,7 @@ export default function BottomBar({
   };
 
   return (
-    <div className="shrink-0 bg-bg-secondary rounded-lg flex flex-col">
+    <div className="bottom-bar shrink-0 bg-bg-secondary rounded-lg flex flex-col">
       {!isLibraryView && showFilmstrip && (
         <div
           className={clsx(
