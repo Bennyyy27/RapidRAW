@@ -289,7 +289,7 @@ function SectionHeader({ title, isOpen, onToggle }: { title: string; isOpen: boo
       as="div"
       variant={TextVariants.small}
       weight={TextWeights.bold}
-      className="flex items-center w-full px-1 py-1.5 cursor-pointer group"
+      className="folder-tree-section-header flex items-center w-full px-1 py-1.5 cursor-pointer group"
       onClick={onToggle}
       data-tooltip={
         isOpen
@@ -366,7 +366,7 @@ function AlbumTreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
-        className={clsx('flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
+        className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,
@@ -541,7 +541,7 @@ function TreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
-        className={clsx('flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
+        className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,

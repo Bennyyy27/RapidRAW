@@ -29,6 +29,9 @@
   SCS/Vercel-like hairline treatment with smaller typography and substantially reduced rounding.
 - The desktop workspace shell is compact too: outer gutters, panel gaps, library/source headers,
   panel switchers, bottom actions, borders, corner radii, and toolbar hit areas use a denser rhythm.
+- The Lightroom-informed layout uses a narrower 280 px default source panel, a wider 380 px default
+  adjustment panel, flat workspace edges, denser folder rows, and longer slider tracks with smaller
+  label/value columns and thumbs. Legacy saved 350 px defaults migrate on restart.
 - The Standard/AgX selector uses a static segmented control; the fragile animated indicator was
   removed after it clipped and overflowed at the compact right-panel width.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

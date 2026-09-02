@@ -38,7 +38,12 @@ import LibraryView from './components/views/LibraryView';
 
 import { ContextMenuProvider } from './context/ContextMenuContext';
 import { useSettingsStore } from './store/useSettingsStore';
-import { DEFAULT_BOTTOM_PANEL_HEIGHT, DEFAULT_PANEL_WIDTH, useUIStore } from './store/useUIStore';
+import {
+  DEFAULT_BOTTOM_PANEL_HEIGHT,
+  DEFAULT_LEFT_PANEL_WIDTH,
+  DEFAULT_RIGHT_PANEL_WIDTH,
+  useUIStore,
+} from './store/useUIStore';
 import { useLibraryStore } from './store/useLibraryStore';
 import { useEditorStore } from './store/useEditorStore';
 import { useProcessStore } from './store/useProcessStore';
@@ -634,12 +639,12 @@ function App() {
   const createResizeResetHandler = (stateKey: string) => () => {
     if (stateKey === 'left') {
       setUI((state) => ({
-        leftPanelWidth: DEFAULT_PANEL_WIDTH,
+        leftPanelWidth: DEFAULT_LEFT_PANEL_WIDTH,
         uiVisibility: { ...state.uiVisibility, leftPanel: true },
       }));
     } else if (stateKey === 'right') {
       setUI((state) => ({
-        rightPanelWidth: DEFAULT_PANEL_WIDTH,
+        rightPanelWidth: DEFAULT_RIGHT_PANEL_WIDTH,
         uiVisibility: { ...state.uiVisibility, rightPanel: true },
       }));
     } else if (stateKey === 'bottom') {
