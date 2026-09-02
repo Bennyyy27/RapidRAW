@@ -108,8 +108,8 @@ const DEFAULT_PANEL_DEFAULT_REGIONS: Record<Panel, PanelRegion> = {
   [Panel.Presets]: 'rightTop',
 };
 
-export const DEFAULT_LEFT_PANEL_WIDTH = 280;
-export const DEFAULT_RIGHT_PANEL_WIDTH = 380;
+export const DEFAULT_LEFT_PANEL_WIDTH = 260;
+export const DEFAULT_RIGHT_PANEL_WIDTH = 400;
 export const DEFAULT_PANEL_SECTION_HEIGHT = 450;
 export const DEFAULT_BOTTOM_PANEL_HEIGHT = 144;
 
@@ -139,7 +139,7 @@ export function reconcileWorkspace(
     panelSwitcherPlacement: {
       leftTop: 'bottom',
       leftBottom: 'bottom',
-      rightTop: 'right',
+      rightTop: 'top',
       rightBottom: 'right',
     },
   };
@@ -192,11 +192,11 @@ export function reconcileWorkspace(
 
   return {
     leftPanelWidth:
-      savedWorkspace.leftPanelWidth === 350
+      savedWorkspace.leftPanelWidth >= 250 && savedWorkspace.leftPanelWidth <= 400
         ? DEFAULT_LEFT_PANEL_WIDTH
         : savedWorkspace.leftPanelWidth || defaultWorkspace.leftPanelWidth,
     rightPanelWidth:
-      savedWorkspace.rightPanelWidth === 350
+      savedWorkspace.rightPanelWidth >= 280 && savedWorkspace.rightPanelWidth <= 400
         ? DEFAULT_RIGHT_PANEL_WIDTH
         : savedWorkspace.rightPanelWidth || defaultWorkspace.rightPanelWidth,
     leftTopHeight: savedWorkspace.leftTopHeight || defaultWorkspace.leftTopHeight,
@@ -206,6 +206,10 @@ export function reconcileWorkspace(
     panelSwitcherPlacement: {
       ...defaultWorkspace.panelSwitcherPlacement,
       ...(savedWorkspace.panelSwitcherPlacement || {}),
+      rightTop:
+        savedWorkspace.panelSwitcherPlacement?.rightTop === 'right'
+          ? 'top'
+          : savedWorkspace.panelSwitcherPlacement?.rightTop || defaultWorkspace.panelSwitcherPlacement.rightTop,
     },
   };
 }
@@ -310,7 +314,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   panelSwitcherPlacement: {
     leftTop: 'bottom',
     leftBottom: 'bottom',
-    rightTop: 'right',
+    rightTop: 'top',
     rightBottom: 'right',
   },
   setPanelSwitcherPlacement: (region, placement) =>
