@@ -21,8 +21,10 @@
 - The Develop controls toolbar and scrolling content expose compact density hooks.
 - Compact CSS places label, slider track, and numeric value on one row; typography, gaps, margins, and
   panel padding are reduced.
-- The Basic section is now a single Lightroom-style overview: its tone-mapper selector and exposure
-  control are compact, and the main tone controls remain visible together in a tight vertical stack.
+- The Basic section is now a single Lightroom-style overview: tone mapper, white balance, tone,
+  clarity, dehaze, vibrance, and saturation remain visible together in a tight vertical stack.
+- White balance and vibrance/saturation no longer repeat in the global Color section; clarity and
+  dehaze no longer repeat in global Details. Their local-mask variants remain available.
 - Develop section cards, headers, toolbar actions, numeric fields, and slider thumbs use a sharper
   SCS/Vercel-like hairline treatment with smaller typography and substantially reduced rounding.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

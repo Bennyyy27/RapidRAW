@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import Slider from '../ui/Slider';
-import { Adjustments, BasicAdjustment } from '../../utils/adjustments';
+import { Adjustments, BasicAdjustment, ColorAdjustment, DetailsAdjustment } from '../../utils/adjustments';
 import { useEffect, useRef, useState, useMemo } from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Pipette } from 'lucide-react';
 
 interface BasicAdjustmentsProps {
   adjustments: Adjustments;
@@ -11,6 +13,8 @@ interface BasicAdjustmentsProps {
   isForMask?: boolean;
   onDragStateChange?: (isDragging: boolean) => void;
   appSettings?: any;
+  isWbPickerActive?: boolean;
+  toggleWbPicker?: () => void;
 }
 
 interface ToneMapperSwitchProps {
@@ -137,18 +141,17 @@ const ToneMapperSwitch = ({
             </button>
           ))}
         </div>
-        <div className="tone-mapper-exposure mt-2.5 px-1">
-          <Slider
-            label={t('adjustments.basic.evShift')}
-            max={5}
-            min={-5}
-            onChange={(e: any) => onEvShiftChange(parseFloat(e.target.value))}
-            step={0.01}
-            value={evShiftValue}
-            trackClassName="bg-surface"
-            onDragStateChange={onDragStateChange}
-          />
-        </div>
+      </div>
+      <div className="tone-mapper-exposure">
+        <Slider
+          label={t('adjustments.basic.evShift')}
+          max={5}
+          min={-5}
+          onChange={(e: any) => onEvShiftChange(parseFloat(e.target.value))}
+          step={0.01}
+          value={evShiftValue}
+          onDragStateChange={onDragStateChange}
+        />
       </div>
     </div>
   );
@@ -160,6 +163,8 @@ export default function BasicAdjustments({
   isForMask = false,
   onDragStateChange,
   appSettings,
+  isWbPickerActive = false,
+  toggleWbPicker,
 }: BasicAdjustmentsProps) {
   const { t } = useTranslation();
 
@@ -176,6 +181,14 @@ export default function BasicAdjustments({
   };
 
   const hideTonemapper = isForMask || appSettings?.tonemapperOverrideEnabled;
+  const showPresence = appSettings?.adjustmentVisibility?.presence !== false;
+
+  const sectionLabel = (label: string, action?: React.ReactNode) => (
+    <div className="basic-adjustment-group-label">
+      <span>{label}</span>
+      {action}
+    </div>
+  );
 
   return (
     <div className="basic-adjustments">
@@ -197,6 +210,43 @@ export default function BasicAdjustments({
           onEvShiftChange={(value) => handleAdjustmentChange(BasicAdjustment.Exposure, value)}
           onDragStateChange={onDragStateChange}
         />
+      )}
+      {!isForMask && (
+        <>
+          {sectionLabel(
+            t('adjustments.color.whiteBalance'),
+            toggleWbPicker && (
+              <button
+                className={isWbPickerActive ? 'is-active' : ''}
+                data-tooltip={t('adjustments.color.wbPickerTooltip')}
+                onClick={toggleWbPicker}
+              >
+                <Pipette size={13} />
+              </button>
+            ),
+          )}
+          <Slider
+            label={t('adjustments.color.temperature')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Temperature, e.target.value)}
+            step={1}
+            value={adjustments.temperature || 0}
+            trackClassName="temperature-gradient-track"
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.color.tint')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Tint, e.target.value)}
+            step={1}
+            value={adjustments.tint || 0}
+            trackClassName="tint-gradient-track"
+            onDragStateChange={onDragStateChange}
+          />
+          {sectionLabel(t('modals.copyPaste.groups.tone'))}
+        </>
       )}
       <Slider
         label={t('adjustments.basic.exposure')}
@@ -252,6 +302,47 @@ export default function BasicAdjustments({
         value={adjustments.blacks}
         onDragStateChange={onDragStateChange}
       />
+      {!isForMask && showPresence && (
+        <>
+          {sectionLabel(t('adjustments.color.presence'))}
+          <Slider
+            label={t('adjustments.details.clarity')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(DetailsAdjustment.Clarity, e.target.value)}
+            step={1}
+            value={adjustments.clarity}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.details.dehaze')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(DetailsAdjustment.Dehaze, e.target.value)}
+            step={1}
+            value={adjustments.dehaze}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.color.vibrance')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Vibrance, e.target.value)}
+            step={1}
+            value={adjustments.vibrance || 0}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.color.saturation')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Saturation, e.target.value)}
+            step={1}
+            value={adjustments.saturation || 0}
+            onDragStateChange={onDragStateChange}
+          />
+        </>
+      )}
     </div>
   );
 }
