@@ -39,6 +39,9 @@
 - The remaining oversized Standard/AgX segmented control is constrained to a small 140 px tool and
   layout/section corner removal is enforced directly in the React components. Adjustment groups now
   have Lightroom-like breathing room while rows inside each group remain dense.
+- Folder and album trees now use 18 px compact rows, smaller type/icons, tighter nesting, and reduced
+  section padding. Develop sliders also return to 18 px rows with smaller labels, values, group caps,
+  and section chrome for a materially denser adjustment overview.
 - The Standard/AgX selector uses a static segmented control; the fragile animated indicator was
   removed after it clipped and overflowed at the compact right-panel width.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
