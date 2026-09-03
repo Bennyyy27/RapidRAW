@@ -837,7 +837,9 @@ export default function FolderTree({
       onMouseLeave={() => setIsHovering(false)}
     >
       <div className="folder-tree-header p-3 flex justify-between items-center shrink-0 border-b border-surface">
-        <Text variant={TextVariants.title}>{t('library.folders.sourcesTitle', 'Sources')}</Text>
+        <Text variant={TextVariants.title} className="workspace-panel-title">
+          {t('library.folders.sourcesTitle', 'Sources')}
+        </Text>
       </div>
 
       <div className="folder-tree-content p-2 flex flex-col flex-1 min-h-0">

@@ -169,13 +169,15 @@
   }
 
   .density-compact .adjustments-toolbar {
-    min-height: 1.375rem;
-    padding: 0.125rem 0.375rem !important;
+    min-height: 1.875rem;
+    padding: 0.25rem 0.5rem !important;
   }
 
-  .density-compact .adjustments-toolbar-title {
-    font-size: 0.6875rem !important;
-    line-height: 0.875rem !important;
+  .density-compact .adjustments-toolbar-title,
+  .density-compact .workspace-panel-title {
+    font-size: 0.875rem !important;
+    line-height: 1rem !important;
+    font-weight: 600 !important;
   }
 
   .density-compact .adjustments-toolbar button {
@@ -408,12 +410,24 @@
 
   .density-compact .folder-tree-header {
     min-height: 2rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.5rem !important;
   }
 
   .density-compact .folder-tree-header p,
   .density-compact .folder-tree-header span {
-    font-size: 0.8125rem;
+    font-size: 0.875rem !important;
+    line-height: 1rem !important;
+  }
+
+  .density-compact .library-main-header {
+    min-height: 2.75rem;
+    padding: 0.375rem 0.5rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .density-compact .library-main-path {
+    font-size: 0.6875rem !important;
+    line-height: 0.875rem !important;
   }
 
   .density-compact .folder-tree-search {

@@ -56,6 +56,9 @@
 - A second visual pass uses a 20 px Lightroom-like control rhythm and 18 px group headings. The Basic
   disclosure remains minimal, so the added readability uses the recovered heading space rather than
   reintroducing scrolling.
+- Sources, Library, and Adjustments now share a 14 px semibold workspace-title scale. This places all
+  three between the former oversized navigation headings and the overly small Develop heading, with
+  explicit hooks that are not overridden by upstream typography utilities.
 - The tone-mapper EV slider no longer overrides its track with the panel's identical surface color;
   it now uses the same visible compact track as the other tone controls.
 - The obsolete tone-mapper bottom border was removed after grouping; the white-balance heading now

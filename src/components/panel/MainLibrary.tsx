@@ -510,16 +510,18 @@ export default function MainLibrary(props: MainLibraryProps) {
   return (
     <div className="relative z-20 flex-1 flex flex-col h-full min-w-0 bg-bg-secondary overflow-visible">
       <header
-        className="p-3 shrink-0 flex justify-between items-center border-b border-surface gap-4"
+        className="library-main-header p-3 shrink-0 flex justify-between items-center border-b border-surface gap-4"
         onMouseEnter={() => setIsProgressHovered(true)}
         onMouseLeave={() => setIsProgressHovered(false)}
       >
         <div className="min-w-0">
-          <Text variant={TextVariants.headline}>{t('library.header.title')}</Text>
+          <Text variant={TextVariants.headline} className="workspace-panel-title">
+            {t('library.header.title')}
+          </Text>
           {!props.isAndroid && (
             <div className="flex items-center gap-2">
               {props.currentFolderPath ? (
-                <Text className="truncate">{props.currentFolderPath}</Text>
+                <Text className="library-main-path truncate">{props.currentFolderPath}</Text>
               ) : (
                 <p className="text-sm invisible select-none pointer-events-none h-5 overflow-hidden"></p>
               )}
