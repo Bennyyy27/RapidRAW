@@ -50,6 +50,9 @@
 - Utility-layer overrides were found to be retaining upstream text line-height and spacing. The
   corrected Dense rules explicitly win those conflicts, restore a readable 14 px slider rhythm, and
   reduce Basic's low-value heading to an accessible 10 px disclosure strip.
+- Visual verification showed sufficient space below the complete Basic panel, so slider rows and
+  internal group headings were relaxed to 16 px with clearer separator spacing while preserving the
+  no-scroll fit.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
