@@ -1,6 +1,7 @@
 import clsx from 'clsx';
+import { Pipette } from 'lucide-react';
 import Slider from '../ui/Slider';
-import { Adjustments, BasicAdjustment } from '../../utils/adjustments';
+import { Adjustments, BasicAdjustment, ColorAdjustment, DetailsAdjustment } from '../../utils/adjustments';
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +11,8 @@ interface BasicAdjustmentsProps {
   isForMask?: boolean;
   onDragStateChange?: (isDragging: boolean) => void;
   appSettings?: any;
+  isWbPickerActive?: boolean;
+  toggleWbPicker?: () => void;
 }
 
 interface ToneMapperSwitchProps {
@@ -122,10 +125,12 @@ export default function BasicAdjustments({
   isForMask = false,
   onDragStateChange,
   appSettings,
+  isWbPickerActive,
+  toggleWbPicker,
 }: BasicAdjustmentsProps) {
   const { t } = useTranslation();
 
-  const handleAdjustmentChange = (key: BasicAdjustment, value: any) => {
+  const handleAdjustmentChange = (key: string, value: any) => {
     const numericValue = parseFloat(value);
     setAdjustments((prev: Partial<Adjustments>) => ({ ...prev, [key]: numericValue }));
   };
@@ -138,9 +143,10 @@ export default function BasicAdjustments({
   };
 
   const hideTonemapper = isForMask || appSettings?.tonemapperOverrideEnabled;
+  const showPresence = appSettings?.adjustmentVisibility?.presence !== false;
 
   return (
-    <div>
+    <div className="basic-adjustments">
       {hideTonemapper ? (
         <Slider
           label={t('adjustments.basic.evShift')}
@@ -159,6 +165,53 @@ export default function BasicAdjustments({
           onEvShiftChange={(value) => handleAdjustmentChange(BasicAdjustment.Exposure, value)}
           onDragStateChange={onDragStateChange}
         />
+      )}
+
+      {!isForMask && (
+        <>
+          <div className="basic-control-group-title">
+            <span>{t('adjustments.color.whiteBalance')}</span>
+            {toggleWbPicker && (
+              <button
+                type="button"
+                onClick={toggleWbPicker}
+                className={clsx('basic-control-group-action', {
+                  'bg-accent text-button-text': isWbPickerActive,
+                  'text-text-secondary hover:text-text-primary': !isWbPickerActive,
+                })}
+                data-tooltip={t('adjustments.color.wbPickerTooltip')}
+              >
+                <Pipette />
+              </button>
+            )}
+          </div>
+          <Slider
+            label={t('adjustments.color.temperature')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Temperature, e.target.value)}
+            step={1}
+            value={adjustments.temperature || 0}
+            trackClassName="temperature-gradient-track"
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.color.tint')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Tint, e.target.value)}
+            step={1}
+            value={adjustments.tint || 0}
+            trackClassName="tint-gradient-track"
+            onDragStateChange={onDragStateChange}
+          />
+        </>
+      )}
+
+      {!isForMask && (
+        <div className="basic-control-group-title">
+          <span>{t('modals.copyPaste.groups.tone')}</span>
+        </div>
       )}
       <Slider
         label={t('adjustments.basic.exposure')}
@@ -214,6 +267,76 @@ export default function BasicAdjustments({
         value={adjustments.blacks}
         onDragStateChange={onDragStateChange}
       />
+
+      {!isForMask && showPresence && (
+        <>
+          <div className="basic-control-group-title">
+            <span>{t('adjustments.details.presence')}</span>
+          </div>
+          <Slider
+            label={t('adjustments.details.structure')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(DetailsAdjustment.Structure, e.target.value)}
+            step={1}
+            value={adjustments.structure}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.details.clarity')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(DetailsAdjustment.Clarity, e.target.value)}
+            step={1}
+            value={adjustments.clarity}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.details.dehaze')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(DetailsAdjustment.Dehaze, e.target.value)}
+            step={1}
+            value={adjustments.dehaze}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.details.centre')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(DetailsAdjustment.Centré, e.target.value)}
+            step={1}
+            value={adjustments.centré}
+            onDragStateChange={onDragStateChange}
+          />
+        </>
+      )}
+
+      {!isForMask && (
+        <>
+          <div className="basic-control-group-title">
+            <span>{t('adjustments.color.vibrance')}</span>
+          </div>
+          <Slider
+            label={t('adjustments.color.vibrance')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Vibrance, e.target.value)}
+            step={1}
+            value={adjustments.vibrance || 0}
+            onDragStateChange={onDragStateChange}
+          />
+          <Slider
+            label={t('adjustments.color.saturation')}
+            max={100}
+            min={-100}
+            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Saturation, e.target.value)}
+            step={1}
+            value={adjustments.saturation || 0}
+            onDragStateChange={onDragStateChange}
+          />
+        </>
+      )}
     </div>
   );
 }

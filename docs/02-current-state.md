@@ -4,14 +4,14 @@
 
 | Field             | Value                                                                                          |
 | ----------------- | ---------------------------------------------------------------------------------------------- |
-| Verified on       | 2 September 2026                                                                               |
+| Verified on       | 3 September 2026                                                                               |
 | Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                          |
 | Branch            | `scs/compact-ui`                                                                               |
 | Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                          |
 | Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                                  |
 | Personal remote   | Not configured; GitHub CLI is not installed                                                    |
 | Current milestone | F1 — Compact Develop UI                                                                        |
-| Next action       | User verifies the new flat workspace raster before navigation or Develop controls are changed. |
+| Next action       | User verifies the Lightroom-style grouping of the primary controls inside the Basic panel.     |
 
 ## Implemented fork changes
 
@@ -34,6 +34,9 @@
 - Visual verification exposed that the upstream thumb utility still won and the narrow label column
   truncated names. The correction enforces a 4 x 8 px marker on a 1 px track, uses 16 px rows and a
   112 px label column, and replaces the oversized tone-mapper card with a compact 120 px segmented row.
+- The global primary controls now live together in Basic, grouped as white balance, tone, presence,
+  and dynamics. Their previous global copies are removed from Color and Details, while mask-local
+  white-balance, color, and presence controls remain in their original sections.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

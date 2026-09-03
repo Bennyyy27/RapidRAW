@@ -278,6 +278,36 @@
     grid-column: 1 / 4;
   }
 
+  .density-compact .basic-control-group-title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.125rem;
+    margin-top: 0.25rem;
+    padding-top: 0.1875rem;
+    border-top: 1px solid color-mix(in srgb, var(--app-text-secondary) 18%, transparent);
+    color: var(--app-text-secondary);
+    font-size: 0.625rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .density-compact .basic-control-group-action {
+    position: absolute;
+    right: 0;
+    display: grid;
+    width: 1rem;
+    height: 1rem;
+    place-items: center;
+    border-radius: 2px;
+  }
+
+  .density-compact .basic-control-group-action svg {
+    width: 0.6875rem;
+    height: 0.6875rem;
+  }
+
   .density-compact .folder-tree-content {
     padding: 0.25rem;
   }
