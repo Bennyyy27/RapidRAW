@@ -65,6 +65,8 @@
   reserved. Hover now changes opacity only, eliminating the previous vertical and horizontal jump.
 - The stable sort action is visually integrated into the search field as a right-side accessory rather
   than a detached surface block. The clear-search action occupies the same position when text exists.
+- The sort button's upstream 36 px utility size is explicitly overridden to match its 28 px reserved
+  slot, centering the icon instead of clipping the button's left side.
 - The tone-mapper EV slider no longer overrides its track with the panel's identical surface color;
   it now uses the same visible compact track as the other tone controls.
 - The obsolete tone-mapper bottom border was removed after grouping; the white-balance heading now
