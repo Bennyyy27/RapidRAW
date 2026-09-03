@@ -79,19 +79,19 @@ export default function CollapsibleSection({
   };
 
   return (
-    <div className="bg-surface rounded-lg overflow-hidden shrink-0" onContextMenu={onContextMenu}>
+    <div className="collapsible-section bg-surface rounded-lg overflow-hidden shrink-0" onContextMenu={onContextMenu}>
       <div
-        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
+        className="collapsible-section-header w-full px-4 py-3 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
         onClick={onToggle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="flex items-center gap-2">
+        <div className="collapsible-section-title flex items-center gap-2">
           <Text variant={TextVariants.title} weight={TextWeights.normal}>
             {title}
           </Text>
           {canToggleVisibility && (
-            <div className="w-6 h-6 flex items-center justify-center">
+            <div className="collapsible-section-visibility w-6 h-6 flex items-center justify-center">
               <button
                 className={clsx(
                   'p-1 rounded-full text-text-secondary hover:bg-bg-primary z-10 transition-opacity duration-300',
@@ -110,14 +110,19 @@ export default function CollapsibleSection({
           )}
         </div>
         <ChevronDown
-          className={clsx('text-accent transition-transform duration-300', { 'rotate-180': isOpen })}
+          className={clsx('collapsible-section-chevron text-accent transition-transform duration-300', {
+            'rotate-180': isOpen,
+          })}
           size={20}
         />
       </div>
-      <div ref={wrapperRef} className="overflow-hidden transition-all duration-300 ease-in-out">
+      <div
+        ref={wrapperRef}
+        className="collapsible-section-wrapper overflow-hidden transition-all duration-300 ease-in-out"
+      >
         <div
           className={clsx(
-            'px-4 pb-4 transition-opacity duration-300',
+            'collapsible-section-content px-4 pb-4 transition-opacity duration-300',
             !isContentVisible && 'opacity-30 pointer-events-none',
           )}
           ref={contentRef}

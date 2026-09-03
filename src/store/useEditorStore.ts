@@ -101,7 +101,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   waveform: null,
   isWaveformVisible: false,
   activeWaveformChannel: 'luma',
-  waveformHeight: 220,
+  waveformHeight: 180,
 
   isSliderDragging: false,
   interactivePatch: null,

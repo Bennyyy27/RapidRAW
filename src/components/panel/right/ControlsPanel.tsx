@@ -245,12 +245,12 @@ export default function Controls() {
         {isWaveformVisible && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: waveformHeight || 256, opacity: 1 }}
+            animate={{ height: waveformHeight || 180, opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: isResizingWaveform ? 0 : 0.2, ease: 'easeOut' }}
-            className="shrink-0 flex flex-col relative border-b border-surface overflow-hidden"
+            className="adjustments-waveform shrink-0 flex flex-col relative border-b border-surface overflow-hidden"
           >
-            <div className="grow w-full h-full p-3 pb-2 min-h-0">
+            <div className="adjustments-waveform-content grow w-full h-full p-3 pb-2 min-h-0">
               <Waveform
                 waveformData={waveform || null}
                 histogram={histogram}

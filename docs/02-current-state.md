@@ -37,6 +37,9 @@
 - The global primary controls now live together in Basic, grouped as white balance, tone, presence,
   and dynamics. Their previous global copies are removed from Color and Details, while mask-local
   white-balance, color, and presence controls remain in their original sections.
+- A follow-up density pass reduces primary slider rows to 14 px, Basic's internal group separators to
+  14 px, collapsible section headers to 28 px, and the default analysis visualization from 220 px to
+  180 px. Compact toolbar icons and section padding were reduced in the same shared density layer.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
@@ -48,6 +51,7 @@
 - Touched files pass Prettier.
 - `npm run build`: passed; 2,547 modules transformed and the production frontend bundle completed.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
+- The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.
 - The first native build retriggered itself during that download and produced an empty temporary
   `jxl-encoder` object; a single-job retry completed compilation. Visual application acceptance remains

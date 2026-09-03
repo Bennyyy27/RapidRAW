@@ -38,7 +38,7 @@ export function useWaveformControls() {
       const pointerId = e.pointerId;
       const target = e.currentTarget;
       const startY = e.clientY;
-      const startHeight = useEditorStore.getState().waveformHeight || 256;
+      const startHeight = useEditorStore.getState().waveformHeight || 180;
       const previousTouchAction = document.documentElement.style.touchAction;
       const previousUserSelect = document.documentElement.style.userSelect;
 
@@ -51,7 +51,7 @@ export function useWaveformControls() {
         if (moveEvent.pointerId !== pointerId) return;
         moveEvent.preventDefault();
         const delta = moveEvent.clientY - startY;
-        const newHeight = Math.round(Math.max(150, Math.min(450, startHeight + delta)));
+        const newHeight = Math.round(Math.max(120, Math.min(360, startHeight + delta)));
         setEditor({ waveformHeight: newHeight });
       };
 
