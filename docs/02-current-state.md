@@ -58,6 +58,8 @@
   reintroducing scrolling.
 - The tone-mapper EV slider no longer overrides its track with the panel's identical surface color;
   it now uses the same visible compact track as the other tone controls.
+- The obsolete tone-mapper bottom border was removed after grouping; the white-balance heading now
+  provides the single separator between those control groups.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
