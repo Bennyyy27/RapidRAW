@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                                          |
-| ----------------- | ---------------------------------------------------------------------------------------------- |
-| Verified on       | 3 September 2026                                                                               |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                          |
-| Branch            | `scs/compact-ui`                                                                               |
-| Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                          |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                                  |
-| Personal remote   | Not configured; GitHub CLI is not installed                                                    |
-| Current milestone | F1 — Compact Develop UI                                                                        |
-| Next action       | User verifies the Lightroom-style grouping of the primary controls inside the Basic panel.     |
+| Field             | Value                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| Verified on       | 3 September 2026                                                                           |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                      |
+| Branch            | `scs/compact-ui`                                                                           |
+| Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                      |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                              |
+| Personal remote   | Not configured; GitHub CLI is not installed                                                |
+| Current milestone | F1 — Compact Develop UI                                                                    |
+| Next action       | User verifies the Lightroom-style grouping of the primary controls inside the Basic panel. |
 
 ## Implemented fork changes
 
@@ -40,6 +40,8 @@
 - A follow-up density pass reduces primary slider rows to 14 px, Basic's internal group separators to
   14 px, collapsible section headers to 28 px, and the default analysis visualization from 220 px to
   180 px. Compact toolbar icons and section padding were reduced in the same shared density layer.
+- Compact slider rows use the full remaining panel width in label-value-track order; the track now
+  stretches to the right content edge instead of reserving an unused trailing column.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

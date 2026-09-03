@@ -160,7 +160,7 @@
     --density-panel-padding: 0.375rem;
     --density-control-gap: 0.1875rem;
     --density-label-width: 7rem;
-    --density-value-width: 2rem;
+    --density-value-width: 1.5rem;
   }
 
   .density-compact .adjustments-toolbar,
@@ -195,7 +195,7 @@
 
   .density-compact .adjustment-slider {
     display: grid;
-    grid-template-columns: var(--density-label-width) minmax(5rem, 1fr) var(--density-value-width);
+    grid-template-columns: var(--density-label-width) var(--density-value-width) minmax(5rem, 1fr);
     align-items: center;
     column-gap: 0.375rem;
     margin-bottom: 0;
@@ -218,7 +218,7 @@
   }
 
   .density-compact .adjustment-slider-value {
-    grid-column: 3;
+    grid-column: 2;
     grid-row: 1;
     width: var(--density-value-width);
     font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -230,7 +230,7 @@
   }
 
   .density-compact .adjustment-slider-track {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1;
     height: 0.875rem;
   }
