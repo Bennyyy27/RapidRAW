@@ -1,8 +1,7 @@
-import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import Slider from '../ui/Slider';
 import { Adjustments, BasicAdjustment } from '../../utils/adjustments';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface BasicAdjustmentsProps {
@@ -29,8 +28,6 @@ const ToneMapperSwitch = ({
   onDragStateChange,
 }: ToneMapperSwitchProps) => {
   const { t } = useTranslation();
-  const [bubbleStyle, setBubbleStyle] = useState({});
-  const isInitialAnimation = useRef(true);
   const [isLabelHovered, setIsLabelHovered] = useState(false);
 
   const toneMapperOptions = useMemo(
@@ -54,38 +51,9 @@ const ToneMapperSwitch = ({
     onEvShiftChange(0);
   };
 
-  useEffect(() => {
-    const selectedIndex = toneMapperOptions.findIndex((m) => m.id === selectedMapper);
-    const safeIndex = selectedIndex >= 0 ? selectedIndex : 0;
-
-    const widthPercent = 100 / toneMapperOptions.length;
-    const targetX = `${safeIndex * 100}%`;
-    const targetWidth = `${widthPercent}%`;
-
-    if (isInitialAnimation.current) {
-      let initialX;
-      if (selectedMapper === 'agx') {
-        initialX = `${toneMapperOptions.length * 100}%`;
-      } else {
-        initialX = '-25%';
-      }
-
-      setBubbleStyle({
-        x: [initialX, targetX],
-        width: targetWidth,
-      });
-      isInitialAnimation.current = false;
-    } else {
-      setBubbleStyle({
-        x: targetX,
-        width: targetWidth,
-      });
-    }
-  }, [selectedMapper, toneMapperOptions]);
-
   return (
-    <div className="group mb-3">
-      <div className="flex justify-between items-center mb-2">
+    <div className="tone-mapper-compact group">
+      <div className="tone-mapper-label">
         <div
           className="grid cursor-pointer"
           onClick={handleReset}
@@ -111,14 +79,8 @@ const ToneMapperSwitch = ({
           </span>
         </div>
       </div>
-      <div className="w-full p-2 pb-1 bg-card-active rounded-md">
-        <div className="relative flex w-full">
-          <motion.div
-            className="absolute top-0 bottom-0 z-0 bg-accent"
-            style={{ borderRadius: 6 }}
-            animate={bubbleStyle}
-            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-          />
+      <div className="tone-mapper-options">
+        <div className="flex w-full">
           {toneMapperOptions.map((mapper) => (
             <button
               key={mapper.id}
@@ -128,7 +90,7 @@ const ToneMapperSwitch = ({
                 'relative flex-1 flex items-center justify-center gap-2 px-3 p-1.5 text-sm font-medium rounded-md transition-colors',
                 {
                   'text-text-primary hover:bg-surface': selectedMapper !== mapper.id,
-                  'text-button-text': selectedMapper === mapper.id,
+                  'bg-accent text-button-text': selectedMapper === mapper.id,
                 },
               )}
               style={{ WebkitTapHighlightColor: 'transparent' }}
@@ -137,18 +99,18 @@ const ToneMapperSwitch = ({
             </button>
           ))}
         </div>
-        <div className="mt-2.5 px-1">
-          <Slider
-            label={t('adjustments.basic.evShift')}
-            max={5}
-            min={-5}
-            onChange={(e: any) => onEvShiftChange(parseFloat(e.target.value))}
-            step={0.01}
-            value={evShiftValue}
-            trackClassName="bg-surface"
-            onDragStateChange={onDragStateChange}
-          />
-        </div>
+      </div>
+      <div className="tone-mapper-ev">
+        <Slider
+          label={t('adjustments.basic.evShift')}
+          max={5}
+          min={-5}
+          onChange={(e: any) => onEvShiftChange(parseFloat(e.target.value))}
+          step={0.01}
+          value={evShiftValue}
+          trackClassName="bg-surface"
+          onDragStateChange={onDragStateChange}
+        />
       </div>
     </div>
   );

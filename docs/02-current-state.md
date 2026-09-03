@@ -31,6 +31,9 @@
 - The first isolated Develop pass replaces the large round shared-slider thumb with a crisp 6 x 12 px
   marker on a 2 px track. Slider rows are 20 px high with 11 px labels and 10 px monospaced values;
   the larger invisible interaction target and all adjustment semantics remain unchanged.
+- Visual verification exposed that the upstream thumb utility still won and the narrow label column
+  truncated names. The correction enforces a 4 x 8 px marker on a 1 px track, uses 16 px rows and a
+  112 px label column, and replaces the oversized tone-mapper card with a compact 120 px segmented row.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
