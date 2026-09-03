@@ -472,6 +472,28 @@
     padding: 0 0 0.25rem;
   }
 
+  .density-compact .folder-tree-search-row,
+  .density-compact .folder-tree-sort-slot,
+  .density-compact .folder-tree-sort-button {
+    height: 1.75rem;
+  }
+
+  .density-compact .folder-tree-sort-slot,
+  .density-compact .folder-tree-sort-button {
+    width: 1.75rem;
+  }
+
+  .density-compact .folder-tree-sort-button {
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    border-radius: 0.25rem;
+  }
+
+  .density-compact .folder-tree-sort-button svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
   .density-compact .folder-tree-search input {
     height: 1.75rem;
     padding-block: 0.25rem;

@@ -204,7 +204,7 @@ function FolderSortMenu({
     <div className="relative" ref={menuRef}>
       <button
         className={clsx(
-          'bg-surface rounded-md hover:bg-card-active flex items-center justify-center shrink-0 overflow-hidden transition-colors w-9 h-9',
+          'folder-tree-sort-button bg-surface rounded-md hover:bg-card-active flex items-center justify-center shrink-0 overflow-hidden transition-colors w-9 h-9',
           isOpen && 'bg-card-active',
         )}
         onClick={() => setIsOpen(!isOpen)}
@@ -844,7 +844,7 @@ export default function FolderTree({
 
       <div className="folder-tree-content p-2 flex flex-col flex-1 min-h-0">
         <div className="folder-tree-search pt-1 pb-2">
-          <div className="flex items-center">
+          <div className="folder-tree-search-row flex items-center">
             <div className="relative flex-1 min-w-0">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
               <input
@@ -865,29 +865,25 @@ export default function FolderTree({
               )}
             </div>
 
-            <AnimatePresence>
-              {showHeaderButtons && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0, marginLeft: 0 }}
-                  animate={{ width: 'auto', opacity: 1, marginLeft: 4 }}
-                  exit={{ width: 0, opacity: 0, marginLeft: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeInOut' }}
-                  className={clsx(
-                    'flex items-center shrink-0',
-                    isSortMenuOpen ? 'overflow-visible' : 'overflow-hidden',
-                  )}
-                >
-                  <FolderSortMenu
-                    sort={folderTreeSort}
-                    onChange={(newSort) => {
-                      if (appSettings) handleSettingsChange({ ...appSettings, folderTreeSort: newSort });
-                    }}
-                    isOpen={isSortMenuOpen}
-                    setIsOpen={setIsSortMenuOpen}
-                  />
-                </motion.div>
+            <motion.div
+              animate={{ opacity: showHeaderButtons ? 1 : 0 }}
+              initial={false}
+              transition={{ duration: 0.12, ease: 'easeOut' }}
+              className={clsx(
+                'folder-tree-sort-slot ml-1 flex items-center shrink-0',
+                isSortMenuOpen ? 'overflow-visible' : 'overflow-hidden',
+                !showHeaderButtons && 'pointer-events-none',
               )}
-            </AnimatePresence>
+            >
+              <FolderSortMenu
+                sort={folderTreeSort}
+                onChange={(newSort) => {
+                  if (appSettings) handleSettingsChange({ ...appSettings, folderTreeSort: newSort });
+                }}
+                isOpen={isSortMenuOpen}
+                setIsOpen={setIsSortMenuOpen}
+              />
+            </motion.div>
           </div>
         </div>
 
