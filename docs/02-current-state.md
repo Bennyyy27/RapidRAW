@@ -33,6 +33,9 @@
   adjustment panel, a flat compact title bar, edge-to-edge workspace regions, denser folder rows, and
   longer slider tracks with smaller label/value columns and thumbs. Existing typical saved widths
   migrate on restart, and the right tool tabs move from a width-consuming rail to a horizontal row.
+- Library mode/actions and Develop toolbar buttons now use small, flat icon targets instead of large
+  pill containers. Tool icons are distributed with more space, while adjustment groups gain clearer
+  vertical separation without increasing the compact slider footprint excessively.
 - The Standard/AgX selector uses a static segmented control; the fragile animated indicator was
   removed after it clipped and overflowed at the compact right-panel width.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

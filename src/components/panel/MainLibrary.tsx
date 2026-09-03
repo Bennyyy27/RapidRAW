@@ -135,7 +135,7 @@ function DisplayModeSwitch({ displayMode, setDisplayMode, t }: DisplayModeSwitch
   const safeIndex = selectedIndex >= 0 ? selectedIndex : 0;
 
   return (
-    <div className="flex items-center bg-surface p-1 rounded-lg border border-border-color/20 h-14 w-40 select-none">
+    <div className="library-display-mode flex items-center bg-surface p-1 rounded-lg border border-border-color/20 h-14 w-40 select-none">
       <div className="relative flex w-full h-full">
         <motion.div
           className="absolute top-0 bottom-0 z-0 bg-bg-primary rounded-md shadow-sm"
@@ -575,7 +575,7 @@ export default function MainLibrary(props: MainLibraryProps) {
           )}
           <DisplayModeSwitch displayMode={libraryDisplayMode} setDisplayMode={setLibraryDisplayMode} t={t} />
 
-          <div className="flex items-center bg-surface p-1 rounded-lg gap-1 border border-border-color/20">
+          <div className="library-header-actions flex items-center bg-surface p-1 rounded-lg gap-1 border border-border-color/20">
             <SearchInput indexingProgress={props.indexingProgress} isIndexing={props.isIndexing} />
             <ViewOptionsDropdown
               libraryViewMode={props.libraryViewMode}
