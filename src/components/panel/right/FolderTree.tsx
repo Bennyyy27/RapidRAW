@@ -863,27 +863,28 @@ export default function FolderTree({
                   <X size={16} className="text-text-secondary" />
                 </button>
               )}
-            </div>
-
-            <motion.div
-              animate={{ opacity: showHeaderButtons ? 1 : 0 }}
-              initial={false}
-              transition={{ duration: 0.12, ease: 'easeOut' }}
-              className={clsx(
-                'folder-tree-sort-slot ml-1 flex items-center shrink-0',
-                isSortMenuOpen ? 'overflow-visible' : 'overflow-hidden',
-                !showHeaderButtons && 'pointer-events-none',
+              {!searchQuery && (
+                <motion.div
+                  animate={{ opacity: showHeaderButtons ? 1 : 0 }}
+                  initial={false}
+                  transition={{ duration: 0.12, ease: 'easeOut' }}
+                  className={clsx(
+                    'folder-tree-sort-slot absolute right-0 top-0 flex items-center',
+                    isSortMenuOpen ? 'overflow-visible' : 'overflow-hidden',
+                    !showHeaderButtons && 'pointer-events-none',
+                  )}
+                >
+                  <FolderSortMenu
+                    sort={folderTreeSort}
+                    onChange={(newSort) => {
+                      if (appSettings) handleSettingsChange({ ...appSettings, folderTreeSort: newSort });
+                    }}
+                    isOpen={isSortMenuOpen}
+                    setIsOpen={setIsSortMenuOpen}
+                  />
+                </motion.div>
               )}
-            >
-              <FolderSortMenu
-                sort={folderTreeSort}
-                onChange={(newSort) => {
-                  if (appSettings) handleSettingsChange({ ...appSettings, folderTreeSort: newSort });
-                }}
-                isOpen={isSortMenuOpen}
-                setIsOpen={setIsSortMenuOpen}
-              />
-            </motion.div>
+            </div>
           </div>
         </div>
 

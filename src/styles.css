@@ -486,7 +486,14 @@
   .density-compact .folder-tree-sort-button {
     min-width: 1.75rem;
     min-height: 1.75rem;
-    border-radius: 0.25rem;
+    border-left: 1px solid color-mix(in srgb, var(--app-text-secondary) 12%, transparent);
+    border-radius: 0 0.375rem 0.375rem 0 !important;
+    background: transparent !important;
+  }
+
+  .density-compact .folder-tree-sort-button:hover,
+  .density-compact .folder-tree-sort-button.bg-card-active {
+    background: var(--app-card-active) !important;
   }
 
   .density-compact .folder-tree-sort-button svg {
