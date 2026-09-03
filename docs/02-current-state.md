@@ -53,6 +53,9 @@
 - Visual verification showed sufficient space below the complete Basic panel, so slider rows and
   internal group headings were relaxed to 16 px with clearer separator spacing while preserving the
   no-scroll fit.
+- A second visual pass uses a 20 px Lightroom-like control rhythm and 18 px group headings. The Basic
+  disclosure remains minimal, so the added readability uses the recovered heading space rather than
+  reintroducing scrolling.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
