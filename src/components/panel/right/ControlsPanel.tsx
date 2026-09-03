@@ -247,7 +247,7 @@ export default function Controls() {
         {isWaveformVisible && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: waveformHeight || 180, opacity: 1 }}
+            animate={{ height: Math.min(waveformHeight || 140, 140), opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: isResizingWaveform ? 0 : 0.2, ease: 'easeOut' }}
             className="adjustments-waveform shrink-0 flex flex-col relative border-b border-surface overflow-hidden"
