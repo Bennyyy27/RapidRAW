@@ -77,7 +77,7 @@ function PanelTab({ panel, region, side }: { panel: Panel; region: PanelRegion; 
       {...listeners}
       {...attributes}
       className={clsx(
-        'relative rounded-md transition-colors duration-200 p-2 shrink-0 cursor-grab active:cursor-grabbing',
+        'workspace-toolbar-button relative rounded-md transition-colors duration-200 p-2 shrink-0 cursor-grab active:cursor-grabbing',
         isActive ? 'text-text-primary' : 'text-text-secondary hover:bg-surface hover:text-text-primary',
         isDragging && 'opacity-30',
       )}
@@ -92,7 +92,7 @@ function PanelTab({ panel, region, side }: { panel: Panel; region: PanelRegion; 
           transition={isInstantTransition ? { duration: 0 } : { type: 'spring', bounce: 0.2, duration: 0.4 }}
         />
       )}
-      <Icon size={20} className="relative z-10 pointer-events-none" />
+      <Icon size={20} className="workspace-toolbar-icon relative z-10 pointer-events-none" />
     </button>
   );
 }
@@ -207,7 +207,7 @@ export default function PanelSwitcher({
     <div
       ref={setRefs}
       className={clsx(
-        'flex items-center p-1.5 gap-1 shrink-0 transition-colors z-10 custom-scrollbar relative',
+        'panel-switcher flex items-center p-1.5 gap-1 shrink-0 transition-colors z-10 custom-scrollbar relative',
         isVertical
           ? clsx(
               'flex-col overflow-y-auto h-full',
@@ -262,10 +262,14 @@ export function MobilePanelSwitcher({
   const isVertical = placement === 'right';
 
   return (
-    <div className={clsx(
-      'flex items-center p-1.5 gap-1 shrink-0 custom-scrollbar',
-      isVertical ? 'flex-col overflow-y-auto h-full border-l border-surface' : 'flex-row overflow-x-auto w-full border-t border-surface',
-    )}>
+    <div
+      className={clsx(
+        'flex items-center p-1.5 gap-1 shrink-0 custom-scrollbar',
+        isVertical
+          ? 'flex-col overflow-y-auto h-full border-l border-surface'
+          : 'flex-row overflow-x-auto w-full border-t border-surface',
+      )}
+    >
       {MOBILE_PANELS.map((id) => {
         const Icon = PANEL_ICONS[id];
         const isActive = activePanel === id;

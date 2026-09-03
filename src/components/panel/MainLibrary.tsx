@@ -135,7 +135,7 @@ function DisplayModeSwitch({ displayMode, setDisplayMode, t }: DisplayModeSwitch
   const safeIndex = selectedIndex >= 0 ? selectedIndex : 0;
 
   return (
-    <div className="flex items-center bg-surface p-1 rounded-lg border border-border-color/20 h-14 w-40 select-none">
+    <div className="library-display-switch flex items-center bg-surface p-1 rounded-lg border border-border-color/20 h-14 w-40 select-none">
       <div className="relative flex w-full h-full">
         <motion.div
           className="absolute top-0 bottom-0 z-0 bg-bg-primary rounded-md shadow-sm"
@@ -159,7 +159,7 @@ function DisplayModeSwitch({ displayMode, setDisplayMode, t }: DisplayModeSwitch
               data-tooltip={opt.tooltip}
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="workspace-toolbar-icon w-5 h-5" />
             </button>
           );
         })}
@@ -577,7 +577,7 @@ export default function MainLibrary(props: MainLibraryProps) {
           )}
           <DisplayModeSwitch displayMode={libraryDisplayMode} setDisplayMode={setLibraryDisplayMode} t={t} />
 
-          <div className="flex items-center bg-surface p-1 rounded-lg gap-1 border border-border-color/20">
+          <div className="library-action-group flex items-center bg-surface p-1 rounded-lg gap-1 border border-border-color/20">
             <SearchInput indexingProgress={props.indexingProgress} isIndexing={props.isIndexing} />
             <ViewOptionsDropdown
               libraryViewMode={props.libraryViewMode}
@@ -596,19 +596,19 @@ export default function MainLibrary(props: MainLibraryProps) {
             />
             {!props.isAndroid && (
               <Button
-                className="h-12 w-12 bg-transparent text-text-primary shadow-none p-0 flex items-center justify-center"
+                className="workspace-toolbar-button h-12 w-12 bg-transparent text-text-primary shadow-none p-0 flex items-center justify-center"
                 onClick={props.onNavigateToCommunity}
                 data-tooltip={t('library.tooltips.communityPresets')}
               >
-                <Users className="w-5 h-5" />
+                <Users className="workspace-toolbar-icon w-5 h-5" />
               </Button>
             )}
             <Button
-              className="h-12 w-12 bg-transparent text-text-primary shadow-none p-0 flex items-center justify-center"
+              className="workspace-toolbar-button h-12 w-12 bg-transparent text-text-primary shadow-none p-0 flex items-center justify-center"
               onClick={props.onGoHome}
               data-tooltip={t('library.tooltips.goHome')}
             >
-              <Home className="w-5 h-5" />
+              <Home className="workspace-toolbar-icon w-5 h-5" />
             </Button>
           </div>
         </div>

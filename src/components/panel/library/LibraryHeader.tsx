@@ -56,7 +56,7 @@ function DropdownMenu({ buttonContent, buttonTitle, children, contentClassName =
       <Button
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="h-12 w-12 bg-surface text-text-primary shadow-none p-0 flex items-center justify-center"
+        className="workspace-toolbar-button h-12 w-12 bg-surface text-text-primary shadow-none p-0 flex items-center justify-center"
         onClick={() => setIsOpen(!isOpen)}
         data-tooltip={buttonTitle}
       >
@@ -345,7 +345,7 @@ export function SearchInput({ indexingProgress, isIndexing }: any) {
           ? t('library.header.search.addFilterOrSearch')
           : t('library.header.search.searchOrQuery');
 
-  const INACTIVE_WIDTH = 48;
+  const INACTIVE_WIDTH = 28;
   const PADDING_AND_ICONS_WIDTH = 100;
   const MAX_WIDTH = 680;
 
@@ -354,13 +354,13 @@ export function SearchInput({ indexingProgress, isIndexing }: any) {
   return (
     <motion.div
       animate={{ width: isActive ? calculatedWidth : INACTIVE_WIDTH }}
-      className="relative flex items-center bg-surface rounded-md h-12 overflow-hidden"
+      className="library-search-control relative flex items-center bg-surface rounded-md h-12 overflow-hidden"
       initial={false}
       transition={{ type: 'spring', stiffness: 400, damping: 35 }}
       onClick={() => inputRef.current?.focus()}
     >
       <button
-        className="h-12 w-12 flex items-center justify-center text-text-primary z-10 shrink-0 bg-surface outline-hidden"
+        className="workspace-toolbar-button h-12 w-12 flex items-center justify-center text-text-primary z-10 shrink-0 bg-surface outline-hidden"
         onClick={(e) => {
           e.stopPropagation();
           if (!isActive) setIsSearchActive(true);
@@ -574,7 +574,7 @@ export function ViewOptionsDropdown({
     <DropdownMenu
       buttonContent={
         <>
-          <SlidersHorizontal className="w-8 h-8" />
+          <SlidersHorizontal className="workspace-toolbar-icon w-8 h-8" />
           {isFilterActive && <div className="absolute -top-1 -right-1 bg-accent rounded-full w-3 h-3" />}
         </>
       }

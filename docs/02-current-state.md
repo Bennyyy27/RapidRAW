@@ -59,6 +59,8 @@
 - Sources, Library, and Adjustments now share a 14 px semibold workspace-title scale. This places all
   three between the former oversized navigation headings and the overly small Develop heading, with
   explicit hooks that are not overridden by upstream typography utilities.
+- Library and Develop toolbar actions now share 28 px buttons with 14 px icons. Library display and
+  action groups are reduced to 32 px high, replacing the mixed 48–56 px upstream control sizes.
 - The tone-mapper EV slider no longer overrides its track with the panel's identical surface color;
   it now uses the same visible compact track as the other tone controls.
 - The obsolete tone-mapper bottom border was removed after grouping; the white-balance heading now

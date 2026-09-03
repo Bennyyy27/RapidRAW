@@ -215,7 +215,7 @@ export default function Controls() {
         </Text>
         <div className="flex items-center gap-1">
           <button
-            className="p-2 rounded-full hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="workspace-toolbar-button p-2 rounded-full hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             disabled={!selectedImage}
             onClick={handleAutoAdjustments}
             data-tooltip={t('editor.adjustments.tooltips.autoAdjust')}
@@ -224,7 +224,7 @@ export default function Controls() {
           </button>
           <button
             className={clsx(
-              'p-2 rounded-full transition-colors',
+              'workspace-toolbar-button p-2 rounded-full transition-colors',
               isWaveformVisible ? 'bg-surface hover:bg-card-active' : 'hover:bg-surface',
             )}
             onClick={onToggleWaveform}
@@ -233,7 +233,7 @@ export default function Controls() {
             <ChartArea size={18} />
           </button>
           <button
-            className="p-2 rounded-full hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="workspace-toolbar-button p-2 rounded-full hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             disabled={!selectedImage}
             onClick={handleResetAdjustments}
             data-tooltip={t('editor.adjustments.tooltips.resetAdjustments')}
