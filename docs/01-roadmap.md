@@ -21,7 +21,7 @@ Status values: `Not started`, `In progress`, `User verification`, `Complete`, `B
 | ----- | --------------------------------------------------------------------------------------------------- | ----------------- |
 | F1-S1 | Basic shared sliders render label, track, and value in one compact row.                             | User verification |
 | F1-S2 | Compact spacing is centralized and isolated under a root density class.                             | Complete          |
-| F1-S3 | Histogram, section headers, toolbars, panels, and remaining controls use a coherent compact rhythm. | In progress       |
+| F1-S3 | Histogram, section headers, toolbars, panels, and remaining controls use a coherent compact rhythm. | Not started       |
 | F1-S4 | Comfortable/Compact/Dense selection persists across restart; Compact is the SCS default.            | Not started       |
 | F1-S5 | Wide panels optionally show suitable adjustment groups in two columns without harming usability.    | Not started       |
 | F1-S6 | Keyboard, touch targets, narrow layouts, and existing editor interactions regressions are checked.  | Not started       |

@@ -289,7 +289,7 @@ function SectionHeader({ title, isOpen, onToggle }: { title: string; isOpen: boo
       as="div"
       variant={TextVariants.small}
       weight={TextWeights.bold}
-      className="folder-tree-section-header flex items-center w-full px-1 py-1.5 cursor-pointer group"
+      className="flex items-center w-full px-1 py-1.5 cursor-pointer group"
       onClick={onToggle}
       data-tooltip={
         isOpen
@@ -366,7 +366,7 @@ function AlbumTreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
-        className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
+        className={clsx('flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,
@@ -541,7 +541,7 @@ function TreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
-        className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
+        className={clsx('flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,
@@ -829,14 +829,14 @@ export default function FolderTree({
   return (
     <div
       className={clsx(
-        'folder-tree-panel relative bg-bg-secondary shrink-0 flex flex-col h-full',
+        'relative bg-bg-secondary rounded-lg shrink-0 flex flex-col h-full',
         !isResizing && 'transition-[width] duration-300 ease-in-out',
       )}
       style={style}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="folder-tree-header p-3 flex justify-between items-center shrink-0 border-b border-surface">
+      <div className="p-3 flex justify-between items-center shrink-0 border-b border-surface">
         <Text variant={TextVariants.title}>{t('library.folders.sourcesTitle', 'Sources')}</Text>
       </div>
 

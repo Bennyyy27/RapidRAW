@@ -135,7 +135,7 @@ function DisplayModeSwitch({ displayMode, setDisplayMode, t }: DisplayModeSwitch
   const safeIndex = selectedIndex >= 0 ? selectedIndex : 0;
 
   return (
-    <div className="library-display-mode flex items-center bg-surface p-1 rounded-lg border border-border-color/20 h-14 w-40 select-none">
+    <div className="flex items-center bg-surface p-1 rounded-lg border border-border-color/20 h-14 w-40 select-none">
       <div className="relative flex w-full h-full">
         <motion.div
           className="absolute top-0 bottom-0 z-0 bg-bg-primary rounded-md shadow-sm"
@@ -508,12 +508,9 @@ export default function MainLibrary(props: MainLibraryProps) {
   }
 
   return (
-    <div
-      className="main-library relative z-20 flex-1 flex flex-col h-full min-w-0 bg-bg-secondary overflow-visible"
-      style={{ borderRadius: 0 }}
-    >
+    <div className="relative z-20 flex-1 flex flex-col h-full min-w-0 bg-bg-secondary rounded-lg overflow-visible">
       <header
-        className="main-library-header p-3 shrink-0 flex justify-between items-center border-b border-surface gap-4"
+        className="p-3 shrink-0 flex justify-between items-center border-b border-surface gap-4"
         onMouseEnter={() => setIsProgressHovered(true)}
         onMouseLeave={() => setIsProgressHovered(false)}
       >
@@ -578,7 +575,7 @@ export default function MainLibrary(props: MainLibraryProps) {
           )}
           <DisplayModeSwitch displayMode={libraryDisplayMode} setDisplayMode={setLibraryDisplayMode} t={t} />
 
-          <div className="library-header-actions flex items-center bg-surface p-1 rounded-lg gap-1 border border-border-color/20">
+          <div className="flex items-center bg-surface p-1 rounded-lg gap-1 border border-border-color/20">
             <SearchInput indexingProgress={props.indexingProgress} isIndexing={props.isIndexing} />
             <ViewOptionsDropdown
               libraryViewMode={props.libraryViewMode}

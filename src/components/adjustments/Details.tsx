@@ -61,7 +61,7 @@ export default function DetailsPanel({
         </div>
       )}
 
-      {isForMask && adjustmentVisibility.presence !== false && (
+      {adjustmentVisibility.presence !== false && (
         <div className="p-2 bg-bg-tertiary rounded-md">
           <Text variant={TextVariants.heading} className="mb-2">
             {t('adjustments.details.presence')}

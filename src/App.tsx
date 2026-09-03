@@ -38,12 +38,7 @@ import LibraryView from './components/views/LibraryView';
 
 import { ContextMenuProvider } from './context/ContextMenuContext';
 import { useSettingsStore } from './store/useSettingsStore';
-import {
-  DEFAULT_BOTTOM_PANEL_HEIGHT,
-  DEFAULT_LEFT_PANEL_WIDTH,
-  DEFAULT_RIGHT_PANEL_WIDTH,
-  useUIStore,
-} from './store/useUIStore';
+import { DEFAULT_BOTTOM_PANEL_HEIGHT, DEFAULT_PANEL_WIDTH, useUIStore } from './store/useUIStore';
 import { useLibraryStore } from './store/useLibraryStore';
 import { useEditorStore } from './store/useEditorStore';
 import { useProcessStore } from './store/useProcessStore';
@@ -639,12 +634,12 @@ function App() {
   const createResizeResetHandler = (stateKey: string) => () => {
     if (stateKey === 'left') {
       setUI((state) => ({
-        leftPanelWidth: DEFAULT_LEFT_PANEL_WIDTH,
+        leftPanelWidth: DEFAULT_PANEL_WIDTH,
         uiVisibility: { ...state.uiVisibility, leftPanel: true },
       }));
     } else if (stateKey === 'right') {
       setUI((state) => ({
-        rightPanelWidth: DEFAULT_RIGHT_PANEL_WIDTH,
+        rightPanelWidth: DEFAULT_PANEL_WIDTH,
         uiVisibility: { ...state.uiVisibility, rightPanel: true },
       }));
     } else if (stateKey === 'bottom') {
@@ -875,7 +870,7 @@ function App() {
         )}
         <div
           className={clsx(
-            'app-workspace flex-1 flex flex-col min-h-0',
+            'flex-1 flex flex-col min-h-0',
             isLayoutReady && hasMainContent && !isInstantTransition && 'transition-all duration-300 ease-in-out',
             [hasMainContent && (isFullScreen ? 'p-0 gap-0' : 'p-2 gap-2')],
           )}
@@ -891,7 +886,7 @@ function App() {
               },
             }}
           >
-            <div className="app-workspace-row flex flex-row grow h-full min-h-0">
+            <div className="flex flex-row grow h-full min-h-0">
               {!shouldHideFolderTree && hasMainContent && (
                 <SidePanelArea
                   side="left"
@@ -904,7 +899,7 @@ function App() {
                   isResizing={isResizing}
                 />
               )}
-              <div className="workspace-main relative flex-1 flex flex-col min-w-0">
+              <div className="relative flex-1 flex flex-col min-w-0">
                 {selectedImage && externalEditSession && (
                   <ExternalEditBar
                     session={externalEditSession}

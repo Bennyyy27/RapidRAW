@@ -470,70 +470,68 @@ export default function ColorPanel({
 
   return (
     <div className="space-y-4">
-      {isForMask && (
-        <div className="p-2 bg-bg-tertiary rounded-md">
-          <div className="flex justify-between items-center mb-2">
-            <Text variant={TextVariants.heading}>{t('adjustments.color.whiteBalance')}</Text>
-            {!isForMask && toggleWbPicker && (
-              <button
-                onClick={toggleWbPicker}
-                className={`p-1.5 rounded-md transition-colors ${
-                  isWbPickerActive ? 'bg-accent text-button-text' : 'hover:bg-bg-secondary text-text-secondary'
-                }`}
-                data-tooltip={t('adjustments.color.wbPickerTooltip')}
-              >
-                <Pipette size={16} />
-              </button>
-            )}
-          </div>
-          <Slider
-            label={t('adjustments.color.temperature')}
-            max={100}
-            min={-100}
-            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Temperature, e.target.value)}
-            step={1}
-            value={adjustments.temperature || 0}
-            trackClassName="temperature-gradient-track"
-            onDragStateChange={onDragStateChange}
-          />
-          <Slider
-            label={t('adjustments.color.tint')}
-            max={100}
-            min={-100}
-            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Tint, e.target.value)}
-            step={1}
-            value={adjustments.tint || 0}
-            trackClassName="tint-gradient-track"
-            onDragStateChange={onDragStateChange}
-          />
+      <div className="p-2 bg-bg-tertiary rounded-md">
+        <div className="flex justify-between items-center mb-2">
+          <Text variant={TextVariants.heading}>{t('adjustments.color.whiteBalance')}</Text>
+          {!isForMask && toggleWbPicker && (
+            <button
+              onClick={toggleWbPicker}
+              className={`p-1.5 rounded-md transition-colors ${
+                isWbPickerActive
+                  ? 'bg-accent text-button-text'
+                  : 'hover:bg-bg-secondary text-text-secondary'
+              }`}
+              data-tooltip={t('adjustments.color.wbPickerTooltip')}
+            >
+              <Pipette size={16} />
+            </button>
+          )}
         </div>
-      )}
+        <Slider
+          label={t('adjustments.color.temperature')}
+          max={100}
+          min={-100}
+          onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Temperature, e.target.value)}
+          step={1}
+          value={adjustments.temperature || 0}
+          trackClassName="temperature-gradient-track"
+          onDragStateChange={onDragStateChange}
+        />
+        <Slider
+          label={t('adjustments.color.tint')}
+          max={100}
+          min={-100}
+          onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Tint, e.target.value)}
+          step={1}
+          value={adjustments.tint || 0}
+          trackClassName="tint-gradient-track"
+          onDragStateChange={onDragStateChange}
+        />
+      </div>
 
-      {isForMask && (
-        <div className="p-2 bg-bg-tertiary rounded-md">
-          <Text variant={TextVariants.heading} className="mb-2">
-            {t('adjustments.color.presence')}
-          </Text>
-          <Slider
-            label={t('adjustments.color.vibrance')}
-            max={100}
-            min={-100}
-            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Vibrance, e.target.value)}
-            step={1}
-            value={adjustments.vibrance || 0}
-            onDragStateChange={onDragStateChange}
-          />
-          <Slider
-            label={t('adjustments.color.saturation')}
-            max={100}
-            min={-100}
-            onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Saturation, e.target.value)}
-            step={1}
-            value={adjustments.saturation || 0}
-            onDragStateChange={onDragStateChange}
-          />
-        </div>
-      )}
+      <div className="p-2 bg-bg-tertiary rounded-md">
+        <Text variant={TextVariants.heading} className="mb-2">
+          {t('adjustments.color.presence')}
+        </Text>
+        <Slider
+          label={t('adjustments.color.vibrance')}
+          max={100}
+          min={-100}
+          onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Vibrance, e.target.value)}
+          step={1}
+          value={adjustments.vibrance || 0}
+          onDragStateChange={onDragStateChange}
+        />
+        <Slider
+          label={t('adjustments.color.saturation')}
+          max={100}
+          min={-100}
+          onChange={(e: any) => handleAdjustmentChange(ColorAdjustment.Saturation, e.target.value)}
+          step={1}
+          value={adjustments.saturation || 0}
+          onDragStateChange={onDragStateChange}
+        />
+      </div>
 
       <div className="p-2 bg-bg-tertiary rounded-md">
         <Text variant={TextVariants.heading} className="mb-2">

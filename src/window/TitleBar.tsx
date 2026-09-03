@@ -89,9 +89,9 @@ export default function TitleBar() {
   const outerDragProps = isLinux ? {} : { 'data-tauri-drag-region': 'true' };
 
   return (
-    <div className="app-titlebar relative pt-2 px-2 w-full z-50 bg-transparent" {...outerDragProps}>
+    <div className="relative pt-2 px-2 w-full z-50 bg-transparent" {...outerDragProps}>
       <div
-        className="app-titlebar-surface h-10 bg-bg-secondary flex justify-between items-center select-none rounded-lg overflow-hidden"
+        className="h-10 bg-bg-secondary flex justify-between items-center select-none rounded-lg overflow-hidden"
         {...outerDragProps}
       >
         <div className="flex items-center h-full">

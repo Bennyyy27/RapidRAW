@@ -108,8 +108,7 @@ const DEFAULT_PANEL_DEFAULT_REGIONS: Record<Panel, PanelRegion> = {
   [Panel.Presets]: 'rightTop',
 };
 
-export const DEFAULT_LEFT_PANEL_WIDTH = 260;
-export const DEFAULT_RIGHT_PANEL_WIDTH = 400;
+export const DEFAULT_PANEL_WIDTH = 350;
 export const DEFAULT_PANEL_SECTION_HEIGHT = 450;
 export const DEFAULT_BOTTOM_PANEL_HEIGHT = 144;
 
@@ -120,8 +119,8 @@ export function reconcileWorkspace(
   const allowedPanels = new Set(ALL_PANELS.filter((p) => p !== Panel.Tethering || isTetheringSupported));
 
   const defaultWorkspace: WorkspaceState = {
-    leftPanelWidth: DEFAULT_LEFT_PANEL_WIDTH,
-    rightPanelWidth: DEFAULT_RIGHT_PANEL_WIDTH,
+    leftPanelWidth: DEFAULT_PANEL_WIDTH,
+    rightPanelWidth: DEFAULT_PANEL_WIDTH,
     leftTopHeight: DEFAULT_PANEL_SECTION_HEIGHT,
     rightTopHeight: DEFAULT_PANEL_SECTION_HEIGHT,
     panelLayout: {
@@ -139,7 +138,7 @@ export function reconcileWorkspace(
     panelSwitcherPlacement: {
       leftTop: 'bottom',
       leftBottom: 'bottom',
-      rightTop: 'top',
+      rightTop: 'right',
       rightBottom: 'right',
     },
   };
@@ -191,14 +190,8 @@ export function reconcileWorkspace(
   });
 
   return {
-    leftPanelWidth:
-      savedWorkspace.leftPanelWidth >= 250 && savedWorkspace.leftPanelWidth <= 400
-        ? DEFAULT_LEFT_PANEL_WIDTH
-        : savedWorkspace.leftPanelWidth || defaultWorkspace.leftPanelWidth,
-    rightPanelWidth:
-      savedWorkspace.rightPanelWidth >= 280 && savedWorkspace.rightPanelWidth <= 400
-        ? DEFAULT_RIGHT_PANEL_WIDTH
-        : savedWorkspace.rightPanelWidth || defaultWorkspace.rightPanelWidth,
+    leftPanelWidth: savedWorkspace.leftPanelWidth || defaultWorkspace.leftPanelWidth,
+    rightPanelWidth: savedWorkspace.rightPanelWidth || defaultWorkspace.rightPanelWidth,
     leftTopHeight: savedWorkspace.leftTopHeight || defaultWorkspace.leftTopHeight,
     rightTopHeight: savedWorkspace.rightTopHeight || defaultWorkspace.rightTopHeight,
     panelLayout: sanitizedLayout,
@@ -206,10 +199,6 @@ export function reconcileWorkspace(
     panelSwitcherPlacement: {
       ...defaultWorkspace.panelSwitcherPlacement,
       ...(savedWorkspace.panelSwitcherPlacement || {}),
-      rightTop:
-        savedWorkspace.panelSwitcherPlacement?.rightTop === 'right'
-          ? 'top'
-          : savedWorkspace.panelSwitcherPlacement?.rightTop || defaultWorkspace.panelSwitcherPlacement.rightTop,
     },
   };
 }
@@ -290,8 +279,8 @@ export const useUIStore = create<UIState>((set, get) => ({
   isLibraryExportPanelVisible: false,
   isSettingsOpen: false,
 
-  leftPanelWidth: DEFAULT_LEFT_PANEL_WIDTH,
-  rightPanelWidth: DEFAULT_RIGHT_PANEL_WIDTH,
+  leftPanelWidth: DEFAULT_PANEL_WIDTH,
+  rightPanelWidth: DEFAULT_PANEL_WIDTH,
   bottomPanelHeight: DEFAULT_BOTTOM_PANEL_HEIGHT,
   leftTopHeight: DEFAULT_PANEL_SECTION_HEIGHT,
   rightTopHeight: DEFAULT_PANEL_SECTION_HEIGHT,
@@ -314,7 +303,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   panelSwitcherPlacement: {
     leftTop: 'bottom',
     leftBottom: 'bottom',
-    rightTop: 'top',
+    rightTop: 'right',
     rightBottom: 'right',
   },
   setPanelSwitcherPlacement: (region, placement) =>
@@ -468,15 +457,15 @@ export const useUIStore = create<UIState>((set, get) => ({
 
       if (isLeft && !state.uiVisibility.leftPanel) {
         updates.uiVisibility = { ...state.uiVisibility, leftPanel: true };
-        if (state.leftPanelWidth < DEFAULT_LEFT_PANEL_WIDTH) {
-          updates.leftPanelWidth = DEFAULT_LEFT_PANEL_WIDTH;
+        if (state.leftPanelWidth < DEFAULT_PANEL_WIDTH) {
+          updates.leftPanelWidth = DEFAULT_PANEL_WIDTH;
         }
       }
 
       if (isRight && !state.uiVisibility.rightPanel) {
         updates.uiVisibility = { ...state.uiVisibility, rightPanel: true };
-        if (state.rightPanelWidth < DEFAULT_RIGHT_PANEL_WIDTH) {
-          updates.rightPanelWidth = DEFAULT_RIGHT_PANEL_WIDTH;
+        if (state.rightPanelWidth < DEFAULT_PANEL_WIDTH) {
+          updates.rightPanelWidth = DEFAULT_PANEL_WIDTH;
         }
       }
 

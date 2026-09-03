@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                                                             |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Verified on       | 2 September 2026                                                                                                  |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                                             |
-| Branch            | `scs/compact-ui`                                                                                                  |
-| Fork commit       | Current `scs/compact-ui` branch HEAD; includes the SCS-style Develop density refinement                           |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                                                     |
-| Personal remote   | Not configured; GitHub CLI is not installed                                                                       |
-| Current milestone | F1 — Compact Develop UI                                                                                           |
-| Next action       | User visually verifies the SCS-style Basic overview; then histogram and specialized Develop controls are refined. |
+| Field             | Value                                                                                                            |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Verified on       | 2 September 2026                                                                                                 |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                                            |
+| Branch            | `scs/compact-ui`                                                                                                 |
+| Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                                            |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                                                    |
+| Personal remote   | Not configured; GitHub CLI is not installed                                                                      |
+| Current milestone | F1 — Compact Develop UI                                                                                          |
+| Next action       | User visually verifies the first compact slider layout, then density and remaining Develop surfaces are refined. |
 
 ## Implemented fork changes
 
@@ -21,29 +21,6 @@
 - The Develop controls toolbar and scrolling content expose compact density hooks.
 - Compact CSS places label, slider track, and numeric value on one row; typography, gaps, margins, and
   panel padding are reduced.
-- The Basic section is now a single Lightroom-style overview: tone mapper, white balance, tone,
-  clarity, dehaze, vibrance, and saturation remain visible together in a tight vertical stack.
-- White balance and vibrance/saturation no longer repeat in the global Color section; clarity and
-  dehaze no longer repeat in global Details. Their local-mask variants remain available.
-- Develop section cards, headers, toolbar actions, numeric fields, and slider thumbs use a sharper
-  SCS/Vercel-like hairline treatment with smaller typography and substantially reduced rounding.
-- The desktop workspace shell is compact too: outer gutters, panel gaps, library/source headers,
-  panel switchers, bottom actions, borders, corner radii, and toolbar hit areas use a denser rhythm.
-- The Lightroom-informed layout uses a narrower 260 px default source panel, a wider 400 px default
-  adjustment panel, a flat compact title bar, edge-to-edge workspace regions, denser folder rows, and
-  longer slider tracks with smaller label/value columns and thumbs. Existing typical saved widths
-  migrate on restart, and the right tool tabs move from a width-consuming rail to a horizontal row.
-- Library mode/actions and Develop toolbar buttons now use small, flat icon targets instead of large
-  pill containers. Tool icons are distributed with more space, while adjustment groups gain clearer
-  vertical separation without increasing the compact slider footprint excessively.
-- The remaining oversized Standard/AgX segmented control is constrained to a small 140 px tool and
-  layout/section corner removal is enforced directly in the React components. Adjustment groups now
-  have Lightroom-like breathing room while rows inside each group remain dense.
-- Folder and album trees now use 18 px compact rows, smaller type/icons, tighter nesting, and reduced
-  section padding. Develop sliders also return to 18 px rows with smaller labels, values, group caps,
-  and section chrome for a materially denser adjustment overview.
-- The Standard/AgX selector uses a static segmented control; the fragile animated indicator was
-  removed after it clipped and overflowed at the compact right-panel width.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
   behavior changed.
 
@@ -52,8 +29,6 @@
 - `npm install`: completed; npm reported zero known vulnerabilities.
 - Touched files pass Prettier.
 - `npm run build`: passed; 2,547 modules transformed and the production frontend bundle completed.
-- The SCS-style Develop density refinement also passes `npm run build` (2,547 modules transformed)
-  and `git diff --check` on 2 September 2026.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.
 - The first native build retriggered itself during that download and produced an empty temporary
   `jxl-encoder` object; a single-job retry completed compilation. Visual application acceptance remains

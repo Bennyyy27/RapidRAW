@@ -122,11 +122,10 @@ function RegionDroppableContainer({
     <div
       ref={setRefs}
       className={clsx(
-        'side-panel-shell flex h-full w-full bg-bg-secondary overflow-hidden border transition-colors shadow-xs relative',
+        'flex h-full w-full bg-bg-secondary rounded-lg overflow-hidden border transition-colors shadow-xs relative',
         isFlexRow ? 'flex-row' : 'flex-col',
         isActualOver && !hoverPlacement ? 'border-accent' : 'border-surface',
       )}
-      style={{ borderRadius: 0 }}
     >
       <AnimatePresence>
         {isActualOver && !hoverPlacement && (
