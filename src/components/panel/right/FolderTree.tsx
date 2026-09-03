@@ -289,7 +289,7 @@ function SectionHeader({ title, isOpen, onToggle }: { title: string; isOpen: boo
       as="div"
       variant={TextVariants.small}
       weight={TextWeights.bold}
-      className="flex items-center w-full px-1 py-1.5 cursor-pointer group"
+      className="folder-tree-section-header flex items-center w-full px-1 py-1.5 cursor-pointer group"
       onClick={onToggle}
       data-tooltip={
         isOpen
@@ -366,7 +366,7 @@ function AlbumTreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
-        className={clsx('flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
+        className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,
@@ -427,7 +427,7 @@ function AlbumTreeNode({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="pl-1 border-l-[1.5px] border-border-color/50 ml-3.75 overflow-hidden"
+            className="folder-tree-children pl-1 border-l border-border-color/50 ml-3.75 overflow-hidden"
           >
             <div className="py-1">
               <AnimatePresence>
@@ -541,7 +541,7 @@ function TreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
-        className={clsx('flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
+        className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,
@@ -607,7 +607,7 @@ function TreeNode({
         {hasChildren && isExpanded && node.children && node.children.length > 0 && (
           <motion.div
             animate="open"
-            className="pl-1 border-l-[1.5px] border-border-color/50 ml-3.75 overflow-hidden"
+            className="folder-tree-children pl-1 border-l border-border-color/50 ml-3.75 overflow-hidden"
             exit="closed"
             initial={isInstantTransition ? 'open' : 'closed'}
             key="children-container"
@@ -840,7 +840,7 @@ export default function FolderTree({
         <Text variant={TextVariants.title}>{t('library.folders.sourcesTitle', 'Sources')}</Text>
       </div>
 
-      <div className="p-2 flex flex-col flex-1 min-h-0">
+      <div className="folder-tree-content p-2 flex flex-col flex-1 min-h-0">
         <div className="pt-1 pb-2">
           <div className="flex items-center">
             <div className="relative flex-1 min-w-0">

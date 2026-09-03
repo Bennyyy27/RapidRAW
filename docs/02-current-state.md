@@ -21,6 +21,9 @@
 - The Develop controls toolbar and scrolling content expose compact density hooks.
 - Compact CSS places label, slider track, and numeric value on one row; typography, gaps, margins, and
   panel padding are reduced.
+- The accepted flat workspace grid is followed by an isolated source-tree density slice: folder and
+  album rows are 26 px high with 12 px text, 14 px icons, reduced nesting, and restrained selection
+  rounding. No Develop controls changed in this slice.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
