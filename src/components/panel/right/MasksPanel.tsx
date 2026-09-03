@@ -2270,6 +2270,7 @@ function SettingsPanel({
               title={title}
               isOpen={collapsibleState[sectionName]}
               isContentVisible={sectionVisibility[sectionName]}
+              isPrimary={sectionName === 'basic'}
               onToggle={() => handleToggleSection(sectionName)}
               onToggleVisibility={() => handleToggleVisibility(sectionName)}
               onContextMenu={(e: any) => handleSectionContextMenu(e, sectionName)}

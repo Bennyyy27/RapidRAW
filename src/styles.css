@@ -170,16 +170,16 @@
 
   .density-compact .adjustments-toolbar {
     min-height: 1.375rem;
-    padding: 0.125rem 0.375rem;
+    padding: 0.125rem 0.375rem !important;
   }
 
   .density-compact .adjustments-toolbar-title {
-    font-size: 0.6875rem;
-    line-height: 0.875rem;
+    font-size: 0.6875rem !important;
+    line-height: 0.875rem !important;
   }
 
   .density-compact .adjustments-toolbar button {
-    padding: 0.1875rem;
+    padding: 0.1875rem !important;
   }
 
   .density-compact .adjustments-toolbar button svg {
@@ -200,9 +200,9 @@
     grid-template-columns: var(--density-label-width) var(--density-value-width) minmax(5rem, 1fr);
     align-items: center;
     column-gap: 0.375rem;
-    margin-bottom: 0;
-    min-height: 0.75rem;
-    height: 0.75rem;
+    margin-bottom: 0 !important;
+    min-height: 0.875rem;
+    height: 0.875rem;
   }
 
   .density-compact .adjustment-slider-row {
@@ -216,9 +216,9 @@
 
   .density-compact .adjustment-slider-label > span {
     white-space: nowrap;
-    font-size: 0.625rem;
+    font-size: 0.625rem !important;
     font-weight: 450;
-    line-height: 0.75rem;
+    line-height: 0.875rem !important;
   }
 
   .density-compact .adjustment-slider-value {
@@ -230,18 +230,18 @@
 
   .density-compact .adjustment-slider-value > span,
   .density-compact .adjustment-slider-value > input {
-    font-size: 0.625rem;
-    line-height: 0.75rem;
+    font-size: 0.625rem !important;
+    line-height: 0.875rem !important;
   }
 
   .density-compact .adjustment-slider-track {
     grid-column: 3;
     grid-row: 1;
-    height: 0.75rem;
+    height: 0.875rem !important;
   }
 
   .density-compact .adjustment-slider-track > div {
-    height: 1px;
+    height: 1px !important;
     border-radius: 0;
   }
 
@@ -281,8 +281,13 @@
 
   .density-compact .tone-mapper-label {
     grid-column: 1;
-    font-size: 0.625rem;
-    line-height: 0.75rem;
+    font-size: 0.625rem !important;
+    line-height: 0.875rem !important;
+  }
+
+  .density-compact .tone-mapper-label span {
+    font-size: 0.625rem !important;
+    line-height: 0.875rem !important;
   }
 
   .density-compact .tone-mapper-options {
@@ -296,10 +301,10 @@
   .density-compact .tone-mapper-options button {
     min-height: 0.875rem;
     min-width: 0;
-    padding: 0 0.25rem;
+    padding: 0 0.25rem !important;
     border-radius: 0;
-    font-size: 0.625rem;
-    line-height: 0.75rem;
+    font-size: 0.625rem !important;
+    line-height: 0.75rem !important;
   }
 
   .density-compact .tone-mapper-ev {
@@ -311,15 +316,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 0.75rem;
-    height: 0.75rem;
-    margin-top: 0.0625rem;
+    min-height: 0.875rem;
+    height: 0.875rem;
+    margin-top: 0.125rem;
     padding-top: 0.0625rem;
     border-top: 1px solid color-mix(in srgb, var(--app-text-secondary) 18%, transparent);
     color: var(--app-text-secondary);
     font-size: 0.625rem;
     font-weight: 500;
-    line-height: 0.6875rem;
+    line-height: 0.75rem !important;
   }
 
   .density-compact .basic-control-group-action {
@@ -344,7 +349,7 @@
   .density-compact .collapsible-section-header {
     min-height: 1.125rem;
     height: 1.125rem;
-    padding: 0.0625rem 0.375rem;
+    padding: 0.0625rem 0.375rem !important;
   }
 
   .density-compact .collapsible-section-title {
@@ -352,8 +357,8 @@
   }
 
   .density-compact .collapsible-section-title-text {
-    font-size: 0.625rem;
-    line-height: 0.75rem;
+    font-size: 0.625rem !important;
+    line-height: 0.75rem !important;
   }
 
   .density-compact .collapsible-section-visibility {
@@ -372,8 +377,29 @@
   }
 
   .density-compact .collapsible-section-content {
-    padding-inline: 0.375rem;
-    padding-bottom: 0.25rem;
+    padding-inline: 0.375rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  .density-compact .collapsible-section-primary .collapsible-section-header {
+    min-height: 0.625rem;
+    height: 0.625rem;
+    justify-content: flex-end;
+    padding: 0 0.375rem !important;
+  }
+
+  .density-compact .collapsible-section-primary .collapsible-section-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .density-compact .collapsible-section-primary .collapsible-section-chevron {
+    width: 0.5rem;
+    height: 0.5rem;
   }
 
   .density-compact .folder-tree-content {

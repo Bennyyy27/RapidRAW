@@ -9,6 +9,7 @@ interface CollapsibleSectionProps {
   canToggleVisibility?: boolean;
   children: any;
   isContentVisible: boolean;
+  isPrimary?: boolean;
   isOpen: boolean;
   onContextMenu?: any;
   onToggle: any;
@@ -20,6 +21,7 @@ export default function CollapsibleSection({
   canToggleVisibility = true,
   children,
   isContentVisible,
+  isPrimary = false,
   isOpen,
   onContextMenu,
   onToggle,
@@ -79,7 +81,12 @@ export default function CollapsibleSection({
   };
 
   return (
-    <div className="collapsible-section bg-surface rounded-lg overflow-hidden shrink-0" onContextMenu={onContextMenu}>
+    <div
+      className={clsx('collapsible-section bg-surface rounded-lg overflow-hidden shrink-0', {
+        'collapsible-section-primary': isPrimary,
+      })}
+      onContextMenu={onContextMenu}
+    >
       <div
         className="collapsible-section-header w-full px-4 py-3 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
         onClick={onToggle}

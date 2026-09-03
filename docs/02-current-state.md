@@ -47,6 +47,9 @@
 - The Dense fit pass constrains the analysis view to 96–140 px, uses 12 px visual slider rows with
   explicit 12 px text line boxes, and reduces Develop and section headers to 22 px and 18 px. This is
   intentionally optimized for fitting the complete global Basic control set without scrolling.
+- Utility-layer overrides were found to be retaining upstream text line-height and spacing. The
+  corrected Dense rules explicitly win those conflicts, restore a readable 14 px slider rhythm, and
+  reduce Basic's low-value heading to an accessible 10 px disclosure strip.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
