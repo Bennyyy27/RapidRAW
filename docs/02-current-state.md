@@ -26,6 +26,8 @@
   rounding. No Develop controls changed in this slice.
 - A second source-tree pass reduces rows to 22 px, text to 11 px, icons to 12 px, and also compacts the
   previously untouched Sources header, search field, section caps, content padding, and nesting.
+- User feedback led to a focused third pass on tree rhythm only: folder and album rows are fixed at
+  18 px with no vertical padding, 10 px text, and 11 px icons.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
