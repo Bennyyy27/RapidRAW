@@ -28,6 +28,9 @@
   previously untouched Sources header, search field, section caps, content padding, and nesting.
 - User feedback led to a focused third pass on tree rhythm only: folder and album rows are fixed at
   18 px with no vertical padding, 10 px text, and 11 px icons.
+- The first isolated Develop pass replaces the large round shared-slider thumb with a crisp 6 x 12 px
+  marker on a 2 px track. Slider rows are 20 px high with 11 px labels and 10 px monospaced values;
+  the larger invisible interaction target and all adjustment semantics remain unchanged.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
