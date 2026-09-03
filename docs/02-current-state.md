@@ -56,6 +56,8 @@
 - A second visual pass uses a 20 px Lightroom-like control rhythm and 18 px group headings. The Basic
   disclosure remains minimal, so the added readability uses the recovered heading space rather than
   reintroducing scrolling.
+- The tone-mapper EV slider no longer overrides its track with the panel's identical surface color;
+  it now uses the same visible compact track as the other tone controls.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

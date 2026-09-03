@@ -111,7 +111,6 @@ const ToneMapperSwitch = ({
           onChange={(e: any) => onEvShiftChange(parseFloat(e.target.value))}
           step={0.01}
           value={evShiftValue}
-          trackClassName="bg-surface"
           onDragStateChange={onDragStateChange}
         />
       </div>
