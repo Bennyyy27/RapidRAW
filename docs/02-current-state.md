@@ -36,6 +36,9 @@
 - Library mode/actions and Develop toolbar buttons now use small, flat icon targets instead of large
   pill containers. Tool icons are distributed with more space, while adjustment groups gain clearer
   vertical separation without increasing the compact slider footprint excessively.
+- The remaining oversized Standard/AgX segmented control is constrained to a small 140 px tool and
+  layout/section corner removal is enforced directly in the React components. Adjustment groups now
+  have Lightroom-like breathing room while rows inside each group remain dense.
 - The Standard/AgX selector uses a static segmented control; the fragile animated indicator was
   removed after it clipped and overflowed at the compact right-panel width.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

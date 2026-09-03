@@ -829,7 +829,7 @@ export default function FolderTree({
   return (
     <div
       className={clsx(
-        'folder-tree-panel relative bg-bg-secondary rounded-lg shrink-0 flex flex-col h-full',
+        'folder-tree-panel relative bg-bg-secondary shrink-0 flex flex-col h-full',
         !isResizing && 'transition-[width] duration-300 ease-in-out',
       )}
       style={style}

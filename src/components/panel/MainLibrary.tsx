@@ -508,7 +508,10 @@ export default function MainLibrary(props: MainLibraryProps) {
   }
 
   return (
-    <div className="main-library relative z-20 flex-1 flex flex-col h-full min-w-0 bg-bg-secondary rounded-lg overflow-visible">
+    <div
+      className="main-library relative z-20 flex-1 flex flex-col h-full min-w-0 bg-bg-secondary overflow-visible"
+      style={{ borderRadius: 0 }}
+    >
       <header
         className="main-library-header p-3 shrink-0 flex justify-between items-center border-b border-surface gap-4"
         onMouseEnter={() => setIsProgressHovered(true)}
