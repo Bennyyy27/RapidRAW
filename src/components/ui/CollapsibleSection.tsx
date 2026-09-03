@@ -87,7 +87,7 @@ export default function CollapsibleSection({
         onMouseLeave={handleMouseLeave}
       >
         <div className="collapsible-section-title flex items-center gap-2">
-          <Text variant={TextVariants.title} weight={TextWeights.normal}>
+          <Text variant={TextVariants.title} weight={TextWeights.normal} className="collapsible-section-title-text">
             {title}
           </Text>
           {canToggleVisibility && (

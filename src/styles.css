@@ -169,11 +169,13 @@
   }
 
   .density-compact .adjustments-toolbar {
-    min-height: 2rem;
+    min-height: 1.75rem;
+    padding: 0.25rem 0.375rem;
   }
 
-  .density-compact .adjustments-toolbar > span {
-    font-size: 0.875rem;
+  .density-compact .adjustments-toolbar-title {
+    font-size: 0.8125rem;
+    line-height: 1rem;
   }
 
   .density-compact .adjustments-toolbar button {
@@ -334,17 +336,17 @@
   }
 
   .density-compact .collapsible-section-header {
-    min-height: 1.75rem;
-    padding: 0.25rem 0.5rem;
+    min-height: 1.5rem;
+    padding: 0.1875rem 0.5rem;
   }
 
   .density-compact .collapsible-section-title {
     gap: 0.25rem;
   }
 
-  .density-compact .collapsible-section-title > span {
+  .density-compact .collapsible-section-title-text {
     font-size: 0.75rem;
-    line-height: 1rem;
+    line-height: 0.875rem;
   }
 
   .density-compact .collapsible-section-visibility {

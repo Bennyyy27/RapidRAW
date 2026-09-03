@@ -42,6 +42,8 @@
   180 px. Compact toolbar icons and section padding were reduced in the same shared density layer.
 - Compact slider rows use the full remaining panel width in label-value-track order; the track now
   stretches to the right content edge instead of reserving an unused trailing column.
+- Explicit typography hooks reduce the Develop title to 13 px and collapsible section titles to 12 px;
+  their header rows are 28 px and 24 px respectively.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export

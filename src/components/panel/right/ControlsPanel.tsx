@@ -210,7 +210,9 @@ export default function Controls() {
   return (
     <div className="flex flex-col h-full">
       <div className="adjustments-toolbar p-3 flex justify-between items-center shrink-0 border-b border-surface">
-        <Text variant={TextVariants.title}>{t('editor.adjustments.title')}</Text>
+        <Text variant={TextVariants.title} className="adjustments-toolbar-title">
+          {t('editor.adjustments.title')}
+        </Text>
         <div className="flex items-center gap-1">
           <button
             className="p-2 rounded-full hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
