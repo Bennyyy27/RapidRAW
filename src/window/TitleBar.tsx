@@ -89,14 +89,14 @@ export default function TitleBar() {
   const outerDragProps = isLinux ? {} : { 'data-tauri-drag-region': 'true' };
 
   return (
-    <div className="relative pt-2 px-2 w-full z-50 bg-transparent" {...outerDragProps}>
+    <div className="relative w-full z-50 bg-bg-secondary border-b border-surface" {...outerDragProps}>
       <div
-        className="h-10 bg-bg-secondary flex justify-between items-center select-none rounded-lg overflow-hidden"
+        className="h-8 bg-bg-secondary flex justify-between items-center select-none overflow-hidden"
         {...outerDragProps}
       >
         <div className="flex items-center h-full">
           {isMac && (
-            <div className="flex items-center h-full px-4 space-x-2 z-10">
+            <div className="flex items-center h-full px-3 space-x-2 z-10">
               <button
                 aria-label="Close window"
                 className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors duration-150"
@@ -115,7 +115,7 @@ export default function TitleBar() {
             </div>
           )}
           <div data-tauri-drag-region className={`flex items-center h-full ${isMac ? '' : 'px-4'}`}>
-            <p className="text-sm font-semibold text-text-secondary pointer-events-none">RapidRAW</p>
+            <p className="text-xs font-semibold text-text-secondary pointer-events-none">RapidRAW</p>
           </div>
         </div>
         <div data-tauri-drag-region className="flex-1 h-full" />

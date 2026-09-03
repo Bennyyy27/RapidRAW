@@ -862,7 +862,7 @@ function App() {
             className={clsx(
               'shrink-0 overflow-hidden z-50',
               !isInstantTransition && 'transition-all duration-300 ease-in-out',
-              isFullScreen ? 'max-h-0 opacity-0 pointer-events-none' : 'max-h-15 opacity-100',
+              isFullScreen ? 'max-h-0 opacity-0 pointer-events-none' : 'max-h-8 opacity-100',
             )}
           >
             {appSettings?.decorations || (!isWindowFullScreen && <TitleBar />)}
@@ -872,7 +872,7 @@ function App() {
           className={clsx(
             'flex-1 flex flex-col min-h-0',
             isLayoutReady && hasMainContent && !isInstantTransition && 'transition-all duration-300 ease-in-out',
-            [hasMainContent && (isFullScreen ? 'p-0 gap-0' : 'p-2 gap-2')],
+            [hasMainContent && 'p-0 gap-0'],
           )}
         >
           <DndContext

@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                                                            |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Verified on       | 2 September 2026                                                                                                 |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                                            |
-| Branch            | `scs/compact-ui`                                                                                                 |
-| Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                                            |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                                                    |
-| Personal remote   | Not configured; GitHub CLI is not installed                                                                      |
-| Current milestone | F1 — Compact Develop UI                                                                                          |
-| Next action       | User visually verifies the first compact slider layout, then density and remaining Develop surfaces are refined. |
+| Field             | Value                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------- |
+| Verified on       | 2 September 2026                                                                               |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                          |
+| Branch            | `scs/compact-ui`                                                                               |
+| Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                          |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                                  |
+| Personal remote   | Not configured; GitHub CLI is not installed                                                    |
+| Current milestone | F1 — Compact Develop UI                                                                        |
+| Next action       | User verifies the new flat workspace raster before navigation or Develop controls are changed. |
 
 ## Implemented fork changes
 
@@ -21,6 +21,8 @@
 - The Develop controls toolbar and scrolling content expose compact density hooks.
 - Compact CSS places label, slider track, and numeric value on one row; typography, gaps, margins, and
   panel padding are reduced.
+- A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
+  library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
   behavior changed.
 
@@ -29,6 +31,7 @@
 - `npm install`: completed; npm reported zero known vulnerabilities.
 - Touched files pass Prettier.
 - `npm run build`: passed; 2,547 modules transformed and the production frontend bundle completed.
+- The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.
 - The first native build retriggered itself during that download and produced an empty temporary
   `jxl-encoder` object; a single-job retry completed compilation. Visual application acceptance remains
