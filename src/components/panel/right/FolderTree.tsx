@@ -836,12 +836,12 @@ export default function FolderTree({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="p-3 flex justify-between items-center shrink-0 border-b border-surface">
+      <div className="folder-tree-header p-3 flex justify-between items-center shrink-0 border-b border-surface">
         <Text variant={TextVariants.title}>{t('library.folders.sourcesTitle', 'Sources')}</Text>
       </div>
 
       <div className="folder-tree-content p-2 flex flex-col flex-1 min-h-0">
-        <div className="pt-1 pb-2">
+        <div className="folder-tree-search pt-1 pb-2">
           <div className="flex items-center">
             <div className="relative flex-1 min-w-0">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />

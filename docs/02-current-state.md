@@ -24,6 +24,8 @@
 - The accepted flat workspace grid is followed by an isolated source-tree density slice: folder and
   album rows are 26 px high with 12 px text, 14 px icons, reduced nesting, and restrained selection
   rounding. No Develop controls changed in this slice.
+- A second source-tree pass reduces rows to 22 px, text to 11 px, icons to 12 px, and also compacts the
+  previously untouched Sources header, search field, section caps, content padding, and nesting.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
 - No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
