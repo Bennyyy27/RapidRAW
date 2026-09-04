@@ -117,6 +117,9 @@
   covers recursive album-membership verification.
 - Folder batch verification adds recursive RAW discovery coverage; both focused finalize-processing
   Rust tests and the production frontend build pass.
+- Compact Develop controls now fit a right panel near its collapse threshold: label/value columns and
+  the tone-mapper switch use narrower bounded widths while slider tracks consume the remaining width.
+  The production frontend build and `git diff --check` pass for this responsive-width correction.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.
