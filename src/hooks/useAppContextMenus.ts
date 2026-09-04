@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { open } from '@tauri-apps/plugin-dialog';
+import { confirm, open } from '@tauri-apps/plugin-dialog';
 import {
   Aperture,
   Check,
@@ -47,6 +47,7 @@ import {
   PencilSparkles,
   FileCheck2,
   Play,
+  Database,
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -1300,6 +1301,50 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
       const { setUI } = useUIStore.getState();
       const { albumTree, setLibrary } = useLibraryStore.getState();
 
+      const importLightroomCollections = async () => {
+        const catalog = await open({
+          multiple: false,
+          filters: [{ name: 'Lightroom Catalog', extensions: ['lrcat'] }],
+          title: 'Lightroom-Katalog auswählen',
+        });
+        if (typeof catalog !== 'string') return;
+
+        const settingsStore = useSettingsStore.getState();
+        const replacements = { ...(settingsStore.appSettings?.lightroomPathMappings ?? {}) };
+        let preview: any = await invoke('inspect_lightroom_catalog', { path: catalog, replacements });
+        for (const missingRoot of preview.missingRoots as string[]) {
+          const replacement = await open({
+            directory: true,
+            multiple: false,
+            title: `Fehlenden Lightroom-Ordner suchen: ${missingRoot}`,
+          });
+          if (typeof replacement !== 'string') return;
+          replacements[missingRoot] = replacement;
+        }
+        preview = await invoke('inspect_lightroom_catalog', { path: catalog, replacements });
+        if (preview.missingRoots.length > 0) {
+          toast.error('Nicht alle Lightroom-Ordner konnten neu zugeordnet werden.');
+          return;
+        }
+        const approved = await confirm(
+          `${preview.groupCount} Sammlungssätze und ${preview.collectionCount} Sammlungen importieren?\n\n` +
+            `${preview.matchedImageCount} Bilder gefunden · ${preview.missingImageCount} einzelne Bilder fehlen · ` +
+            `${preview.smartCollectionCount} Smart Collections werden übersprungen.`,
+          { title: preview.catalogName, kind: 'info' },
+        );
+        if (!approved) return;
+        await invoke('import_lightroom_collections', { path: catalog, replacements });
+        if (settingsStore.appSettings) {
+          await settingsStore.handleSettingsChange({
+            ...settingsStore.appSettings,
+            lightroomPathMappings: replacements,
+          });
+        }
+        const importedTree = await invoke<AlbumItem[]>(Invokes.GetAlbums);
+        setLibrary({ albumTree: importedTree });
+        toast.success('Lightroom-Sammlungen importiert.');
+      };
+
       const findParentId = (
         nodes: AlbumItem[],
         childId: string,
@@ -1411,6 +1456,16 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
       const isMoveDisabled = moveOptions.length === 0 && isAtRoot;
 
       const options: Option[] = [
+        ...(!item
+          ? [
+              {
+                label: 'Sammlungen aus Lightroom importieren…',
+                icon: Database,
+                onClick: () => void importLightroomCollections().catch((error) => toast.error(String(error))),
+              },
+              { type: OPTION_SEPARATOR },
+            ]
+          : []),
         {
           label: t('contextMenus.albums.newAlbum'),
           icon: Images,

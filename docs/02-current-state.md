@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                       |
-| ----------------- | --------------------------------------------------------------------------- |
-| Verified on       | 4 September 2026                                                            |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                       |
-| Branch            | `scs/compact-ui`                                                            |
-| Fork commit       | `HEAD` (`Keep compact sliders within narrow panels`)                        |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`               |
-| Personal remote   | Not configured; GitHub CLI is not installed                                 |
-| Current milestone | F1A — Library organization                                                  |
-| Next action       | User verifies slideshow loading, playback, navigation, and fullscreen exit. |
+| Field             | Value                                                                     |
+| ----------------- | ------------------------------------------------------------------------- |
+| Verified on       | 4 September 2026                                                          |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                     |
+| Branch            | `scs/compact-ui`                                                          |
+| Fork commit       | `HEAD` (`Add fullscreen selection slideshow`)                             |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`             |
+| Personal remote   | Not configured; GitHub CLI is not installed                               |
+| Current milestone | F1A — Library organization                                                |
+| Next action       | User verifies Lightroom preview, relinking, and imported collection tree. |
 
 ## Implemented fork changes
 
@@ -107,6 +107,11 @@
   edited 1280 px previews, decodes every selected preview before presentation, then enters native
   fullscreen. Arrow keys navigate, Space pauses or resumes the four-second loop, and Escape exits;
   filename, position, pointer controls, and a cancellable preparation state remain available.
+- The Albums section context menu can import normal collections and collection sets from a Lightroom
+  `.lrcat`. The catalog is opened read-only, Smart Collections are reported and skipped, and a summary
+  is confirmed before the imported hierarchy replaces only its own prior import group. Missing root
+  folders trigger directory relinking; those old-to-new mappings persist in RapidRAW settings. Missing
+  individual image references remain in the imported albums for later recovery instead of being lost.
 
 ## Verification evidence
 
@@ -127,6 +132,15 @@
 - The selected-image slideshow production frontend build passes with 2,548 transformed modules.
   Repository typecheck still reports only the documented upstream baseline failures and no error in
   the new slideshow component or state.
+- The Lightroom import slice compiles with Rust 1.98 and its production frontend build passes. It was
+  schema-checked against `Lightroom 5 Catalog.lrcat` (37 sets, 238 normal collections, 31,031 static
+  memberships); native end-to-end import remains for user verification.
+
+## Added dependency provenance
+
+- `rusqlite 0.40.2` and `libsqlite3-sys` are MIT-licensed; the enabled `bundled` feature embeds SQLite,
+  which is public domain. They are used only to read Lightroom SQLite catalogs without requiring a
+  platform-installed CLI. Source and license: <https://docs.rs/crate/rusqlite/0.40.2>.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.

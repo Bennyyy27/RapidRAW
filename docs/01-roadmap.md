@@ -35,7 +35,7 @@ Status values: `Not started`, `In progress`, `User verification`, `Complete`, `B
 | Slice  | Acceptance                                                                                              | Status            |
 | ------ | ------------------------------------------------------------------------------------------------------- | ----------------- |
 | F1A-S1 | Folders can be moved within the tree; albums and persisted navigation paths follow the new path safely. | User verification |
-| F1A-S2 | Lightroom catalog data can be imported with a documented compatibility and conflict policy.             | Not started       |
+| F1A-S2 | Lightroom catalog data can be imported with a documented compatibility and conflict policy.             | User verification |
 | F1A-S3 | Selected library images can be preloaded and presented as a keyboard-controlled fullscreen slideshow.   | User verification |
 
 **Exit:** Folder organization and approved Lightroom relationships survive moves, restarts, and upstream updates.

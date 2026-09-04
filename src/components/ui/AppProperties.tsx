@@ -244,6 +244,7 @@ export interface AppSettings {
   fontFamily?: string;
   folderTreeSort?: FolderTreeSort;
   finalizeArchiveRoot?: string;
+  lightroomPathMappings?: Record<string, string>;
   taggingShortcuts?: string[];
   libraryDisplayMode?: LibraryDisplayMode;
   grouping?: GroupingMode;
