@@ -46,6 +46,7 @@ import {
   Album as AlbumIcon,
   PencilSparkles,
   FileCheck2,
+  Play,
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -769,6 +770,12 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
           icon: FileCheck2,
           label: 'Finalize RAW…',
           onClick: () => void finalizeRaw(finalSelection[0]),
+        },
+        {
+          disabled: selectionCount === 0,
+          icon: Play,
+          label: `Diashow starten (${selectionCount})`,
+          onClick: () => setUI({ slideshowState: { isOpen: true, paths: finalSelection } }),
         },
         { type: OPTION_SEPARATOR },
         {

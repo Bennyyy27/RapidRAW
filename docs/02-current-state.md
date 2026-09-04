@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                           |
-| ----------------- | ------------------------------------------------------------------------------- |
-| Verified on       | 4 September 2026                                                                |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                           |
-| Branch            | `scs/compact-ui`                                                                |
-| Fork commit       | `HEAD` (`Add recursive folder finalization`)                                    |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                   |
-| Personal remote   | Not configured; GitHub CLI is not installed                                     |
-| Current milestone | F4 — Finalize RAW implementation                                                |
-| Next action       | User verifies single and recursive folder Finalize on disposable RAF copies.    |
+| Field             | Value                                                                       |
+| ----------------- | --------------------------------------------------------------------------- |
+| Verified on       | 4 September 2026                                                            |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                       |
+| Branch            | `scs/compact-ui`                                                            |
+| Fork commit       | `HEAD` (`Keep compact sliders within narrow panels`)                        |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`               |
+| Personal remote   | Not configured; GitHub CLI is not installed                                 |
+| Current milestone | F1A — Library organization                                                  |
+| Next action       | User verifies slideshow loading, playback, navigation, and fullscreen exit. |
 
 ## Implemented fork changes
 
@@ -103,6 +103,10 @@
 - A prepared journal can be resumed when a prior archive step failed, avoiding a false JPEG-collision
   dead end. If the currently edited RAW belongs to the batch, its live adjustments are exported and
   the editor switches to the resulting JPEG after successful archival.
+- The thumbnail context menu can start a slideshow for the current selection. It queues any missing
+  edited 1280 px previews, decodes every selected preview before presentation, then enters native
+  fullscreen. Arrow keys navigate, Space pauses or resumes the four-second loop, and Escape exits;
+  filename, position, pointer controls, and a cancellable preparation state remain available.
 
 ## Verification evidence
 
@@ -120,6 +124,9 @@
 - Compact Develop controls now fit a right panel near its collapse threshold: label/value columns and
   the tone-mapper switch use narrower bounded widths while slider tracks consume the remaining width.
   The production frontend build and `git diff --check` pass for this responsive-width correction.
+- The selected-image slideshow production frontend build passes with 2,548 transformed modules.
+  Repository typecheck still reports only the documented upstream baseline failures and no error in
+  the new slideshow component or state.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.

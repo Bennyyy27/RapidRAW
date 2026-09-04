@@ -36,6 +36,11 @@ interface CollageModalState {
   sourceImages: Array<Pick<ImageFile, 'path'>>;
 }
 
+interface SlideshowState {
+  isOpen: boolean;
+  paths: Array<string>;
+}
+
 interface PanoramaModalState {
   error: string | null;
   finalImageBase64: string | null;
@@ -263,6 +268,7 @@ interface UIState {
   denoiseModalState: DenoiseModalState;
   cullingModalState: CullingModalState;
   collageModalState: CollageModalState;
+  slideshowState: SlideshowState;
 
   setUI: (updater: Partial<UIState> | ((state: UIState) => Partial<UIState>)) => void;
   setPanel: (panel: Panel | null) => void;
@@ -372,6 +378,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   },
   cullingModalState: { isOpen: false, suggestions: null, progress: null, error: null, pathsToCull: [] },
   collageModalState: { isOpen: false, sourceImages: [] },
+  slideshowState: { isOpen: false, paths: [] },
 
   setUI: (updater) => set((state) => (typeof updater === 'function' ? updater(state) : updater)),
 

@@ -23,6 +23,7 @@ import SettingsPanel from './components/panel/SettingsPanel';
 import ExportPanel from './components/panel/right/ExportPanel';
 import GlobalTooltip from './components/ui/GlobalTooltip';
 import AppModals from './components/modals/AppModals';
+import Slideshow from './components/modals/Slideshow';
 
 import SidePanelArea from './components/panel/SidePanelArea';
 import { PANEL_ICONS } from './components/panel/PanelSwitcher';
@@ -1128,6 +1129,7 @@ function App() {
           handleCreateAlbumItem={handleCreateAlbumItem}
           handleRenameAlbumItem={handleRenameAlbumItem}
         />
+        <Slideshow />
         <ToastContainer
           position="bottom-right"
           autoClose={5000}
