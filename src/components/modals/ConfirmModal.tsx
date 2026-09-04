@@ -6,6 +6,7 @@ import Text from '../ui/Text';
 import { TextVariants } from '../../types/typography';
 
 interface ConfirmModalProps {
+  alternateText?: string;
   cancelText?: string;
   confirmText?: string;
   confirmVariant?: string;
@@ -13,10 +14,13 @@ interface ConfirmModalProps {
   message?: string;
   onClose(): void;
   onConfirm?(): void;
+  onCancel?(): void;
+  onAlternate?(): void;
   title?: string;
 }
 
 export default function ConfirmModal({
+  alternateText,
   cancelText,
   confirmText,
   confirmVariant = 'primary',
@@ -24,6 +28,8 @@ export default function ConfirmModal({
   message,
   onClose,
   onConfirm,
+  onCancel,
+  onAlternate,
   title,
 }: ConfirmModalProps) {
   const { t } = useTranslation();
@@ -56,6 +62,11 @@ export default function ConfirmModal({
     onClose();
   }, [onConfirm, onClose]);
 
+  const handleCancel = useCallback(() => {
+    onCancel?.();
+    onClose();
+  }, [onCancel, onClose]);
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'Enter') {
@@ -67,10 +78,10 @@ export default function ConfirmModal({
         e.preventDefault();
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
-        onClose();
+        handleCancel();
       }
     },
-    [handleConfirm, onClose],
+    [handleCancel, handleConfirm],
   );
 
   if (!isMounted) {
@@ -87,7 +98,7 @@ export default function ConfirmModal({
         transition-opacity duration-300 ease-in-out
         ${show ? 'opacity-100' : 'opacity-0'}
       `}
-      onClick={onClose}
+      onClick={handleCancel}
       role="dialog"
     >
       <div
@@ -106,12 +117,17 @@ export default function ConfirmModal({
         <div className="flex justify-end gap-3 mt-5">
           <Button
             className="bg-bg-primary shadow-transparent hover:bg-bg-primary text-white shadow-none focus:outline-hidden focus:ring-0"
-            onClick={onClose}
+            onClick={handleCancel}
             variant="ghost"
             tabIndex={0}
           >
             {resolvedCancelText}
           </Button>
+          {alternateText && onAlternate ? (
+            <Button onClick={onAlternate} variant="secondary" tabIndex={0}>
+              {alternateText}
+            </Button>
+          ) : null}
           <Button
             onClick={handleConfirm}
             variant={confirmVariant}

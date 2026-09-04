@@ -57,24 +57,24 @@ Status values: `Not started`, `In progress`, `User verification`, `Complete`, `B
 
 **Objective:** Specify the exact safe asset-replacement behavior before destructive code exists.
 
-| Slice | Acceptance                                                                                                  | Status      |
-| ----- | ----------------------------------------------------------------------------------------------------------- | ----------- |
-| F3-S1 | RapidRAW library identity, album membership, rating/tag storage, sidecars, and watcher behavior are mapped. | Not started |
-| F3-S2 | Final filename, collision, metadata, sidecar, archive, and trash policies are approved.                     | Not started |
-| F3-S3 | A journaled state machine and recovery behavior are documented and tested at domain level.                  | Not started |
-| F3-S4 | UX makes retention the default and destructive completion unmistakably explicit.                            | Not started |
+| Slice | Acceptance                                                                                                  | Status            |
+| ----- | ----------------------------------------------------------------------------------------------------------- | ----------------- |
+| F3-S1 | RapidRAW library identity, album membership, rating/tag storage, sidecars, and watcher behavior are mapped. | Complete          |
+| F3-S2 | Final filename, collision, metadata, sidecar, archive, and trash policies are approved.                     | User verification |
+| F3-S3 | A journaled state machine and recovery behavior are documented and tested at domain level.                  | In progress       |
+| F3-S4 | UX makes retention the default and destructive completion unmistakably explicit.                            | User verification |
 
 ## F4 — Finalize RAW implementation
 
 **Objective:** Deliver the end-to-end personal workflow inside RapidRAW-SCS.
 
-| Slice | Acceptance                                                                                       | Status      |
-| ----- | ------------------------------------------------------------------------------------------------ | ----------- |
-| F4-S1 | Export to a temporary JPEG and validation complete without modifying the RAW.                    | Not started |
-| F4-S2 | JPEG registration and relationship transfer are atomic or deterministically recoverable.         | Not started |
-| F4-S3 | Ratings, labels, tags, albums, metadata, and approved sidecar state are verified after transfer. | Not started |
-| F4-S4 | Keep, archive, and trash choices work; failure before verification always preserves the RAW.     | Not started |
-| F4-S5 | Restart/interruption, collision, disk-full, corrupt-export, and partial-transfer tests pass.     | Not started |
+| Slice | Acceptance                                                                                       | Status            |
+| ----- | ------------------------------------------------------------------------------------------------ | ----------------- |
+| F4-S1 | Export to a temporary JPEG and validation complete without modifying the RAW.                    | User verification |
+| F4-S2 | JPEG registration and relationship transfer are atomic or deterministically recoverable.         | User verification |
+| F4-S3 | Ratings, labels, tags, albums, metadata, and approved sidecar state are verified after transfer. | User verification |
+| F4-S4 | Keep, archive, and trash choices work; failure before verification always preserves the RAW.     | User verification |
+| F4-S5 | Restart/interruption, collision, disk-full, corrupt-export, and partial-transfer tests pass.     | Not started       |
 
 **Exit:** Benjamin can replace an edited RAW in his working library with a verified JPEG confidently.
 

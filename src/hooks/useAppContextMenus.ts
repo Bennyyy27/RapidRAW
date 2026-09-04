@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { open } from '@tauri-apps/plugin-dialog';
 import {
   Aperture,
   Check,
@@ -44,6 +45,7 @@ import {
   User,
   Album as AlbumIcon,
   PencilSparkles,
+  FileCheck2,
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -84,6 +86,93 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
     handlePasteAdjustments,
   } = useEditorActions();
   const { handleRate, handleSetColorLabel, handleTagsChanged } = useLibraryActions();
+
+  const finalizeRaw = useCallback(
+    async (path: string) => {
+      const editor = useEditorStore.getState();
+      const library = useLibraryStore.getState();
+      const { setUI } = useUIStore.getState();
+      const isCurrentEdit = editor.selectedImage?.path === path;
+      const toastId = toast.loading('Finalisiere RAW als JPEG (100 %)…');
+      try {
+        const result = await invoke<{ rawPath: string; jpegPath: string; journalPath: string }>(
+          Invokes.FinalizeRawPrepare,
+          {
+            rawPath: path,
+            currentEditAdjustments: isCurrentEdit ? editor.adjustments : null,
+            baseOriginFolders: library.rootPaths,
+          },
+        );
+        const albumTree = await invoke<AlbumItem[]>(Invokes.GetAlbums);
+        library.setLibrary({ albumTree });
+        await props.refreshAllFolderTrees();
+        await props.refreshImageList();
+        library.setLibrary({
+          multiSelectedPaths: [result.jpegPath],
+          libraryActivePath: result.jpegPath,
+          selectionAnchorPath: result.jpegPath,
+        });
+        if (isCurrentEdit) {
+          props.handleImageSelect(result.jpegPath);
+        }
+        toast.update(toastId, {
+          render: 'JPEG wurde geprüft und registriert.',
+          type: 'success',
+          isLoading: false,
+          autoClose: 2500,
+        });
+
+        const dispose = async (action: 'keep' | 'archive' | 'trash', archiveFolder: string | null = null) => {
+          try {
+            await invoke(Invokes.FinalizeRawDispose, { ...result, action, archiveFolder });
+            await props.refreshImageList();
+            toast.success(
+              action === 'trash'
+                ? 'RAW und Sidecars wurden in den Papierkorb verschoben.'
+                : action === 'archive'
+                  ? 'RAW und Sidecars wurden archiviert.'
+                  : 'RAW wurde behalten.',
+            );
+          } catch (error) {
+            toast.error(`Finalize RAW: ${error}`);
+          }
+        };
+        setUI({
+          confirmModalState: {
+            isOpen: true,
+            title: 'RAW finalisiert',
+            message: `Das geprüfte JPEG liegt unter:\n${result.jpegPath}\n\nSoll die RAW-Datei inklusive RapidRAW-Sidecars in den Papierkorb verschoben werden?`,
+            confirmText: 'RAW in Papierkorb',
+            cancelText: 'RAW behalten',
+            alternateText: 'RAW archivieren…',
+            confirmVariant: 'danger',
+            onConfirm: () => void dispose('trash'),
+            onCancel: () => void dispose('keep'),
+            onAlternate: () => {
+              void (async () => {
+                const archiveFolder = await open({
+                  directory: true,
+                  multiple: false,
+                  title: 'Archivordner auswählen',
+                });
+                if (typeof archiveFolder !== 'string') return;
+                await dispose('archive', archiveFolder);
+                setUI((state) => ({ confirmModalState: { ...state.confirmModalState, isOpen: false } }));
+              })();
+            },
+          },
+        });
+      } catch (error) {
+        toast.update(toastId, {
+          render: `Finalize RAW fehlgeschlagen: ${error}`,
+          type: 'error',
+          isLoading: false,
+          autoClose: 6000,
+        });
+      }
+    },
+    [props],
+  );
 
   const albumIcons = useMemo(
     () => [
@@ -185,6 +274,12 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
           label: t('contextMenus.editor.exportImage'),
           icon: FileInput,
           onClick: () => setPanel(Panel.Export),
+        },
+        {
+          label: 'Finalize RAW…',
+          icon: FileCheck2,
+          onClick: () => void finalizeRaw(selectedImage.path),
+          disabled: !selectedImage.isRaw,
         },
         { type: OPTION_SEPARATOR },
         { label: t('contextMenus.editor.undo'), icon: Undo, onClick: undo, disabled: !canUndo },
@@ -335,6 +430,7 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
       handleRate,
       handleSetColorLabel,
       handleTagsChanged,
+      finalizeRaw,
       showContextMenu,
       t,
     ],
@@ -553,6 +649,13 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
               { type: OPTION_SEPARATOR },
             ]
           : [{ icon: FileInput, label: exportLabel, onClick: onExportClick }, { type: OPTION_SEPARATOR }]),
+        {
+          disabled: !isSingleSelection || !imageList.find((image) => image.path === finalSelection[0])?.is_raw,
+          icon: FileCheck2,
+          label: 'Finalize RAW…',
+          onClick: () => void finalizeRaw(finalSelection[0]),
+        },
+        { type: OPTION_SEPARATOR },
         {
           disabled: !isSingleSelection,
           icon: Copy,
@@ -827,6 +930,7 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
       handleSetColorLabel,
       handleTagsChanged,
       handleResetAdjustments,
+      finalizeRaw,
       showContextMenu,
       props,
       t,

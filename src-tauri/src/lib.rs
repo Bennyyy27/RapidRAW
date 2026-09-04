@@ -19,6 +19,7 @@ mod denoising;
 mod exif_processing;
 mod export_processing;
 mod file_management;
+mod finalize_processing;
 mod focus_stacking;
 mod formats;
 mod gpu_processing;
@@ -2337,6 +2338,8 @@ pub fn run() {
             panorama_stitching::stitch_panorama,
             panorama_stitching::save_panorama,
             export_processing::export_images,
+            finalize_processing::finalize_raw_prepare,
+            finalize_processing::finalize_raw_dispose,
             export_processing::cancel_export,
             export_processing::estimate_export_sizes,
             image_processing::calculate_auto_adjustments,

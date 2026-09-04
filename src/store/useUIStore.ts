@@ -19,11 +19,15 @@ interface CollapsibleSectionsState {
 }
 
 interface ConfirmModalState {
+  alternateText?: string;
+  cancelText?: string;
   confirmText?: string;
   confirmVariant?: string;
   isOpen: boolean;
   message?: string;
   onConfirm?(): void;
+  onCancel?(): void;
+  onAlternate?(): void;
   title?: string;
 }
 

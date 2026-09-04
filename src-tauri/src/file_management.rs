@@ -924,7 +924,7 @@ pub fn add_to_album(
     Ok(())
 }
 
-fn sync_album_path_changes(
+pub(crate) fn sync_album_path_changes(
     app_handle: &AppHandle,
     renames: Option<&HashMap<String, String>>,
     deletions: Option<&HashSet<String>>,
@@ -2371,7 +2371,7 @@ pub fn duplicate_file(
     Ok(dest_path_str)
 }
 
-fn find_all_associated_files(source_image_path: &Path) -> Result<Vec<PathBuf>, String> {
+pub(crate) fn find_all_associated_files(source_image_path: &Path) -> Result<Vec<PathBuf>, String> {
     let mut associated_files = vec![source_image_path.to_path_buf()];
 
     let mut rrexif_name = source_image_path

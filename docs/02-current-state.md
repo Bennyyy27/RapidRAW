@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                                   |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| Verified on       | 4 September 2026                                                                        |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                   |
-| Branch            | `scs/compact-ui`                                                                        |
-| Fork commit       | `HEAD` (`Add safe folder tree moves`)                                                    |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                           |
-| Personal remote   | Not configured; GitHub CLI is not installed                                             |
-| Current milestone | F1A — Library organization                                                              |
-| Next action       | User verifies folder drag-and-drop using disposable test folders on the same volume.    |
+| Field             | Value                                                                           |
+| ----------------- | ------------------------------------------------------------------------------- |
+| Verified on       | 4 September 2026                                                                |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                           |
+| Branch            | `scs/compact-ui`                                                                |
+| Fork commit       | `HEAD` (`Add guarded Finalize RAW workflow`)                                    |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                   |
+| Personal remote   | Not configured; GitHub CLI is not installed                                     |
+| Current milestone | F4 — Finalize RAW implementation                                                |
+| Next action       | User verifies Finalize RAW on a disposable copy of one representative RAF file. |
 
 ## Implemented fork changes
 
@@ -80,6 +80,17 @@
   ratings, editor state, folder icons, and persisted last-folder settings before refreshing the tree.
 - Cross-volume folder moves are intentionally not supported in this first slice; no RAW decoder, GPU
   pipeline, WGSL shader, adjustment semantics, or export behavior changed.
+- `Finalize RAW…` is available for a single physical RAW from the editor or thumbnail context menu.
+  It reuses RapidRAW's production renderer at JPEG quality 100, writes to a temporary same-folder
+  path, validates JPEG format/readability/dimensions, and only then atomically places the final file.
+- Finalization transfers rating, color/user tags, embedded metadata, timestamp, album memberships,
+  and a `RapidRAW:FinalizedFrom` provenance entry. Baked adjustments are deliberately cleared on the
+  JPEG sidecar so that the rendered edit is not applied twice. Album membership is reread and checked.
+- The original remains untouched through preparation. Once the JPEG is verified, the explicit choices
+  are keep (default), archive, or trash RAW plus associated `.rrdata`/`.rrexif` sidecars. Archive
+  collisions abort before moving and partial archive moves are rolled back.
+- A same-folder journal records rendering and prepared phases. Automatic restart recovery and virtual
+  copy finalization remain F4-S5 debt; virtual copies are rejected rather than handled ambiguously.
 
 ## Verification evidence
 
@@ -88,6 +99,10 @@
 - `npm run build`: passed; 2,547 modules transformed and the production frontend bundle completed.
 - Folder move slice: `npm run build` passed (2,547 modules), Rust 1.98 `cargo check --offline` passed,
   and `git diff --check` passed on 4 September 2026.
+- Finalize RAW slice: production frontend build and Rust 1.98 `cargo check --offline` pass. Destructive
+  choices still require user verification on a disposable RAF copy before daily use.
+- `cargo test --offline finalize_processing::tests::counts_nested_album_memberships` passes and
+  covers recursive album-membership verification.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.

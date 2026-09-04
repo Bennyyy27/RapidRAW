@@ -50,6 +50,8 @@ export enum Invokes {
   DuplicateFile = 'duplicate_file',
   EstimateExportSizes = 'estimate_export_sizes',
   ExportImages = 'export_images',
+  FinalizeRawPrepare = 'finalize_raw_prepare',
+  FinalizeRawDispose = 'finalize_raw_dispose',
   FrontendLog = 'frontend_log',
   GenerateAiForegroundMask = 'generate_ai_foreground_mask',
   GenerateAiSkyMask = 'generate_ai_sky_mask',
