@@ -12,6 +12,7 @@ use crate::file_management::{
     AlbumItem, find_all_associated_files, get_albums, parse_virtual_path, sync_album_path_changes,
 };
 use crate::formats::is_raw_file;
+use walkdir::WalkDir;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -19,6 +20,24 @@ pub struct FinalizeResult {
     raw_path: String,
     jpeg_path: String,
     journal_path: String,
+}
+
+#[tauri::command]
+pub fn list_raw_files(folder_path: String) -> Result<Vec<String>, String> {
+    let folder =
+        fs::canonicalize(folder_path).map_err(|e| format!("Could not resolve folder: {e}"))?;
+    if !folder.is_dir() {
+        return Err("Path is not a folder.".to_string());
+    }
+    let mut paths = WalkDir::new(folder)
+        .follow_links(false)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file() && is_raw_file(entry.path()))
+        .map(|entry| entry.path().to_string_lossy().into_owned())
+        .collect::<Vec<_>>();
+    paths.sort();
+    Ok(paths)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -97,7 +116,21 @@ pub async fn finalize_raw_prepare(
         .and_then(|s| s.to_str())
         .ok_or_else(|| "RAW has no valid filename.".to_string())?;
     let final_path = parent.join(format!("{stem}.jpg"));
+    let journal_path = parent.join(format!(".{stem}.rapidraw-finalize.json"));
     if final_path.exists() {
+        if let Ok(data) = fs::read(&journal_path)
+            && let Ok(journal) = serde_json::from_slice::<FinalizeJournal>(&data)
+            && journal.phase == "prepared"
+            && journal.raw_path == source.to_string_lossy()
+            && journal.jpeg_path == final_path.to_string_lossy()
+        {
+            validate_jpeg(&final_path)?;
+            return Ok(FinalizeResult {
+                raw_path: journal.raw_path,
+                jpeg_path: journal.jpeg_path,
+                journal_path: journal_path.to_string_lossy().into_owned(),
+            });
+        }
         return Err(format!(
             "A finalized JPEG already exists: {}",
             final_path.display()
@@ -109,7 +142,6 @@ pub async fn finalize_raw_prepare(
         .map_err(|e| e.to_string())?
         .as_nanos();
     let temporary_path = parent.join(format!(".{stem}.finalizing-{nonce}.jpg"));
-    let journal_path = parent.join(format!(".{stem}.rapidraw-finalize.json"));
     let mut journal = FinalizeJournal {
         version: 1,
         phase: "rendering".to_string(),
@@ -349,5 +381,21 @@ mod tests {
 
         assert_eq!(album_membership_count(&albums, "/photos/a.raf"), 2);
         assert_eq!(album_membership_count(&albums, "/photos/b.raf"), 0);
+    }
+
+    #[test]
+    fn lists_raws_recursively_and_ignores_jpegs() {
+        let directory = tempfile::tempdir().unwrap();
+        let nested = directory.path().join("nested");
+        fs::create_dir(&nested).unwrap();
+        fs::write(directory.path().join("one.RAF"), b"raw").unwrap();
+        fs::write(nested.join("two.ARW"), b"raw").unwrap();
+        fs::write(nested.join("done.jpg"), b"jpeg").unwrap();
+
+        let paths = list_raw_files(directory.path().to_string_lossy().into_owned()).unwrap();
+
+        assert_eq!(paths.len(), 2);
+        assert!(paths.iter().any(|path| path.ends_with("one.RAF")));
+        assert!(paths.iter().any(|path| path.ends_with("two.ARW")));
     }
 }

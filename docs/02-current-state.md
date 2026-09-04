@@ -7,11 +7,11 @@
 | Verified on       | 4 September 2026                                                                |
 | Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                           |
 | Branch            | `scs/compact-ui`                                                                |
-| Fork commit       | `f6906506` (`Add guarded Finalize RAW workflow`), plus central archive routing  |
+| Fork commit       | `HEAD` (`Add recursive folder finalization`)                                    |
 | Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                   |
 | Personal remote   | Not configured; GitHub CLI is not installed                                     |
 | Current milestone | F4 — Finalize RAW implementation                                                |
-| Next action       | User verifies Finalize RAW on a disposable copy of one representative RAF file. |
+| Next action       | User verifies single and recursive folder Finalize on disposable RAF copies.    |
 
 ## Implemented fork changes
 
@@ -97,6 +97,12 @@
   Data.
 - Cross-volume archiving stages copies with temporary names, verifies byte lengths, atomically commits
   archive filenames, and only then removes originals. Existing targets abort before copying.
+- Folder context menus offer `Ordner finalisieren…`. The batch recursively inventories physical RAWs,
+  confirms the count, then runs each item sequentially through the complete prepare/verify/archive
+  transaction. Failures are isolated per RAW and summarized; successful JPEGs remain in place.
+- A prepared journal can be resumed when a prior archive step failed, avoiding a false JPEG-collision
+  dead end. If the currently edited RAW belongs to the batch, its live adjustments are exported and
+  the editor switches to the resulting JPEG after successful archival.
 
 ## Verification evidence
 
@@ -109,6 +115,8 @@
   choices still require user verification on a disposable RAF copy before daily use.
 - `cargo test --offline finalize_processing::tests::counts_nested_album_memberships` passes and
   covers recursive album-membership verification.
+- Folder batch verification adds recursive RAW discovery coverage; both focused finalize-processing
+  Rust tests and the production frontend build pass.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.

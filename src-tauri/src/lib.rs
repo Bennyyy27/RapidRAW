@@ -2340,6 +2340,7 @@ pub fn run() {
             export_processing::export_images,
             finalize_processing::finalize_raw_prepare,
             finalize_processing::finalize_raw_dispose,
+            finalize_processing::list_raw_files,
             export_processing::cancel_export,
             export_processing::estimate_export_sizes,
             image_processing::calculate_auto_adjustments,

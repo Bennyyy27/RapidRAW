@@ -87,6 +87,27 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
   } = useEditorActions();
   const { handleRate, handleSetColorLabel, handleTagsChanged } = useLibraryActions();
 
+  const getFinalizeArchiveRoot = useCallback(async () => {
+    const settingsStore = useSettingsStore.getState();
+    let archiveRoot = settingsStore.appSettings?.finalizeArchiveRoot;
+    if (!archiveRoot) {
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: 'Zentralen RAW-Archivordner auswählen',
+      });
+      if (typeof selected !== 'string') return null;
+      archiveRoot = selected;
+      if (settingsStore.appSettings) {
+        await settingsStore.handleSettingsChange({
+          ...settingsStore.appSettings,
+          finalizeArchiveRoot: archiveRoot,
+        });
+      }
+    }
+    return archiveRoot;
+  }, []);
+
   const finalizeRaw = useCallback(
     async (path: string) => {
       const editor = useEditorStore.getState();
@@ -155,23 +176,8 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
             onCancel: () => void dispose('keep'),
             onAlternate: () => {
               void (async () => {
-                const settingsStore = useSettingsStore.getState();
-                let archiveRoot = settingsStore.appSettings?.finalizeArchiveRoot;
-                if (!archiveRoot) {
-                  const selected = await open({
-                    directory: true,
-                    multiple: false,
-                    title: 'Zentralen RAW-Archivordner auswählen',
-                  });
-                  if (typeof selected !== 'string') return;
-                  archiveRoot = selected;
-                  if (settingsStore.appSettings) {
-                    await settingsStore.handleSettingsChange({
-                      ...settingsStore.appSettings,
-                      finalizeArchiveRoot: archiveRoot,
-                    });
-                  }
-                }
+                const archiveRoot = await getFinalizeArchiveRoot();
+                if (!archiveRoot) return;
                 await dispose('archive', archiveRoot);
                 setUI((state) => ({ confirmModalState: { ...state.confirmModalState, isOpen: false } }));
               })();
@@ -187,7 +193,100 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
         });
       }
     },
-    [props],
+    [getFinalizeArchiveRoot, props],
+  );
+
+  const finalizeFolder = useCallback(
+    async (folderPath: string) => {
+      let rawPaths: string[];
+      try {
+        rawPaths = await invoke<string[]>(Invokes.ListRawFiles, { folderPath });
+      } catch (error) {
+        toast.error(`RAW-Dateien konnten nicht ermittelt werden: ${error}`);
+        return;
+      }
+      const { setUI } = useUIStore.getState();
+      if (rawPaths.length === 0) {
+        toast.info('Dieser Ordner enthält keine RAW-Dateien.');
+        return;
+      }
+      setUI({
+        confirmModalState: {
+          isOpen: true,
+          title: 'Ordner finalisieren',
+          message: `${rawPaths.length} RAW-Datei${rawPaths.length === 1 ? '' : 'en'} werden rekursiv als JPEG 100 % finalisiert und anschließend in das zentrale RAW-Archiv verschoben. Fehlerhafte Bilder bleiben unangetastet.`,
+          confirmText: `${rawPaths.length} RAWs finalisieren`,
+          cancelText: 'Abbrechen',
+          onConfirm: () => {
+            void (async () => {
+              const archiveRoot = await getFinalizeArchiveRoot();
+              if (!archiveRoot) return;
+              const library = useLibraryStore.getState();
+              const progressToast = toast.loading(`Finalisiere 0/${rawPaths.length}…`);
+              const failures: Array<{ path: string; error: string }> = [];
+              let completed = 0;
+              let replacementForCurrentEdit: string | null = null;
+
+              for (let index = 0; index < rawPaths.length; index += 1) {
+                const rawPath = rawPaths[index];
+                toast.update(progressToast, {
+                  render: `Finalisiere ${index + 1}/${rawPaths.length}: ${rawPath.split(/[\\/]/).pop()}`,
+                });
+                try {
+                  const editor = useEditorStore.getState();
+                  const isCurrentEdit = editor.selectedImage?.path === rawPath;
+                  const result = await invoke<{ rawPath: string; jpegPath: string; journalPath: string }>(
+                    Invokes.FinalizeRawPrepare,
+                    {
+                      rawPath,
+                      currentEditAdjustments: isCurrentEdit ? editor.adjustments : null,
+                      baseOriginFolders: library.rootPaths,
+                    },
+                  );
+                  await invoke(Invokes.FinalizeRawDispose, {
+                    ...result,
+                    action: 'archive',
+                    archiveFolder: archiveRoot,
+                    baseOriginFolders: library.rootPaths,
+                  });
+                  if (isCurrentEdit) replacementForCurrentEdit = result.jpegPath;
+                  completed += 1;
+                } catch (error) {
+                  failures.push({ path: rawPath, error: String(error) });
+                }
+              }
+
+              const albumTree = await invoke<AlbumItem[]>(Invokes.GetAlbums);
+              library.setLibrary({ albumTree, multiSelectedPaths: [] });
+              await props.refreshAllFolderTrees();
+              await props.refreshImageList();
+              if (replacementForCurrentEdit) props.handleImageSelect(replacementForCurrentEdit);
+              const summary = `${completed} erfolgreich, ${failures.length} fehlgeschlagen.`;
+              toast.update(progressToast, {
+                render: summary,
+                type: failures.length === 0 ? 'success' : 'warning',
+                isLoading: false,
+                autoClose: failures.length === 0 ? 4000 : false,
+              });
+              if (failures.length > 0) {
+                setUI({
+                  confirmModalState: {
+                    isOpen: true,
+                    title: 'Ordner-Finalisierung abgeschlossen',
+                    message: `${summary}\n\n${failures
+                      .slice(0, 8)
+                      .map((failure) => `${failure.path.split(/[\\/]/).pop()}: ${failure.error}`)
+                      .join('\n')}${failures.length > 8 ? `\n… und ${failures.length - 8} weitere` : ''}`,
+                    confirmText: 'Schließen',
+                  },
+                });
+              }
+            })();
+          },
+        },
+      });
+    },
+    [getFinalizeArchiveRoot, props],
   );
 
   const albumIcons = useMemo(
@@ -1117,6 +1216,11 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
           label: t('contextMenus.folders.importImages'),
           onClick: () => props.handleImportClick(targetPath),
         },
+        {
+          icon: FileCheck2,
+          label: 'Ordner finalisieren…',
+          onClick: () => void finalizeFolder(targetPath),
+        },
         { type: OPTION_SEPARATOR },
         {
           icon: Folder,
@@ -1178,7 +1282,7 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
       ];
       showContextMenu(event.clientX, event.clientY, options);
     },
-    [props, showContextMenu, albumIcons, t],
+    [props, showContextMenu, albumIcons, finalizeFolder, t],
   );
 
   const handleAlbumTreeContextMenu = useCallback(

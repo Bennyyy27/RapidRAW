@@ -75,6 +75,7 @@ Status values: `Not started`, `In progress`, `User verification`, `Complete`, `B
 | F4-S3 | Ratings, labels, tags, albums, metadata, and approved sidecar state are verified after transfer. | User verification |
 | F4-S4 | Keep, archive, and trash choices work; failure before verification always preserves the RAW.     | User verification |
 | F4-S5 | Restart/interruption, collision, disk-full, corrupt-export, and partial-transfer tests pass.     | Not started       |
+| F4-S6 | A folder can be finalized recursively with per-image isolation, progress, and a failure report.  | User verification |
 
 **Exit:** Benjamin can replace an edited RAW in his working library with a verified JPEG confidently.
 

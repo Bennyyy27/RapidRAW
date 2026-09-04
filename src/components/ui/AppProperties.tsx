@@ -52,6 +52,7 @@ export enum Invokes {
   ExportImages = 'export_images',
   FinalizeRawPrepare = 'finalize_raw_prepare',
   FinalizeRawDispose = 'finalize_raw_dispose',
+  ListRawFiles = 'list_raw_files',
   FrontendLog = 'frontend_log',
   GenerateAiForegroundMask = 'generate_ai_foreground_mask',
   GenerateAiSkyMask = 'generate_ai_sky_mask',
