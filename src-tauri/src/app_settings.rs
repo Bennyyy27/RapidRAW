@@ -509,6 +509,8 @@ pub struct AppSettings {
     #[serde(default)]
     pub folder_tree_sort: Option<FolderTreeSort>,
     #[serde(default)]
+    pub finalize_archive_root: Option<String>,
+    #[serde(default)]
     pub library_display_mode: Option<String>,
     #[serde(default)]
     pub grouping: Option<String>,
@@ -611,6 +613,7 @@ impl Default for AppSettings {
             exif_overlay: Some("off".to_string()),
             language: Some("en".to_string()),
             folder_tree_sort: Some(FolderTreeSort::default()),
+            finalize_archive_root: None,
             library_display_mode: Some("grid".to_string()),
             grouping: Some("off".to_string()),
             require_matching_exif: Some(false),

@@ -124,7 +124,12 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
 
         const dispose = async (action: 'keep' | 'archive' | 'trash', archiveFolder: string | null = null) => {
           try {
-            await invoke(Invokes.FinalizeRawDispose, { ...result, action, archiveFolder });
+            await invoke(Invokes.FinalizeRawDispose, {
+              ...result,
+              action,
+              archiveFolder,
+              baseOriginFolders: library.rootPaths,
+            });
             await props.refreshImageList();
             toast.success(
               action === 'trash'
@@ -150,13 +155,24 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
             onCancel: () => void dispose('keep'),
             onAlternate: () => {
               void (async () => {
-                const archiveFolder = await open({
-                  directory: true,
-                  multiple: false,
-                  title: 'Archivordner auswählen',
-                });
-                if (typeof archiveFolder !== 'string') return;
-                await dispose('archive', archiveFolder);
+                const settingsStore = useSettingsStore.getState();
+                let archiveRoot = settingsStore.appSettings?.finalizeArchiveRoot;
+                if (!archiveRoot) {
+                  const selected = await open({
+                    directory: true,
+                    multiple: false,
+                    title: 'Zentralen RAW-Archivordner auswählen',
+                  });
+                  if (typeof selected !== 'string') return;
+                  archiveRoot = selected;
+                  if (settingsStore.appSettings) {
+                    await settingsStore.handleSettingsChange({
+                      ...settingsStore.appSettings,
+                      finalizeArchiveRoot: archiveRoot,
+                    });
+                  }
+                }
+                await dispose('archive', archiveRoot);
                 setUI((state) => ({ confirmModalState: { ...state.confirmModalState, isOpen: false } }));
               })();
             },

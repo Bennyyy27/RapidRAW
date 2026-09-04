@@ -226,6 +226,7 @@ pub fn finalize_raw_dispose(
     journal_path: String,
     action: String,
     archive_folder: Option<String>,
+    base_origin_folders: Vec<String>,
 ) -> Result<(), String> {
     validate_jpeg(Path::new(&jpeg_path))?;
     let raw = Path::new(&raw_path);
@@ -236,12 +237,35 @@ pub fn finalize_raw_dispose(
 
     let associated = find_all_associated_files(raw)?;
     if action == "archive" {
-        let destination =
+        let archive_root =
             archive_folder.ok_or_else(|| "Archive folder is required.".to_string())?;
-        let destination = Path::new(&destination);
-        if !destination.is_dir() {
+        let archive_root = fs::canonicalize(&archive_root)
+            .map_err(|e| format!("Could not resolve archive folder: {e}"))?;
+        if !archive_root.is_dir() {
             return Err("Archive destination is not a folder.".to_string());
         }
+
+        let canonical_raw =
+            fs::canonicalize(raw).map_err(|e| format!("Could not resolve RAW: {e}"))?;
+        let library_root = base_origin_folders
+            .iter()
+            .filter_map(|root| fs::canonicalize(root).ok())
+            .filter(|root| canonical_raw.starts_with(root))
+            .max_by_key(|root| root.components().count())
+            .ok_or_else(|| "RAW is not inside an active library root.".to_string())?;
+        let root_name = library_root
+            .file_name()
+            .ok_or_else(|| "Library root has no folder name.".to_string())?;
+        let relative_parent = canonical_raw
+            .parent()
+            .and_then(|parent| parent.strip_prefix(&library_root).ok())
+            .ok_or_else(|| {
+                "Could not determine RAW path relative to its library root.".to_string()
+            })?;
+        let destination = archive_root.join(root_name).join(relative_parent);
+        fs::create_dir_all(&destination)
+            .map_err(|e| format!("Could not create archive structure: {e}"))?;
+
         for source in &associated {
             let target = destination.join(
                 source
@@ -255,26 +279,45 @@ pub fn finalize_raw_dispose(
                 ));
             }
         }
-        let mut moved = Vec::new();
-        for source in associated {
+        let mut staged = Vec::new();
+        for source in &associated {
             let target = destination.join(source.file_name().unwrap());
-            if let Err(error) = fs::rename(&source, &target) {
-                let mut rollback_errors = Vec::new();
-                for (original, archived) in moved.into_iter().rev() {
-                    if let Err(rollback_error) = fs::rename(&archived, &original) {
-                        rollback_errors.push(rollback_error.to_string());
-                    }
+            let temporary = target.with_extension(format!(
+                "{}.rapidraw-part",
+                target
+                    .extension()
+                    .and_then(|value| value.to_str())
+                    .unwrap_or("file")
+            ));
+            if let Err(error) = fs::copy(source, &temporary) {
+                for (_, temporary, _) in staged {
+                    let _ = fs::remove_file(temporary);
                 }
-                return if rollback_errors.is_empty() {
-                    Err(format!("Archiving failed and was rolled back: {error}"))
-                } else {
-                    Err(format!(
-                        "Archiving failed and rollback was incomplete: {error}; {}",
-                        rollback_errors.join("; ")
-                    ))
-                };
+                return Err(format!(
+                    "Archiving copy failed; originals were retained: {error}"
+                ));
             }
-            moved.push((source, target));
+            let source_size = fs::metadata(source).map_err(|e| e.to_string())?.len();
+            let copied_size = fs::metadata(&temporary).map_err(|e| e.to_string())?.len();
+            if source_size != copied_size {
+                let _ = fs::remove_file(&temporary);
+                for (_, temporary, _) in staged {
+                    let _ = fs::remove_file(temporary);
+                }
+                return Err(
+                    "Archive copy verification failed; originals were retained.".to_string()
+                );
+            }
+            staged.push((source.clone(), temporary, target));
+        }
+        for (_, temporary, target) in &staged {
+            fs::rename(temporary, target)
+                .map_err(|e| format!("Could not commit archive copy: {e}"))?;
+        }
+        for (source, _, _) in &staged {
+            fs::remove_file(source).map_err(|e| {
+                format!("Archive was verified, but an original could not be removed and was retained: {e}")
+            })?;
         }
     } else if action == "trash" {
         trash::delete_all(&associated)

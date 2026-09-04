@@ -7,7 +7,7 @@
 | Verified on       | 4 September 2026                                                                |
 | Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                           |
 | Branch            | `scs/compact-ui`                                                                |
-| Fork commit       | `HEAD` (`Add guarded Finalize RAW workflow`)                                    |
+| Fork commit       | `f6906506` (`Add guarded Finalize RAW workflow`), plus central archive routing  |
 | Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                   |
 | Personal remote   | Not configured; GitHub CLI is not installed                                     |
 | Current milestone | F4 — Finalize RAW implementation                                                |
@@ -91,6 +91,12 @@
   collisions abort before moving and partial archive moves are rolled back.
 - A same-folder journal records rendering and prepared phases. Automatic restart recovery and virtual
   copy finalization remain F4-S5 debt; virtual copies are rejected rather than handled ambiguously.
+- Finalize archive placement uses one persisted central archive root. RAWs and their sidecars are
+  routed to `<archive>/<library-root-name>/<relative-source-folder>` while the finalized JPEG remains
+  in the working library. The location is selected on first use and can be changed under Settings →
+  Data.
+- Cross-volume archiving stages copies with temporary names, verifies byte lengths, atomically commits
+  archive filenames, and only then removes originals. Existing targets abort before copying.
 
 ## Verification evidence
 

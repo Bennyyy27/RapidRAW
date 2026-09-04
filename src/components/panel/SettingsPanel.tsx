@@ -18,6 +18,7 @@ import {
   Image as ImageIcon,
   Mouse,
   Touchpad,
+  Archive,
 } from 'lucide-react';
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -45,6 +46,7 @@ import Text from '../ui/Text';
 import { TextColors, TextVariants, TextWeights } from '../../types/typography';
 import { useOsPlatform } from '../../hooks/useOsPlatform';
 import { open } from '@tauri-apps/plugin-shell';
+import { open as openDirectory } from '@tauri-apps/plugin-dialog';
 import { RotateCcw } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 
@@ -840,6 +842,18 @@ export default function SettingsPanel({
       onConfirm: executeClearSidecars,
       title: t('settings.data.modals.confirmTitle'),
     });
+  };
+
+  const handleChooseFinalizeArchive = async () => {
+    const selected = await openDirectory({
+      directory: true,
+      multiple: false,
+      defaultPath: appSettings?.finalizeArchiveRoot || undefined,
+      title: 'Zentralen RAW-Archivordner auswählen',
+    });
+    if (typeof selected === 'string') {
+      await onSettingsChange({ ...appSettings, finalizeArchiveRoot: selected });
+    }
   };
 
   const executeClearAiTags = async () => {
@@ -2377,6 +2391,23 @@ export default function SettingsPanel({
                       {t('settings.data.title')}
                     </Text>
                     <div className="space-y-8">
+                      <DataActionItem
+                        buttonAction={handleChooseFinalizeArchive}
+                        buttonText={appSettings?.finalizeArchiveRoot ? 'Ändern…' : 'Auswählen…'}
+                        description={
+                          <Text as="span" variant={TextVariants.small}>
+                            RAW-Dateien werden beim Finalisieren unter Beibehaltung der Bibliotheksstruktur abgelegt.
+                            <span className="block font-mono bg-bg-primary p-2 rounded-sm mt-2 break-all border border-border-color">
+                              {appSettings?.finalizeArchiveRoot || 'Noch kein Archivordner gewählt'}
+                            </span>
+                          </Text>
+                        }
+                        icon={<Archive size={16} className="mr-2" />}
+                        isProcessing={false}
+                        message=""
+                        title="Zentrales RAW-Archiv"
+                      />
+
                       <DataActionItem
                         buttonAction={handleClearSidecars}
                         buttonText={t('settings.data.clearSidecarsButton')}
