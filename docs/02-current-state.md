@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                                      |
-| ----------------- | ------------------------------------------------------------------------------------------ |
-| Verified on       | 3 September 2026                                                                           |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                      |
-| Branch            | `scs/compact-ui`                                                                           |
-| Fork commit       | `766bdf04` (`Add compact desktop adjustment density`)                                      |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                              |
-| Personal remote   | Not configured; GitHub CLI is not installed                                                |
-| Current milestone | F1 — Compact Develop UI                                                                    |
-| Next action       | User verifies the Lightroom-style grouping of the primary controls inside the Basic panel. |
+| Field             | Value                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| Verified on       | 4 September 2026                                                                        |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                                   |
+| Branch            | `scs/compact-ui`                                                                        |
+| Fork commit       | `HEAD` (`Add safe folder tree moves`)                                                    |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`                           |
+| Personal remote   | Not configured; GitHub CLI is not installed                                             |
+| Current milestone | F1A — Library organization                                                              |
+| Next action       | User verifies folder drag-and-drop using disposable test folders on the same volume.    |
 
 ## Implemented fork changes
 
@@ -73,14 +73,21 @@
   provides the single separator between those control groups.
 - A fresh layout-first pass removes the 8 px workspace gutters and card rounding from the source,
   library/editor, adjustment, and bottom-bar regions. The custom macOS title bar is 32 px high.
-- No Rust, RAW decoder, GPU pipeline, WGSL shader, adjustment semantics, library behavior, or export
-  behavior changed.
+- Folder rows can be dragged onto another folder. The backend rejects self/descendant moves and name
+  collisions, uses an atomic same-volume rename, updates album image-path prefixes, and rolls the
+  filesystem move back if album persistence fails.
+- After a successful move, the frontend remaps current/root/pinned/expanded paths, selections,
+  ratings, editor state, folder icons, and persisted last-folder settings before refreshing the tree.
+- Cross-volume folder moves are intentionally not supported in this first slice; no RAW decoder, GPU
+  pipeline, WGSL shader, adjustment semantics, or export behavior changed.
 
 ## Verification evidence
 
 - `npm install`: completed; npm reported zero known vulnerabilities.
 - Touched files pass Prettier.
 - `npm run build`: passed; 2,547 modules transformed and the production frontend bundle completed.
+- Folder move slice: `npm run build` passed (2,547 modules), Rust 1.98 `cargo check --offline` passed,
+  and `git diff --check` passed on 4 September 2026.
 - The flat workspace raster passes `npm run build` and `git diff --check` on 3 September 2026.
 - The compact section-header and analysis-height pass passes `npm run build` and `git diff --check`.
 - Native dependencies compiled with Rust `1.98-aarch64-apple-darwin` after the first-run ONNX download.

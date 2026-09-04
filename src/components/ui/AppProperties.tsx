@@ -78,6 +78,7 @@ export enum Invokes {
   LoadPresets = 'load_presets',
   LoadSettings = 'load_settings',
   MoveFiles = 'move_files',
+  MoveFolder = 'move_folder',
   ReadExifForPaths = 'read_exif_for_paths',
   RemoveTagForPaths = 'remove_tag_for_paths',
   RenameFiles = 'rename_files',

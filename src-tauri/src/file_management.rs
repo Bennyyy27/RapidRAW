@@ -929,93 +929,92 @@ fn sync_album_path_changes(
     renames: Option<&HashMap<String, String>>,
     deletions: Option<&HashSet<String>>,
     folder_rename: Option<(&str, &str)>,
-) {
-    if let Ok(mut tree) = get_albums(app_handle.clone()) {
-        let mut changed = false;
+) -> Result<(), String> {
+    let mut tree = get_albums(app_handle.clone())?;
+    let mut changed = false;
 
-        fn process_nodes(
-            nodes: &mut [AlbumItem],
-            renames: Option<&HashMap<String, String>>,
-            deletions: Option<&HashSet<String>>,
-            folder_rename: Option<(&str, &str)>,
-            changed: &mut bool,
-        ) {
-            for node in nodes.iter_mut() {
-                match node {
-                    AlbumItem::Album { images, .. } => {
-                        let mut new_images = Vec::new();
+    fn process_nodes(
+        nodes: &mut [AlbumItem],
+        renames: Option<&HashMap<String, String>>,
+        deletions: Option<&HashSet<String>>,
+        folder_rename: Option<(&str, &str)>,
+        changed: &mut bool,
+    ) {
+        for node in nodes.iter_mut() {
+            match node {
+                AlbumItem::Album { images, .. } => {
+                    let mut new_images = Vec::new();
 
-                        for img in images.drain(..) {
-                            let mut current_img = img;
+                    for img in images.drain(..) {
+                        let mut current_img = img;
 
-                            if let Some((old_folder, new_folder)) = folder_rename {
-                                let img_path = Path::new(&current_img);
-                                let old_path = Path::new(old_folder);
-                                if let Ok(stripped) = img_path.strip_prefix(old_path) {
-                                    let new_img_path = Path::new(new_folder).join(stripped);
-                                    current_img = new_img_path.to_string_lossy().into_owned();
-                                    *changed = true;
-                                }
-                            }
-
-                            if let Some(r) = renames {
-                                if let Some(new_path) = r.get(&current_img) {
-                                    current_img = new_path.clone();
-                                    *changed = true;
-                                } else if let Some((base_path, vc_id)) =
-                                    current_img.rsplit_once("?vc=")
-                                    && let Some(new_base) = r.get(base_path)
-                                {
-                                    current_img = format!("{}?vc={}", new_base, vc_id);
-                                    *changed = true;
-                                }
-                            }
-
-                            let mut is_deleted = false;
-                            if let Some(d) = deletions {
-                                if d.contains(&current_img) {
-                                    is_deleted = true;
-                                } else {
-                                    let img_path = Path::new(&current_img);
-                                    for del_path_str in d {
-                                        let del_path = Path::new(del_path_str);
-                                        if img_path.starts_with(del_path) {
-                                            is_deleted = true;
-                                            break;
-                                        }
-
-                                        if let Some((base_path, _)) =
-                                            current_img.rsplit_once("?vc=")
-                                            && base_path == del_path_str
-                                        {
-                                            is_deleted = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if !is_deleted {
-                                new_images.push(current_img);
-                            } else {
+                        if let Some((old_folder, new_folder)) = folder_rename {
+                            let img_path = Path::new(&current_img);
+                            let old_path = Path::new(old_folder);
+                            if let Ok(stripped) = img_path.strip_prefix(old_path) {
+                                let new_img_path = Path::new(new_folder).join(stripped);
+                                current_img = new_img_path.to_string_lossy().into_owned();
                                 *changed = true;
                             }
                         }
-                        *images = new_images;
+
+                        if let Some(r) = renames {
+                            if let Some(new_path) = r.get(&current_img) {
+                                current_img = new_path.clone();
+                                *changed = true;
+                            } else if let Some((base_path, vc_id)) = current_img.rsplit_once("?vc=")
+                                && let Some(new_base) = r.get(base_path)
+                            {
+                                current_img = format!("{}?vc={}", new_base, vc_id);
+                                *changed = true;
+                            }
+                        }
+
+                        let mut is_deleted = false;
+                        if let Some(d) = deletions {
+                            if d.contains(&current_img) {
+                                is_deleted = true;
+                            } else {
+                                let img_path = Path::new(&current_img);
+                                for del_path_str in d {
+                                    let del_path = Path::new(del_path_str);
+                                    if img_path.starts_with(del_path) {
+                                        is_deleted = true;
+                                        break;
+                                    }
+
+                                    if let Some((base_path, _)) = current_img.rsplit_once("?vc=")
+                                        && base_path == del_path_str
+                                    {
+                                        is_deleted = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if !is_deleted {
+                            new_images.push(current_img);
+                        } else {
+                            *changed = true;
+                        }
                     }
-                    AlbumItem::Group { children, .. } => {
-                        process_nodes(children, renames, deletions, folder_rename, changed);
-                    }
+                    *images = new_images;
+                }
+                AlbumItem::Group { children, .. } => {
+                    process_nodes(children, renames, deletions, folder_rename, changed);
                 }
             }
         }
-
-        process_nodes(&mut tree, renames, deletions, folder_rename, &mut changed);
-
-        if changed {
-            let _ = save_albums(tree, app_handle.clone());
-        }
     }
+
+    process_nodes(&mut tree, renames, deletions, folder_rename, &mut changed);
+
+    if changed {
+        save_albums(tree, app_handle.clone())?;
+    }
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -2210,12 +2209,74 @@ pub fn rename_folder(path: String, new_name: String, app_handle: AppHandle) -> R
         fs::rename(p, &new_path).map_err(|e| e.to_string())?;
 
         let new_folder_str = new_path.to_string_lossy().into_owned();
-        sync_album_path_changes(&app_handle, None, None, Some((&path, &new_folder_str)));
+        if let Err(sync_error) =
+            sync_album_path_changes(&app_handle, None, None, Some((&path, &new_folder_str)))
+        {
+            return match fs::rename(&new_path, p) {
+                Ok(()) => Err(format!(
+                    "Album references could not be updated; the rename was rolled back: {sync_error}"
+                )),
+                Err(rollback_error) => Err(format!(
+                    "Album references could not be updated and rename rollback failed. Folder is now at '{new_folder_str}': {sync_error}; rollback: {rollback_error}"
+                )),
+            };
+        }
 
         Ok(())
     } else {
         Err("Could not determine parent directory.".to_string())
     }
+}
+
+#[tauri::command]
+pub fn move_folder(
+    source_path: String,
+    destination_folder: String,
+    app_handle: AppHandle,
+) -> Result<String, String> {
+    let source = fs::canonicalize(&source_path)
+        .map_err(|e| format!("Could not resolve source folder: {e}"))?;
+    let destination = fs::canonicalize(&destination_folder)
+        .map_err(|e| format!("Could not resolve destination folder: {e}"))?;
+
+    if !source.is_dir() || !destination.is_dir() {
+        return Err("Source and destination must both be folders.".to_string());
+    }
+    if source == destination || destination.starts_with(&source) {
+        return Err("A folder cannot be moved into itself or one of its subfolders.".to_string());
+    }
+    if source.parent() == Some(destination.as_path()) {
+        return Err("The folder is already in that location.".to_string());
+    }
+
+    let folder_name = source
+        .file_name()
+        .ok_or_else(|| "Could not determine the source folder name.".to_string())?;
+    let target = destination.join(folder_name);
+    if target.exists() {
+        return Err("A folder with that name already exists at the destination.".to_string());
+    }
+
+    fs::rename(&source, &target).map_err(|e| {
+        format!("Could not move folder. Moving between drives is not supported yet: {e}")
+    })?;
+
+    let old_path = source.to_string_lossy().into_owned();
+    let new_path = target.to_string_lossy().into_owned();
+    if let Err(sync_error) =
+        sync_album_path_changes(&app_handle, None, None, Some((&old_path, &new_path)))
+    {
+        return match fs::rename(&target, &source) {
+            Ok(()) => Err(format!(
+                "Album references could not be updated; the folder move was rolled back: {sync_error}"
+            )),
+            Err(rollback_error) => Err(format!(
+                "Album references could not be updated and rollback failed. Folder is now at '{new_path}': {sync_error}; rollback: {rollback_error}"
+            )),
+        };
+    }
+
+    Ok(new_path)
 }
 
 #[tauri::command]
@@ -2238,7 +2299,7 @@ pub fn delete_folder(path: String, app_handle: AppHandle) -> Result<(), String> 
 
     let mut deletions = HashSet::new();
     deletions.insert(path);
-    sync_album_path_changes(&app_handle, None, Some(&deletions), None);
+    let _ = sync_album_path_changes(&app_handle, None, Some(&deletions), None);
 
     Ok(())
 }
@@ -2507,7 +2568,7 @@ pub fn move_files(
         }
     }
 
-    sync_album_path_changes(&app_handle, Some(&renames), None, None);
+    let _ = sync_album_path_changes(&app_handle, Some(&renames), None, None);
 
     Ok(())
 }
@@ -3520,7 +3581,7 @@ pub fn delete_files_from_disk(paths: Vec<String>, app_handle: AppHandle) -> Resu
         }
     }
 
-    sync_album_path_changes(&app_handle, None, Some(&deletions), None);
+    let _ = sync_album_path_changes(&app_handle, None, Some(&deletions), None);
 
     Ok(())
 }
@@ -3630,7 +3691,7 @@ pub fn delete_files_with_associated(
         }
     }
 
-    sync_album_path_changes(&app_handle, None, Some(&deletions), None);
+    let _ = sync_album_path_changes(&app_handle, None, Some(&deletions), None);
 
     Ok(())
 }
@@ -4047,7 +4108,7 @@ pub fn rename_files(
         }
     }
 
-    sync_album_path_changes(&app_handle, Some(&renames), None, None);
+    let _ = sync_album_path_changes(&app_handle, Some(&renames), None, None);
 
     Ok(final_new_paths)
 }

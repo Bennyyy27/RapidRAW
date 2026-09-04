@@ -15,6 +15,7 @@ import {
   pointerWithin,
 } from '@dnd-kit/core';
 import clsx from 'clsx';
+import { Folder } from 'lucide-react';
 
 import TitleBar from './window/TitleBar';
 import FolderTree from './components/panel/right/FolderTree';
@@ -104,6 +105,20 @@ const insertChildrenIntoTree = (node: any, targetPath: string, newChildren: any[
   return node;
 };
 
+const replacePathPrefix = (value: string | null, oldPrefix: string, newPrefix: string) => {
+  if (!value || value.startsWith('Album: ')) return value;
+  if (value === oldPrefix) return newPrefix;
+  if (value.startsWith(`${oldPrefix}/`) || value.startsWith(`${oldPrefix}\\`)) {
+    return `${newPrefix}${value.slice(oldPrefix.length)}`;
+  }
+  return value;
+};
+
+const replacePathKeys = <T,>(record: Record<string, T>, oldPrefix: string, newPrefix: string) =>
+  Object.fromEntries(
+    Object.entries(record).map(([path, value]) => [replacePathPrefix(path, oldPrefix, newPrefix) ?? path, value]),
+  );
+
 const imageDragModifier: Modifier = ({ active, activatorEvent, activeNodeRect, transform }) => {
   if (active?.data?.current?.type === 'library-image' && activatorEvent && activeNodeRect) {
     const event = activatorEvent as any;
@@ -142,6 +157,7 @@ function ImageDragOverlayNode({ activeItem }: { activeItem: { path: string; path
 
 function App() {
   const [activeImageDragItem, setActiveImageDragItem] = useState<{ path: string; paths: string[] } | null>(null);
+  const [activeFolderDragItem, setActiveFolderDragItem] = useState<{ path: string; name: string } | null>(null);
 
   const { appSettings, theme, osPlatform, handleSettingsChange } = useSettingsStore(
     useShallow((state) => ({
@@ -793,12 +809,15 @@ function App() {
       const multiSelected = useLibraryStore.getState().multiSelectedPaths;
       const paths = multiSelected.includes(path) ? multiSelected : [path];
       setActiveImageDragItem({ path, paths });
+    } else if (e.active.data.current?.type === 'folder-tree-node') {
+      setActiveFolderDragItem({ path: e.active.data.current.path, name: e.active.data.current.name });
     }
   };
 
   const handleDragEnd = (e: any) => {
     setLayoutDragItem(null);
     setActiveImageDragItem(null);
+    setActiveFolderDragItem(null);
     const { active, over } = e;
 
     if (active.data.current?.type === 'layout-tab' && over?.data.current?.type === 'layout-region') {
@@ -833,6 +852,72 @@ function App() {
         .catch((err) => {
           toast.error(`Failed to add to album: ${err}`);
         });
+    }
+
+    if (active.data.current?.type === 'folder-tree-node' && over?.data.current?.type === 'folder') {
+      const sourcePath = active.data.current.path as string;
+      const destinationFolder = over.data.current.path as string;
+
+      invoke<string>(Invokes.MoveFolder, { sourcePath, destinationFolder })
+        .then(async (newPath) => {
+          const library = useLibraryStore.getState();
+          const remap = (path: string | null) => replacePathPrefix(path, sourcePath, newPath);
+          const nextCurrentFolder = remap(library.currentFolderPath);
+          const nextRatings = replacePathKeys(library.imageRatings, sourcePath, newPath);
+
+          library.setLibrary({
+            rootPaths: library.rootPaths.map((path) => remap(path) ?? path),
+            currentFolderPath: nextCurrentFolder,
+            expandedFolders: new Set([...library.expandedFolders].map((path) => remap(path) ?? path)),
+            imageList: library.imageList.map((image) => ({ ...image, path: remap(image.path) ?? image.path })),
+            imageRatings: nextRatings,
+            multiSelectedPaths: library.multiSelectedPaths.map((path) => remap(path) ?? path),
+            selectionAnchorPath: remap(library.selectionAnchorPath),
+            libraryActivePath: remap(library.libraryActivePath),
+          });
+
+          const editor = useEditorStore.getState();
+          if (editor.selectedImage) {
+            editor.setEditor({
+              selectedImage: {
+                ...editor.selectedImage,
+                path: remap(editor.selectedImage.path) ?? editor.selectedImage.path,
+              },
+            });
+          }
+
+          const currentSettings = useSettingsStore.getState().appSettings;
+          if (currentSettings) {
+            const lastFolderState = currentSettings.lastFolderState
+              ? {
+                  ...currentSettings.lastFolderState,
+                  currentFolderPath: remap(currentSettings.lastFolderState.currentFolderPath),
+                  expandedFolders: (currentSettings.lastFolderState.expandedFolders ?? []).map(
+                    (path: string) => remap(path) ?? path,
+                  ),
+                }
+              : currentSettings.lastFolderState;
+            await handleSettingsChange({
+              ...currentSettings,
+              rootFolders: (currentSettings.rootFolders ?? []).map((path) => remap(path) ?? path),
+              pinnedFolders: (currentSettings.pinnedFolders ?? []).map((path: string) => remap(path) ?? path),
+              lastRootPath: remap(currentSettings.lastRootPath),
+              lastFolderState,
+              folderIcons: replacePathKeys(currentSettings.folderIcons ?? {}, sourcePath, newPath),
+            });
+          }
+
+          const albumTree = await invoke<any>(Invokes.GetAlbums);
+          useLibraryStore.getState().setLibrary({ albumTree });
+          await refreshAllFolderTrees();
+          if (nextCurrentFolder && !nextCurrentFolder.startsWith('Album: ')) {
+            await handleSelectSubfolder(nextCurrentFolder, false, undefined, false, true);
+          } else {
+            await handleLibraryRefresh();
+          }
+          toast.success(`Moved ${active.data.current.name}`);
+        })
+        .catch((err) => toast.error(`Failed to move folder: ${err}`));
     }
   };
 
@@ -1011,6 +1096,12 @@ function App() {
                 </div>
               ) : null}
               {activeImageDragItem ? <ImageDragOverlayNode activeItem={activeImageDragItem} /> : null}
+              {activeFolderDragItem ? (
+                <div className="flex max-w-64 items-center gap-2 rounded-md border border-border-color bg-surface px-3 py-2 text-sm text-text-primary shadow-2xl">
+                  <Folder size={16} className="shrink-0" />
+                  <span className="truncate">{activeFolderDragItem.name}</span>
+                </div>
+              ) : null}
             </DragOverlay>
           </DndContext>
         </div>

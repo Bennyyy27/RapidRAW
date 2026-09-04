@@ -28,6 +28,17 @@ Status values: `Not started`, `In progress`, `User verification`, `Complete`, `B
 
 **Exit:** Benjamin accepts density and daily Develop usability on the normal desktop window size.
 
+## F1A — Library organization
+
+**Objective:** Add dependable personal library workflows without introducing a second catalog.
+
+| Slice  | Acceptance                                                                                              | Status            |
+| ------ | ------------------------------------------------------------------------------------------------------- | ----------------- |
+| F1A-S1 | Folders can be moved within the tree; albums and persisted navigation paths follow the new path safely. | User verification |
+| F1A-S2 | Lightroom catalog data can be imported with a documented compatibility and conflict policy.             | Not started       |
+
+**Exit:** Folder organization and approved Lightroom relationships survive moves, restarts, and upstream updates.
+
 ## F2 — Personal Fuji acceptance
 
 **Objective:** Establish that RapidRAW is reliable for Benjamin's actual Fujifilm workflow.

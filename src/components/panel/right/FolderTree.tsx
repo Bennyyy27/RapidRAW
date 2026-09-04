@@ -25,10 +25,10 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { invoke } from '@tauri-apps/api/core';
-import { useDroppable } from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 import Text from '../../ui/Text';
 import { TEXT_COLOR_KEYS, TextColors, TextVariants, TextWeights } from '../../../types/typography';
 import { useShallow } from 'zustand/react/shallow';
@@ -480,14 +480,44 @@ function TreeNode({
   const isSelected = node.path === selectedPath;
   const isPinned = pinnedFolders.includes(node.path);
 
-  const { setNodeRef, isOver, active } = useDroppable({
+  const {
+    setNodeRef: setDroppableRef,
+    isOver,
+    active,
+  } = useDroppable({
     id: `folder-${sectionId}-${node.path}`,
     data: { type: 'folder', path: node.path },
     disabled: isLayoutDragging,
   });
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setDraggableRef,
+    isDragging,
+  } = useDraggable({
+    id: `folder-drag-${sectionId}-${node.path}`,
+    data: { type: 'folder-tree-node', path: node.path, name: node.name },
+    disabled: isLayoutDragging,
+  });
+
+  const setNodeRef = useCallback(
+    (element: HTMLElement | null) => {
+      setDroppableRef(element);
+      setDraggableRef(element);
+    },
+    [setDroppableRef, setDraggableRef],
+  );
+
   const isImageDrag = active?.data?.current?.type === 'library-image';
-  const isDropTarget = isOver && isImageDrag;
+  const draggedFolderPath = active?.data?.current?.type === 'folder-tree-node' ? active.data.current.path : null;
+  const isInvalidFolderTarget =
+    !!draggedFolderPath &&
+    (node.path === draggedFolderPath ||
+      node.path.startsWith(`${draggedFolderPath}/`) ||
+      node.path.startsWith(`${draggedFolderPath}\\`));
+  const isFolderDrag = !!draggedFolderPath;
+  const isDropTarget = isOver && (isImageDrag || (isFolderDrag && !isInvalidFolderTarget));
 
   const handleFolderIconClick = (e: any) => {
     e.stopPropagation();
@@ -541,10 +571,13 @@ function TreeNode({
     <Text as="div" color={TextColors.primary} weight={TextWeights.medium}>
       <div
         ref={setNodeRef}
+        {...attributes}
+        {...listeners}
         className={clsx('folder-tree-row flex items-center gap-2 p-1.5 rounded-md transition-colors cursor-pointer', {
           'bg-surface': isSelected && !isDropTarget,
           'hover:bg-card-active': !isSelected && !isDropTarget,
           'bg-accent/20': isDropTarget,
+          'opacity-50': isDragging,
         })}
         onClick={handleNameClick}
         onContextMenu={(e: any) => onContextMenu(e, node.path, isPinned)}
