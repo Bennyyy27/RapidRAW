@@ -298,6 +298,7 @@ export interface ImageFile {
   is_virtual_copy: boolean;
   is_cloud_placeholder: boolean;
   is_raw: boolean;
+  is_video: boolean;
   group_id: string | null;
 }
 

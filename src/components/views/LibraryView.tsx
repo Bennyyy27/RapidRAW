@@ -119,6 +119,8 @@ export default function LibraryView({
       })),
     );
 
+  const selectionHasVideos = multiSelectedPaths.some((path) => imageList.find((item) => item.path === path)?.is_video);
+
   return (
     <div className="flex flex-row grow h-full min-h-0">
       <div className="flex-1 flex flex-col min-w-0 gap-2">
@@ -172,14 +174,18 @@ export default function LibraryView({
         {rootPaths && rootPaths.length > 0 && (
           <BottomBar
             isCopied={isCopied}
-            isCopyDisabled={multiSelectedPaths.length !== 1}
-            isExportDisabled={multiSelectedPaths.length === 0}
+            isCopyDisabled={multiSelectedPaths.length !== 1 || selectionHasVideos}
+            isExportDisabled={multiSelectedPaths.length === 0 || selectionHasVideos}
             isLibraryView={true}
             layoutMode={layoutMode}
             isPasted={isPasted}
-            isPasteDisabled={useEditorStore.getState().copiedAdjustments === null || multiSelectedPaths.length === 0}
+            isPasteDisabled={
+              useEditorStore.getState().copiedAdjustments === null ||
+              multiSelectedPaths.length === 0 ||
+              selectionHasVideos
+            }
             isRatingDisabled={multiSelectedPaths.length === 0}
-            isResetDisabled={multiSelectedPaths.length === 0}
+            isResetDisabled={multiSelectedPaths.length === 0 || selectionHasVideos}
             multiSelectedPaths={multiSelectedPaths}
             onCopy={handleCopyAdjustments}
             onExportClick={() =>

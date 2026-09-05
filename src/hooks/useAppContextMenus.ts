@@ -584,6 +584,11 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
 
       const selectionCount = finalSelection.length;
       const isSingleSelection = selectionCount === 1;
+      const selectionHasVideos = finalSelection.some(
+        (selectedPath) => imageList.find((image) => image.path === selectedPath)?.is_video,
+      );
+      const isSingleVideo =
+        isSingleSelection && imageList.find((image) => image.path === finalSelection[0])?.is_video === true;
       const isEditingThisImage = activeView === 'editor' && selectedImage?.path === path;
       const deleteLabel = t('contextMenus.thumbnail.deleteImage', { count: selectionCount });
       const exportLabel = t('contextMenus.thumbnail.exportImage', { count: selectionCount });
@@ -758,11 +763,14 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
           ? [
               {
                 disabled: !isSingleSelection,
-                icon: Edit,
-                label: t('contextMenus.editor.editImage'),
-                onClick: () => props.handleImageSelect(finalSelection[0]),
+                icon: isSingleVideo ? Play : Edit,
+                label: isSingleVideo ? 'Video abspielen' : t('contextMenus.editor.editImage'),
+                onClick: () =>
+                  isSingleVideo
+                    ? setUI({ videoPlayerState: { isOpen: true, path: finalSelection[0] } })
+                    : props.handleImageSelect(finalSelection[0]),
               },
-              { icon: FileInput, label: exportLabel, onClick: onExportClick },
+              { disabled: selectionHasVideos, icon: FileInput, label: exportLabel, onClick: onExportClick },
               { type: OPTION_SEPARATOR },
             ]
           : [{ icon: FileInput, label: exportLabel, onClick: onExportClick }, { type: OPTION_SEPARATOR }]),
@@ -773,20 +781,20 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
           onClick: () => void finalizeRaw(finalSelection[0]),
         },
         {
-          disabled: selectionCount === 0,
+          disabled: selectionCount === 0 || selectionHasVideos,
           icon: Play,
           label: `Diashow starten (${selectionCount})`,
           onClick: () => setUI({ slideshowState: { isOpen: true, paths: finalSelection } }),
         },
         { type: OPTION_SEPARATOR },
         {
-          disabled: !isSingleSelection,
+          disabled: !isSingleSelection || selectionHasVideos,
           icon: Copy,
           label: t('contextMenus.editor.copyAdjustments'),
           onClick: () => handleCopyAdjustments(finalSelection[0]),
         },
         {
-          disabled: copiedAdjustments === null,
+          disabled: copiedAdjustments === null || selectionHasVideos,
           icon: ClipboardPaste,
           label: pasteLabel,
           onClick: () => handlePasteAdjustments(finalSelection),

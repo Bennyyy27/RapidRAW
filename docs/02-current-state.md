@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                                     |
-| ----------------- | ------------------------------------------------------------------------- |
-| Verified on       | 4 September 2026                                                          |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`                     |
-| Branch            | `scs/compact-ui`                                                          |
-| Fork commit       | `HEAD` (`Add fullscreen selection slideshow`)                             |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`             |
-| Personal remote   | Not configured; GitHub CLI is not installed                               |
-| Current milestone | F1A — Library organization                                                |
-| Next action       | User verifies Lightroom preview, relinking, and imported collection tree. |
+| Field             | Value                                                              |
+| ----------------- | ------------------------------------------------------------------ |
+| Verified on       | 5 September 2026                                                   |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`              |
+| Branch            | `scs/compact-ui`                                                   |
+| Fork commit       | `HEAD` (`Add library video playback`)                              |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`      |
+| Personal remote   | Not configured; GitHub CLI is not installed                        |
+| Current milestone | F1A — Library organization                                         |
+| Next action       | User verifies playback with representative Fujifilm MP4/MOV files. |
 
 ## Implemented fork changes
 
@@ -112,6 +112,15 @@
   is confirmed before the imported hierarchy replaces only its own prior import group. Missing root
   folders trigger directory relinking; those old-to-new mappings persist in RapidRAW settings. Missing
   individual image references remain in the imported albums for later recovery instead of being lost.
+- MP4, MOV, and M4V files are now first-class library items with an explicit `is_video` media flag.
+  Folder and album views show a dedicated video tile; double-click or `Video abspielen` opens a native
+  fullscreen HTML5 player with macOS WebKit controls and Escape-to-close. Videos are excluded from
+  thumbnail generation, image grouping, Develop, slideshow, adjustment copy/paste, and image export.
+  Playback therefore uses codecs supported by the installed macOS WebKit; FFmpeg transcoding and
+  generated poster frames are intentionally not part of this first slice.
+- Direct playback uses Tauri's asset protocol for files under the user's home folder and mounted
+  volumes. The scope is limited to those user-selected media locations rather than exposing arbitrary
+  system paths.
 
 ## Verification evidence
 

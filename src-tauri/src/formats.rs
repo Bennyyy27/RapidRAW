@@ -78,6 +78,8 @@ pub const NON_RAW_EXTENSIONS: &[&str] = &[
     "pnm", "pbm", "pgm", "ppm", "pam", // Netpbm family
 ];
 
+pub const VIDEO_EXTENSIONS: &[&str] = &["mp4", "mov", "m4v"];
+
 pub fn is_raw_file<P: AsRef<Path>>(path: P) -> bool {
     let ext = match path.as_ref().extension().and_then(|s| s.to_str()) {
         Some(e) => e,
@@ -115,4 +117,42 @@ pub fn is_supported_image_file<P: AsRef<Path>>(path: P) -> bool {
     NON_RAW_EXTENSIONS
         .iter()
         .any(|non_raw_ext| non_raw_ext.eq_ignore_ascii_case(ext))
+}
+
+pub fn is_supported_video_file<P: AsRef<Path>>(path: P) -> bool {
+    let path = path.as_ref();
+    if path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.starts_with('.'))
+    {
+        return false;
+    }
+
+    path.extension()
+        .and_then(|extension| extension.to_str())
+        .is_some_and(|extension| {
+            VIDEO_EXTENSIONS
+                .iter()
+                .any(|video_extension| video_extension.eq_ignore_ascii_case(extension))
+        })
+}
+
+pub fn is_supported_media_file<P: AsRef<Path>>(path: P) -> bool {
+    is_supported_image_file(&path) || is_supported_video_file(path)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{is_supported_media_file, is_supported_video_file};
+
+    #[test]
+    fn recognizes_supported_video_extensions_case_insensitively() {
+        assert!(is_supported_video_file("clip.mp4"));
+        assert!(is_supported_video_file("clip.MOV"));
+        assert!(is_supported_video_file("clip.m4v"));
+        assert!(is_supported_media_file("clip.mov"));
+        assert!(!is_supported_video_file("clip.mkv"));
+        assert!(!is_supported_video_file(".clip.mp4"));
+    }
 }

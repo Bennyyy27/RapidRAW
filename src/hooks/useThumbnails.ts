@@ -35,6 +35,7 @@ export function useThumbnails() {
       let addedToQueue = false;
 
       visiblePaths.forEach((p) => {
+        if (/\.(mp4|mov|m4v)$/i.test(p.split('?')[0])) return;
         if (!generatedRef.current.has(p) && !pendingQueueRef.current.has(p)) {
           pendingQueueRef.current.add(p);
           addedToQueue = true;

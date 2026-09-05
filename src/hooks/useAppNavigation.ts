@@ -88,6 +88,12 @@ export function useAppNavigation({ clearThumbnailQueue, refs }: AppNavigationPro
       const { setLibrary, multiSelectedPaths } = useLibraryStore.getState();
       const { setUI } = useUIStore.getState();
 
+      const mediaFile = useLibraryStore.getState().imageList.find((item) => item.path === path);
+      if (mediaFile?.is_video) {
+        if (openInEditor) setUI({ videoPlayerState: { isOpen: true, path } });
+        return;
+      }
+
       if (openInEditor) {
         setUI({ activeView: 'editor' });
       }

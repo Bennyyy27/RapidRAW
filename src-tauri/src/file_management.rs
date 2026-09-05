@@ -31,7 +31,9 @@ use crate::PendingMetadata;
 use crate::android_integration::*;
 use crate::app_settings::*;
 use crate::exif_processing;
-use crate::formats::{is_raw_file, is_supported_image_file};
+use crate::formats::{
+    is_raw_file, is_supported_image_file, is_supported_media_file, is_supported_video_file,
+};
 use crate::gpu_processing;
 use crate::image_loader;
 use crate::image_processing::GpuContext;
@@ -289,6 +291,7 @@ pub struct ImageFile {
     is_virtual_copy: bool,
     is_cloud_placeholder: bool,
     is_raw: bool,
+    is_video: bool,
     group_id: Option<String>,
 }
 
@@ -312,7 +315,9 @@ fn assign_group_ids(files: &mut [ImageFile], settings: &crate::app_settings::App
     let candidates: Vec<Candidate> = files
         .iter()
         .enumerate()
-        .filter(|(_, file)| !file.is_virtual_copy && (group_edited_files || !file.is_edited))
+        .filter(|(_, file)| {
+            !file.is_video && !file.is_virtual_copy && (group_edited_files || !file.is_edited)
+        })
         .map(|(index, file)| {
             let (source_path, _) = parse_virtual_path(&file.path);
             let key = make_group_key(&source_path);
@@ -598,7 +603,7 @@ pub fn list_images_in_dir(path: String, app_handle: AppHandle) -> Result<Vec<Ima
                 .entry(source_filename.to_string())
                 .or_default()
                 .push(copy_id);
-        } else if is_supported_image_file(&file_name) {
+        } else if is_supported_media_file(&file_name) {
             images.push((file_name, entry_path));
         }
     }
@@ -671,6 +676,7 @@ pub fn list_images_in_dir(path: String, app_handle: AppHandle) -> Result<Vec<Ima
                     exif: None,
                     is_virtual_copy,
                     is_raw: metadata.is_raw,
+                    is_video: is_supported_video_file(&path_buf),
                     group_id: None,
                     rating: metadata.rating,
                     is_cloud_placeholder,
@@ -726,7 +732,7 @@ pub fn list_images_recursive(
                     .or_default()
                     .push(copy_id);
             }
-        } else if is_supported_image_file(entry_path.to_string_lossy().as_ref()) {
+        } else if is_supported_media_file(entry_path) {
             images.push(entry_path.to_path_buf());
         }
     }
@@ -804,6 +810,7 @@ pub fn list_images_recursive(
                     exif: None,
                     is_virtual_copy,
                     is_raw: metadata.is_raw,
+                    is_video: is_supported_video_file(&path_buf),
                     group_id: None,
                     rating: metadata.rating,
                     is_cloud_placeholder,
@@ -1074,6 +1081,7 @@ pub fn get_album_images(
                 exif: None,
                 is_virtual_copy,
                 is_raw: metadata.is_raw,
+                is_video: is_supported_video_file(&source_path),
                 group_id: None,
                 rating: metadata.rating,
                 is_cloud_placeholder,

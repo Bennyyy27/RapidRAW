@@ -7,6 +7,7 @@ import {
   SlidersHorizontal,
   CloudOff,
   Layers,
+  Film,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +43,7 @@ const ThumbnailComponent = ({
   exif,
   isCloudPlaceholder,
   groupBadgeLabel,
+  isVideo,
 }: any) => {
   const { t } = useTranslation();
   const data = useProcessStore((s) => s.thumbnails[path]);
@@ -209,7 +211,17 @@ const ThumbnailComponent = ({
           </div>
         )}
 
-        {layers.length === 0 &&
+        {isVideo && layers.length === 0 && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/30 text-text-secondary">
+            <Film size={32} strokeWidth={1.5} />
+            <span className="rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+              Video
+            </span>
+          </div>
+        )}
+
+        {!isVideo &&
+          layers.length === 0 &&
           showPlaceholder &&
           (isCloudPlaceholder ? (
             <div
@@ -472,6 +484,7 @@ const ListItemComponent = ({
   isCloudPlaceholder,
   isPrevSelected,
   isNextSelected,
+  isVideo,
 }: any) => {
   const { t } = useTranslation();
   const data = useProcessStore((s) => s.thumbnails[path]);
@@ -651,7 +664,10 @@ const ListItemComponent = ({
             </div>
           )}
 
-          {layers.length === 0 &&
+          {isVideo && layers.length === 0 && <Film size={16} className="text-text-secondary" />}
+
+          {!isVideo &&
+            layers.length === 0 &&
             showPlaceholder &&
             (isCloudPlaceholder ? (
               <div
@@ -914,6 +930,7 @@ const RowComponent = ({
                 isCloudPlaceholder={imageFile.is_cloud_placeholder}
                 isPrevSelected={isPrevSelected}
                 isNextSelected={isNextSelected}
+                isVideo={imageFile.is_video}
               />
             ) : (
               <Thumbnail
@@ -931,6 +948,7 @@ const RowComponent = ({
                 aspectRatio={thumbnailAspectRatio}
                 isCloudPlaceholder={imageFile.is_cloud_placeholder}
                 groupBadgeLabel={imageFile.group_id && groupBadgeInfo?.get(imageFile.group_id)?.label}
+                isVideo={imageFile.is_video}
               />
             )}
           </div>

@@ -41,6 +41,11 @@ interface SlideshowState {
   paths: Array<string>;
 }
 
+interface VideoPlayerState {
+  isOpen: boolean;
+  path: string | null;
+}
+
 interface PanoramaModalState {
   error: string | null;
   finalImageBase64: string | null;
@@ -269,6 +274,7 @@ interface UIState {
   cullingModalState: CullingModalState;
   collageModalState: CollageModalState;
   slideshowState: SlideshowState;
+  videoPlayerState: VideoPlayerState;
 
   setUI: (updater: Partial<UIState> | ((state: UIState) => Partial<UIState>)) => void;
   setPanel: (panel: Panel | null) => void;
@@ -379,6 +385,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   cullingModalState: { isOpen: false, suggestions: null, progress: null, error: null, pathsToCull: [] },
   collageModalState: { isOpen: false, sourceImages: [] },
   slideshowState: { isOpen: false, paths: [] },
+  videoPlayerState: { isOpen: false, path: null },
 
   setUI: (updater) => set((state) => (typeof updater === 'function' ? updater(state) : updater)),
 
