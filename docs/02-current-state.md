@@ -15,6 +15,8 @@
 
 ## Implemented fork changes
 
+- The start-page brand label is `Spiess Systems` in every bundled locale. Technical RapidRAW naming
+  and upstream attribution remain unchanged.
 - The root application carries one `density-compact` class.
 - The shared Slider component exposes stable density hooks for its container, row, label, value, and
   track.
