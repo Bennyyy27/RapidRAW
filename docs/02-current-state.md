@@ -2,16 +2,16 @@
 
 ## Handoff
 
-| Field             | Value                                                              |
-| ----------------- | ------------------------------------------------------------------ |
-| Verified on       | 27 September 2026                                                  |
-| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`              |
-| Branch            | `scs/compact-ui`                                                   |
-| Fork commit       | `HEAD` (merge of upstream `v1.6.4`, pending user runtime check)    |
-| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`      |
-| Personal remote   | Not configured; GitHub CLI is not installed                        |
-| Current milestone | F5 — Upstream maintenance                                          |
-| Next action       | Restart the already-running app and visually verify the v1.6.4 UI. |
+| Field             | Value                                                             |
+| ----------------- | ----------------------------------------------------------------- |
+| Verified on       | 27 September 2026                                                 |
+| Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`             |
+| Branch            | `scs/compact-ui`                                                  |
+| Fork commit       | `HEAD` (merge of upstream `v1.6.4`)                               |
+| Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`     |
+| Personal remote   | Not configured; GitHub CLI is not installed                       |
+| Current milestone | F5 — Upstream maintenance                                         |
+| Next action       | User visually verifies the running v1.6.4 UI and daily workflows. |
 
 ## Implemented fork changes
 
@@ -134,9 +134,11 @@
 ## Verification evidence
 
 - Upstream `v1.6.4` merge: `npm run build` passed (2,547 modules), Rust 1.98 offline `cargo check`
-  passed, and both focused Finalize RAW tests passed. `git diff --check` passed. The native launch was
-  not duplicated because an existing RapidRAW-SCS dev instance already owned port 1420; user restart
-  remains the visual acceptance step. Pre-update settings and albums were copied to
+  passed, both focused Finalize RAW tests passed, and the native application compiled and launched.
+  `git diff --check` passed. An old hot-reload instance briefly wrote its stale in-memory album tree
+  during the merge; it was stopped and the complete 2,992,526-byte pre-update `albums.json` restored.
+  The finished v1.6.4 app reread that file without changing its checksum. Pre-update settings and
+  albums remain copied to
   `/private/tmp/rapidraw-scs-pre-v1.6.4-20260926`, and Git branch
   `backup/pre-upstream-v1.6.4-20260926` preserves the complete pre-merge source state.
 - `npm install`: completed; npm reported zero known vulnerabilities.
