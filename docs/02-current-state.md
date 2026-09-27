@@ -110,10 +110,13 @@
 - A prepared journal can be resumed when a prior archive step failed, avoiding a false JPEG-collision
   dead end. If the currently edited RAW belongs to the batch, its live adjustments are exported and
   the editor switches to the resulting JPEG after successful archival.
-- The thumbnail context menu can start a slideshow for the current selection. It queues any missing
-  edited 1280 px previews, decodes every selected preview before presentation, then enters native
-  fullscreen. Arrow keys navigate, Space pauses or resumes the four-second loop, and Escape exits;
-  filename, position, pointer controls, and a cancellable preparation state remain available.
+- The thumbnail context menu can start a slideshow for the current selection. Each slide is rendered
+  from the source with persisted edits at the display's physical pixel resolution (capped at 6016 px).
+  A rolling current/previous/next-two window keeps Retina/4K output sharp without unbounded memory.
+  Arrow keys navigate, Space pauses or resumes the four-second loop, and Escape exits; filename,
+  position, pointer controls, and a cancellable render state remain available. When JPEG-preferred
+  grouping is active, slideshow selections are normalized to the group's JPEG representative before
+  rendering; migrated and newly finalized album references already point directly to that JPEG.
 - The Albums section context menu can import normal collections and collection sets from a Lightroom
   `.lrcat`. The catalog is opened read-only, Smart Collections are reported and skipped, and a summary
   is confirmed before the imported hierarchy replaces only its own prior import group. Missing root
@@ -163,6 +166,8 @@
 - The selected-image slideshow production frontend build passes with 2,548 transformed modules.
   Repository typecheck still reports only the documented upstream baseline failures and no error in
   the new slideshow component or state.
+- The screen-optimized slideshow render passes the production frontend build (2,547 modules), Rust
+  1.98 `cargo check --offline`, Prettier on the touched component, and `git diff --check`.
 - The Lightroom import slice compiles with Rust 1.98 and its production frontend build passes. It was
   schema-checked against `Lightroom 5 Catalog.lrcat` (37 sets, 238 normal collections, 31,031 static
   memberships); native end-to-end import remains for user verification.

@@ -101,3 +101,21 @@ export function expandGroupedPaths(images: ImageFile[], paths: string[], groupin
 
   return Array.from(expandedPaths);
 }
+
+export function resolvePreferredGroupedPaths(
+  images: ImageFile[],
+  paths: string[],
+  groupingMode: GroupingMode,
+): string[] {
+  if (groupingMode === 'off') return paths;
+
+  const resolved = paths.map((path) => {
+    const image = images.find((item) => item.path === path);
+    if (!image?.group_id) return path;
+
+    const variants = findGroupVariants(images, image.group_id);
+    return variants.length > 1 ? pickPrimary(variants, groupingMode).path : path;
+  });
+
+  return Array.from(new Set(resolved));
+}

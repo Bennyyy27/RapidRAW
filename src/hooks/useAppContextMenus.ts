@@ -64,6 +64,7 @@ import TaggingSubMenu from '../context/TaggingSubMenu';
 import { useEditorActions } from './useEditorActions';
 import { useLibraryActions } from './useLibraryActions';
 import { globalImageCache } from '../utils/ImageLRUCache';
+import { resolvePreferredGroupedPaths } from '../utils/imageGrouping';
 
 export interface UseAppContextMenusProps {
   handleImageSelect: (path: string) => void;
@@ -785,7 +786,11 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
           disabled: selectionCount === 0 || selectionHasVideos,
           icon: Play,
           label: `Diashow starten (${selectionCount})`,
-          onClick: () => setUI({ slideshowState: { isOpen: true, paths: finalSelection } }),
+          onClick: () => {
+            const groupingMode = appSettings?.grouping ?? 'off';
+            const slideshowPaths = resolvePreferredGroupedPaths(imageList, finalSelection, groupingMode);
+            setUI({ slideshowState: { isOpen: true, paths: slideshowPaths } });
+          },
         },
         { type: OPTION_SEPARATOR },
         {

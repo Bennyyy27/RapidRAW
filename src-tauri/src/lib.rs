@@ -1352,6 +1352,7 @@ async fn save_collage(base64_data: String, first_path_str: String) -> Result<Str
 async fn generate_preview_for_path(
     path: String,
     js_adjustments: Value,
+    target_resolution: Option<u32>,
     app_handle: tauri::AppHandle,
 ) -> Result<Response, String> {
     tokio::task::spawn_blocking(move || {
@@ -1436,6 +1437,14 @@ async fn generate_preview_for_path(
             },
             "generate_preview_for_path",
         )?;
+
+        let final_image = if let Some(target) = target_resolution
+            && final_image.width().max(final_image.height()) > target
+        {
+            final_image.resize(target, target, image::imageops::FilterType::Lanczos3)
+        } else {
+            final_image
+        };
 
         let (width, height) = final_image.dimensions();
         let rgb_pixels = final_image.to_rgb8().into_vec();

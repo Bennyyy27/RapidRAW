@@ -3,8 +3,8 @@ import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { ChevronLeft, ChevronRight, Pause, Play, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useProcessStore } from '../../store/useProcessStore';
 import { useUIStore } from '../../store/useUIStore';
+import { Invokes } from '../ui/AppProperties';
 
 const SLIDE_DURATION_MS = 4000;
 
@@ -12,19 +12,18 @@ export default function Slideshow() {
   const { slideshowState, setUI } = useUIStore(
     useShallow((state) => ({ slideshowState: state.slideshowState, setUI: state.setUI })),
   );
-  const mediumThumbnails = useProcessStore((state) => state.mediumThumbnails);
-  const [readyUrls, setReadyUrls] = useState<string[]>([]);
-  const [loadedCount, setLoadedCount] = useState(0);
+  const [readyUrls, setReadyUrls] = useState<Record<number, string>>({});
+  const [rendering, setRendering] = useState<Set<number>>(new Set());
   const [preloadError, setPreloadError] = useState<string | null>(null);
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
+  const urlsRef = useRef<Record<number, string>>({});
   const changedWindowFullscreenRef = useRef(false);
 
-  const sources = useMemo(
-    () => slideshowState.paths.map((path) => mediumThumbnails[path] || null),
-    [mediumThumbnails, slideshowState.paths],
-  );
+  const targetResolution = useMemo(() => {
+    const dpr = window.devicePixelRatio || 1;
+    return Math.min(6016, Math.ceil(Math.max(window.screen.width, window.screen.height) * dpr));
+  }, []);
 
   const close = useCallback(() => {
     setUI({ slideshowState: { isOpen: false, paths: [] } });
@@ -35,80 +34,83 @@ export default function Slideshow() {
   }, [setUI]);
 
   useEffect(() => {
-    if (!slideshowState.isOpen) return;
-
-    const missingPaths = slideshowState.paths.filter((path) => !mediumThumbnails[path]);
-    if (missingPaths.length > 0) {
-      void invoke('update_thumbnail_queue', { paths: missingPaths }).catch((error) =>
-        console.error('Failed to prepare slideshow previews:', error),
-      );
-    }
-  }, [mediumThumbnails, slideshowState.isOpen, slideshowState.paths]);
+    if (!slideshowState.isOpen || slideshowState.paths.length === 0) return;
+    const appWindow = getCurrentWindow();
+    void appWindow.isFullscreen().then(async (fullscreen) => {
+      if (!fullscreen) {
+        changedWindowFullscreenRef.current = true;
+        await appWindow.setFullscreen(true);
+      }
+    });
+  }, [slideshowState.isOpen, slideshowState.paths.length]);
 
   useEffect(() => {
-    if (!slideshowState.isOpen || sources.length === 0 || sources.some((source) => !source)) return;
-
-    let cancelled = false;
-    setLoadedCount(0);
-    setPreloadError(null);
-    setReadyUrls([]);
-    preloadedImagesRef.current = [];
-
-    Promise.all(
-      sources.map(
-        (source) =>
-          new Promise<string>((resolve, reject) => {
-            const image = new Image();
-            preloadedImagesRef.current.push(image);
-            image.onload = () => {
-              if (!cancelled) setLoadedCount((count) => count + 1);
-              resolve(source as string);
-            };
-            image.onerror = () => reject(new Error(`Could not preload ${source}`));
-            image.src = source as string;
-          }),
-      ),
-    )
-      .then(async (urls) => {
-        if (cancelled) return;
-        setReadyUrls(urls);
-        setIndex(0);
-        setIsPlaying(true);
-        const appWindow = getCurrentWindow();
-        if (!(await appWindow.isFullscreen())) {
-          changedWindowFullscreenRef.current = true;
-          await appWindow.setFullscreen(true);
+    if (!slideshowState.isOpen || slideshowState.paths.length === 0) return;
+    const count = slideshowState.paths.length;
+    const wanted = [index, (index + 1) % count, (index + 2) % count, (index - 1 + count) % count];
+    const wantedSet = new Set(wanted);
+    let pruned = false;
+    for (const [storedIndex, url] of Object.entries(urlsRef.current)) {
+      if (!wantedSet.has(Number(storedIndex))) {
+        URL.revokeObjectURL(url);
+        delete urlsRef.current[Number(storedIndex)];
+        pruned = true;
+      }
+    }
+    if (pruned) setReadyUrls({ ...urlsRef.current });
+    for (const wantedIndex of wantedSet) {
+      if (urlsRef.current[wantedIndex] || rendering.has(wantedIndex)) continue;
+      setRendering((current) => new Set(current).add(wantedIndex));
+      void (async () => {
+        try {
+          const path = slideshowState.paths[wantedIndex];
+          const metadata: any = await invoke(Invokes.LoadMetadata, { path });
+          const adjustments = metadata?.adjustments && !metadata.adjustments.is_null ? metadata.adjustments : {};
+          const bytes = await invoke<Uint8Array>(Invokes.GeneratePreviewForPath, {
+            path,
+            jsAdjustments: adjustments,
+            targetResolution,
+          });
+          const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'image/jpeg' }));
+          const image = new Image();
+          image.src = url;
+          await image.decode();
+          urlsRef.current[wantedIndex] = url;
+          setReadyUrls({ ...urlsRef.current });
+          setPreloadError(null);
+        } catch (error) {
+          console.error('Failed to render slideshow image:', error);
+          setPreloadError('Bild konnte nicht in Bildschirmauflösung gerendert werden.');
+        } finally {
+          setRendering((current) => {
+            const next = new Set(current);
+            next.delete(wantedIndex);
+            return next;
+          });
         }
-      })
-      .catch((error) => {
-        console.error('Failed to preload slideshow:', error);
-        if (!cancelled) setPreloadError('Mindestens ein Bild konnte nicht vorbereitet werden.');
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [slideshowState.isOpen, sources]);
+      })();
+    }
+  }, [index, rendering, slideshowState.isOpen, slideshowState.paths, targetResolution]);
 
   useEffect(() => {
     if (!slideshowState.isOpen) {
-      setReadyUrls([]);
-      setLoadedCount(0);
+      Object.values(urlsRef.current).forEach(URL.revokeObjectURL);
+      urlsRef.current = {};
+      setReadyUrls({});
       setPreloadError(null);
-      preloadedImagesRef.current = [];
     }
   }, [slideshowState.isOpen]);
 
   const previous = useCallback(() => {
-    setIndex((current) => (current - 1 + readyUrls.length) % readyUrls.length);
-  }, [readyUrls.length]);
+    setIndex((current) => (current - 1 + slideshowState.paths.length) % slideshowState.paths.length);
+  }, [slideshowState.paths.length]);
 
   const next = useCallback(() => {
-    setIndex((current) => (current + 1) % readyUrls.length);
-  }, [readyUrls.length]);
+    setIndex((current) => (current + 1) % slideshowState.paths.length);
+  }, [slideshowState.paths.length]);
 
   useEffect(() => {
-    if (!slideshowState.isOpen || readyUrls.length === 0) return;
+    if (!slideshowState.isOpen || slideshowState.paths.length === 0) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') close();
       else if (event.key === 'ArrowLeft') previous();
@@ -117,37 +119,39 @@ export default function Slideshow() {
         event.preventDefault();
         setIsPlaying((playing) => !playing);
       } else if (event.key === 'Home') setIndex(0);
-      else if (event.key === 'End') setIndex(readyUrls.length - 1);
+      else if (event.key === 'End') setIndex(slideshowState.paths.length - 1);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [close, next, previous, readyUrls.length, slideshowState.isOpen]);
+  }, [close, next, previous, slideshowState.isOpen, slideshowState.paths.length]);
 
   useEffect(() => {
-    if (!slideshowState.isOpen || !isPlaying || readyUrls.length < 2) return;
-    const interval = window.setInterval(next, SLIDE_DURATION_MS);
-    return () => window.clearInterval(interval);
-  }, [isPlaying, next, readyUrls.length, slideshowState.isOpen]);
+    if (!slideshowState.isOpen || !isPlaying || slideshowState.paths.length < 2) return;
+    const nextIndex = (index + 1) % slideshowState.paths.length;
+    if (!readyUrls[nextIndex]) return;
+    const timeout = window.setTimeout(next, SLIDE_DURATION_MS);
+    return () => window.clearTimeout(timeout);
+  }, [index, isPlaying, next, readyUrls, slideshowState.isOpen, slideshowState.paths.length]);
 
   if (!slideshowState.isOpen) return null;
 
-  const isReady = readyUrls.length === slideshowState.paths.length && readyUrls.length > 0;
+  const currentUrl = readyUrls[index];
   const currentPath = slideshowState.paths[index] || '';
   const filename = currentPath.split(/[\\/]/).pop() || currentPath;
 
   return (
     <div className="fixed inset-0 z-[10000] flex bg-black text-white" role="dialog" aria-label="Diashow">
-      {!isReady ? (
+      {!currentUrl ? (
         <div className="m-auto flex flex-col items-center gap-3 text-sm text-white/70">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-          <span>{preloadError || `Bilder werden vorbereitet · ${loadedCount}/${slideshowState.paths.length}`}</span>
+          <span>{preloadError || `Bild wird bildschirmoptimiert gerendert · ${targetResolution}px`}</span>
           <button className="mt-2 rounded border border-white/20 px-3 py-1 hover:bg-white/10" onClick={close}>
             Abbrechen
           </button>
         </div>
       ) : (
         <>
-          <img className="h-full w-full object-contain" src={readyUrls[index]} alt={filename} />
+          <img className="h-full w-full object-contain" src={currentUrl} alt={filename} />
           <div className="absolute inset-x-0 top-0 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent p-5">
             <span className="truncate text-sm text-white/80">{filename}</span>
             <button className="rounded p-2 hover:bg-white/10" onClick={close} aria-label="Diashow beenden">
@@ -177,7 +181,7 @@ export default function Slideshow() {
               {isPlaying ? <Pause size={18} /> : <Play size={18} />}
             </button>
             <span className="min-w-16 text-white/70">
-              {index + 1} / {readyUrls.length}
+              {index + 1} / {slideshowState.paths.length}
             </span>
           </div>
         </>
