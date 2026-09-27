@@ -122,6 +122,10 @@
 - Imported Lightroom groups expose a follow-up relink action. After a successful import, resolved
   Lightroom roots can optionally be registered as normal library folders, and an album whose every
   file is currently unreachable reports the disconnected-or-moved-folder condition explicitly.
+- Imported Lightroom groups can migrate historical collection references from RAWs to same-folder,
+  same-stem JPEGs. RapidRAW provenance is accepted as definitive; otherwise the JPEG must be at least
+  24 hours newer. Ambiguous and missing pairs remain untouched, the RAW is never deleted, a timestamped
+  `albums.json` backup is written before applying, and JPEG-preferred grouping is enabled afterward.
 - MP4, MOV, and M4V files are now first-class library items with an explicit `is_video` media flag.
   Folder and album views show a dedicated video tile; double-click or `Video abspielen` opens a native
   fullscreen HTML5 player with macOS WebKit controls and Escape-to-close. Videos are excluded from
@@ -165,6 +169,8 @@
 - The Lightroom relink follow-up passes the production frontend build and Rust 1.98 offline
   `cargo check`. The repository typecheck still reports only the documented upstream baseline errors,
   with no new error at the touched Lightroom or album-navigation lines.
+- The historical Lightroom JPEG migration passes the production frontend build, Rust 1.98 offline
+  `cargo check`, both focused Finalize RAW tests, and `git diff --check`.
 
 ## Added dependency provenance
 

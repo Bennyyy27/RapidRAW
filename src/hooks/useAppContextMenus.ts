@@ -1378,6 +1378,45 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
         toast.success('Lightroom-Sammlungen importiert.');
       };
 
+      const migrateHistoricalLightroomJpegs = async (groupId: string) => {
+        type MigrationPreview = {
+          confirmedCount: number;
+          probableCount: number;
+          ambiguousCount: number;
+          missingCount: number;
+          replacedCount: number;
+          backupPath?: string;
+        };
+        const preview = await invoke<MigrationPreview>(Invokes.MigrateHistoricalLightroomJpegs, {
+          groupId,
+          apply: false,
+        });
+        if (preview.confirmedCount + preview.probableCount === 0) {
+          toast.info(
+            `Keine sicheren Treffer. ${preview.ambiguousCount} mehrdeutig · ${preview.missingCount} ohne JPEG.`,
+          );
+          return;
+        }
+        const approved = await confirm(
+          `${preview.confirmedCount} eindeutig finalisierte und ${preview.probableCount} mindestens 24 Stunden jüngere JPEGs übernehmen?\n\n` +
+            `${preview.ambiguousCount} mehrdeutige Paare und ${preview.missingCount} RAWs ohne JPEG bleiben unverändert. RAW-Dateien werden nicht gelöscht.`,
+          { title: 'Finalisierte JPEGs zuordnen', kind: 'warning' },
+        );
+        if (!approved) return;
+        const result = await invoke<MigrationPreview>(Invokes.MigrateHistoricalLightroomJpegs, {
+          groupId,
+          apply: true,
+        });
+        const settings = useSettingsStore.getState();
+        if (settings.appSettings) {
+          await settings.handleSettingsChange({ ...settings.appSettings, grouping: 'jpeg' });
+        }
+        const importedTree = await invoke<AlbumItem[]>(Invokes.GetAlbums);
+        setLibrary({ albumTree: importedTree });
+        await props.refreshImageList();
+        toast.success(`${result.replacedCount} Sammlungsverweise auf JPEG umgestellt.`);
+      };
+
       const findParentId = (
         nodes: AlbumItem[],
         childId: string,
@@ -1491,6 +1530,12 @@ export function useAppContextMenus(props: UseAppContextMenusProps) {
       const options: Option[] = [
         ...(item?.id.startsWith('lightroom-import:')
           ? [
+              {
+                label: 'Finalisierte JPEGs zuordnen…',
+                icon: FileCheck2,
+                onClick: () =>
+                  void migrateHistoricalLightroomJpegs(item.id).catch((error) => toast.error(String(error))),
+              },
               {
                 label: 'Lightroom-Ordner neu zuordnen…',
                 icon: FolderSearch,

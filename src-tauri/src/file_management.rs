@@ -842,7 +842,7 @@ pub enum AlbumItem {
     },
 }
 
-fn get_albums_path(app_handle: &AppHandle) -> Result<PathBuf, String> {
+pub(crate) fn get_albums_path(app_handle: &AppHandle) -> Result<PathBuf, String> {
     let data_dir = app_handle
         .path()
         .app_data_dir()

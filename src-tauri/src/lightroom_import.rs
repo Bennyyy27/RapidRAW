@@ -1,11 +1,14 @@
 use std::collections::{HashMap, HashSet};
+use std::fs;
 use std::path::{Path, PathBuf};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use rusqlite::{Connection, OpenFlags};
 use serde::Serialize;
 use tauri::AppHandle;
 
-use crate::file_management::{AlbumItem, get_albums, save_albums};
+use crate::file_management::{AlbumItem, get_albums, get_albums_path, save_albums};
+use crate::formats::is_raw_file;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -18,6 +21,214 @@ pub struct LightroomImportPreview {
     smart_collection_count: usize,
     missing_roots: Vec<String>,
     resolved_roots: Vec<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoricalFinalizePreview {
+    confirmed_count: usize,
+    probable_count: usize,
+    ambiguous_count: usize,
+    missing_count: usize,
+    replaced_count: usize,
+    backup_path: Option<String>,
+}
+
+fn sibling_jpegs(raw: &Path) -> Vec<PathBuf> {
+    let Some(parent) = raw.parent() else {
+        return Vec::new();
+    };
+    let Some(stem) = raw.file_stem().and_then(|value| value.to_str()) else {
+        return Vec::new();
+    };
+    let mut matches = fs::read_dir(parent)
+        .into_iter()
+        .flatten()
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.file_stem()
+                .and_then(|value| value.to_str())
+                .is_some_and(|value| value.eq_ignore_ascii_case(stem))
+                && path
+                    .extension()
+                    .and_then(|value| value.to_str())
+                    .is_some_and(|value| {
+                        value.eq_ignore_ascii_case("jpg") || value.eq_ignore_ascii_case("jpeg")
+                    })
+        })
+        .collect::<Vec<_>>();
+    matches.sort();
+    matches
+}
+
+fn historical_replacements(
+    nodes: &[AlbumItem],
+) -> (HashMap<String, String>, usize, usize, usize, usize) {
+    fn collect(nodes: &[AlbumItem], paths: &mut HashSet<String>) {
+        for node in nodes {
+            match node {
+                AlbumItem::Album { images, .. } => paths.extend(images.iter().cloned()),
+                AlbumItem::Group { children, .. } => collect(children, paths),
+            }
+        }
+    }
+    let mut paths = HashSet::new();
+    collect(nodes, &mut paths);
+    let mut replacements = HashMap::new();
+    let (mut confirmed, mut probable, mut ambiguous, mut missing) = (0, 0, 0, 0);
+    for raw_string in paths {
+        let raw = Path::new(&raw_string);
+        if !is_raw_file(raw) {
+            continue;
+        }
+        let candidates = sibling_jpegs(raw);
+        if candidates.is_empty() {
+            missing += 1;
+            continue;
+        }
+        if candidates.len() != 1 {
+            ambiguous += 1;
+            continue;
+        }
+        let jpeg = &candidates[0];
+        let jpeg_sidecar = jpeg.with_file_name(format!(
+            "{}.rrdata",
+            jpeg.file_name().unwrap().to_string_lossy()
+        ));
+        let provenance_matches = crate::exif_processing::load_sidecar(&jpeg_sidecar)
+            .exif
+            .as_ref()
+            .and_then(|exif| exif.get("RapidRAW:FinalizedFrom"))
+            .is_some_and(|source| source == &raw_string);
+        if provenance_matches {
+            confirmed += 1;
+            replacements.insert(raw_string, jpeg.to_string_lossy().into_owned());
+            continue;
+        }
+        let one_day = std::time::Duration::from_secs(24 * 60 * 60);
+        let is_day_newer = fs::metadata(raw)
+            .and_then(|value| value.modified())
+            .ok()
+            .zip(fs::metadata(jpeg).and_then(|value| value.modified()).ok())
+            .is_some_and(|(raw_time, jpeg_time)| {
+                jpeg_time
+                    .duration_since(raw_time)
+                    .is_ok_and(|delta| delta >= one_day)
+            });
+        if is_day_newer {
+            probable += 1;
+            replacements.insert(raw_string, jpeg.to_string_lossy().into_owned());
+        } else {
+            ambiguous += 1;
+        }
+    }
+    (replacements, confirmed, probable, ambiguous, missing)
+}
+
+#[tauri::command]
+pub fn migrate_historical_lightroom_jpegs(
+    group_id: String,
+    apply: bool,
+    app_handle: AppHandle,
+) -> Result<HistoricalFinalizePreview, String> {
+    let mut albums = get_albums(app_handle.clone())?;
+    let target = albums
+        .iter()
+        .find(|item| matches!(item, AlbumItem::Group { id, .. } if id == &group_id))
+        .ok_or_else(|| "Lightroom import group was not found".to_string())?;
+    let (replacements, confirmed, probable, ambiguous, missing) =
+        historical_replacements(std::slice::from_ref(target));
+    let mut backup_path = None;
+    if apply && !replacements.is_empty() {
+        let albums_path = get_albums_path(&app_handle)?;
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|error| error.to_string())?
+            .as_secs();
+        let backup =
+            albums_path.with_file_name(format!("albums-before-jpeg-migration-{nonce}.json"));
+        fs::copy(&albums_path, &backup)
+            .map_err(|error| format!("Could not back up albums: {error}"))?;
+        fn replace(
+            nodes: &mut [AlbumItem],
+            target_id: &str,
+            replacements: &HashMap<String, String>,
+        ) {
+            for node in nodes {
+                match node {
+                    AlbumItem::Group { id, children, .. } => {
+                        if id == target_id {
+                            replace(children, "", replacements);
+                        } else if target_id.is_empty() {
+                            replace(children, "", replacements);
+                        }
+                    }
+                    AlbumItem::Album { images, .. } if target_id.is_empty() => {
+                        for image in images.iter_mut() {
+                            if let Some(replacement) = replacements.get(image) {
+                                *image = replacement.clone();
+                            }
+                        }
+                        images.sort();
+                        images.dedup();
+                    }
+                    _ => {}
+                }
+            }
+        }
+        replace(&mut albums, &group_id, &replacements);
+        if let Err(error) = save_albums(albums, app_handle.clone()) {
+            let _ = fs::copy(&backup, &albums_path);
+            return Err(format!(
+                "Album migration failed and the backup was restored: {error}"
+            ));
+        }
+        let persisted = get_albums(app_handle.clone())?;
+        let persisted_target = persisted
+            .iter()
+            .find(|item| matches!(item, AlbumItem::Group { id, .. } if id == &group_id));
+        let mut remaining = HashSet::new();
+        if let Some(target) = persisted_target.as_ref() {
+            fn collect_remaining(
+                nodes: &[AlbumItem],
+                replacements: &HashMap<String, String>,
+                remaining: &mut HashSet<String>,
+            ) {
+                for node in nodes {
+                    match node {
+                        AlbumItem::Album { images, .. } => {
+                            remaining.extend(
+                                images
+                                    .iter()
+                                    .filter(|image| replacements.contains_key(*image))
+                                    .cloned(),
+                            );
+                        }
+                        AlbumItem::Group { children, .. } => {
+                            collect_remaining(children, replacements, remaining)
+                        }
+                    }
+                }
+            }
+            collect_remaining(std::slice::from_ref(target), &replacements, &mut remaining);
+        }
+        if persisted_target.is_none() || !remaining.is_empty() {
+            fs::copy(&backup, &albums_path).map_err(|error| {
+                format!("Migration verification and backup restore failed: {error}")
+            })?;
+            return Err("Album migration verification failed; the backup was restored".to_string());
+        }
+        backup_path = Some(backup.to_string_lossy().into_owned());
+    }
+    Ok(HistoricalFinalizePreview {
+        confirmed_count: confirmed,
+        probable_count: probable,
+        ambiguous_count: ambiguous,
+        missing_count: missing,
+        replaced_count: if apply { replacements.len() } else { 0 },
+        backup_path,
+    })
 }
 
 #[derive(Clone)]

@@ -2244,6 +2244,7 @@ pub fn run() {
             file_management::get_album_images,
             lightroom_import::inspect_lightroom_catalog,
             lightroom_import::import_lightroom_collections,
+            lightroom_import::migrate_historical_lightroom_jpegs,
             tagging::start_background_indexing,
             tagging::clear_ai_tags,
             tagging::clear_all_tags,
