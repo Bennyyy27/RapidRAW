@@ -2,8 +2,8 @@
   "adjustments": {
     "basic": {
       "blacks": "Neri",
+      "brightness": "Luminosità",
       "contrast": "Contrasto",
-      "evShift": "Compensazione EV",
       "exposure": "Esposizione",
       "highlights": "Luci",
       "mappers": {
@@ -563,6 +563,8 @@
       "savesTo": "Modifica esterna — salva in"
     },
     "guided": {
+      "cancel": "Annulla",
+      "drawingActive": "Disegno attivo",
       "hint": "Disegna lungo i bordi della tua foto che dovrebbero essere verticali o orizzontali.",
       "linesStatus": "Linee guida attive",
       "toast": {
@@ -805,6 +807,12 @@
       "mb": "MB",
       "tb": "TB"
     },
+    "destination": {
+      "customFolder": "Cartella personalizzata",
+      "originalFolder": "Cartella dell'immagine originale",
+      "subfolder": "Sottocartella",
+      "subfolderPlaceholder": "es. final, WebP"
+    },
     "dialog": {
       "saveEditedImageTitle": "Salva Immagine Modificata",
       "selectFolderTitle": "Seleziona Cartella per Esportare {{count}} Immagine(i)",
@@ -814,7 +822,10 @@
     },
     "file": {
       "quality": "Qualità",
-      "qualityLossless": "Qualità (Senza Perdita)"
+      "qualityLossless": "Qualità (Senza Perdita)",
+      "tiffBitDepth": "Profondità bit TIFF",
+      "tiffBitDepth16": "16 bit",
+      "tiffBitDepth8": "8 bit"
     },
     "labels": {
       "image": "Immagine",
@@ -839,6 +850,7 @@
     },
     "sections": {
       "advanced": "Avanzate",
+      "destination": "Destinazione",
       "fileNaming": "Nomenclatura File",
       "fileSettings": "Impostazioni File",
       "imageSizing": "Dimensionamento Immagine",
@@ -978,6 +990,9 @@
         "clearSearch": "Cancella ricerca",
         "collapse": "Comprimi",
         "expand": "Espandi",
+        "moreOptions": "Opzioni",
+        "navBack": "Indietro",
+        "navForward": "Avanti",
         "sortFolders": "Ordina cartelle"
       }
     },
@@ -1098,6 +1113,7 @@
     },
     "thumbnailFit": {
       "fillSquare": "Riempi Quadrato",
+      "justified": "Mosaico",
       "originalRatio": "Proporzioni Originali"
     },
     "thumbnailSize": {
@@ -1450,6 +1466,7 @@
       "cancel": "Annulla",
       "compareTooltip": "Tieni premuto per confrontare",
       "distortion": "Distorsione",
+      "geometry": "Geometria",
       "guided": "Prospettiva guidata",
       "horizontal": "Orizzontale",
       "manual": "Trasformazione manuale",
@@ -1499,6 +1516,9 @@
       "speed": "Velocità",
       "title": "Controlli Mouse",
       "zoom": "Moltiplicatore Velocità Zoom",
+      "zoomClick": "Zoom foto al 100%",
+      "zoomClickDesc": "Zoom della foto nell'editor al 100% al clic",
+      "zoomClickInfo": "Fai clic sulla foto per ingrandirla istantaneamente al 100% (pixel 1:1) per valutare nitidezza e rumore. Se disabilitato, il clic ingrandisce gradualmente.",
       "zoomDesc": "Regola la velocità dello zoom dell'area di lavoro quando utilizzi la rotellina di scorrimento o il gesto del pizzico."
     },
     "data": {
@@ -1566,6 +1586,7 @@
       "displayEditIcon": "Mostra Icona Modifica",
       "displayEditIconDesc": "Mostra una piccola icona del cursore sulle miniature che sono state modificate.",
       "enableFocusMode": "Abilita Modalità Focus",
+      "enableNeutralGreyCanvas": "Abilita sfondo grigio neutro",
       "enableOsTitlebar": "Abilita Barra del Titolo di Sistema",
       "enableXmpSync": "Abilita Sincronizzazione XMP",
       "focusMode": "Modalità Focus",
@@ -1576,6 +1597,8 @@
       "fontDesc": "Cambia il tipo di carattere dell'applicazione.",
       "nativeTitlebar": "Barra del Titolo Nativa",
       "nativeTitlebarDesc": "Usa la barra del titolo della finestra predefinita del tuo sistema invece di quella personalizzata di RapidRAW.",
+      "neutralGreyCanvas": "Tela grigio neutro",
+      "neutralGreyCanvasDesc": "Usa una tela grigio neutro per una correzione del colore e dell'esposizione più precisa senza cambiare il tema dell'app.",
       "poppins": "Poppins",
       "showImageCounts": "Mostra Conteggi Immagini",
       "system": "Predefinito di Sistema",

@@ -266,7 +266,7 @@ function App() {
   const [libraryViewMode, setLibraryViewMode] = useState<LibraryViewMode>(defaultLibraryViewMode);
   const [isResizing, setIsResizing] = useState(false);
   const [thumbnailSize, setThumbnailSize] = useState(defaultThumbnailSize);
-  const [thumbnailAspectRatio, setThumbnailAspectRatio] = useState(ThumbnailAspectRatio.Cover);
+  const [thumbnailAspectRatio, setThumbnailAspectRatio] = useState(ThumbnailAspectRatio.Contain);
 
   const { requestThumbnails, clearThumbnailQueue, markGenerated } = useThumbnails();
 
@@ -365,6 +365,8 @@ function App() {
     handleSelectSubfolder,
     handleSelectAlbum,
     handleOpenFolder,
+    handleNavBack,
+    handleNavForward,
     handleContinueSession,
   } = useAppNavigation({
     clearThumbnailQueue,
@@ -473,23 +475,6 @@ function App() {
 
   useAndroidBackHandler();
 
-  const handleToggleFullScreen = useCallback(() => {
-    const { zoom, selectedImage } = useEditorStore.getState();
-    const currentlyZoomed = zoom > 1.01;
-    setUI({ isInstantTransition: currentlyZoomed });
-
-    if (isFullScreen) {
-      setUI({ isFullScreen: false });
-    } else {
-      if (!selectedImage) return;
-      setUI({ isFullScreen: true });
-    }
-
-    if (currentlyZoomed) {
-      setTimeout(() => setUI({ isInstantTransition: false }), 100);
-    }
-  }, [isFullScreen, setUI]);
-
   useKeyboardShortcuts({
     sortedImageList,
     handleBackToLibrary,
@@ -497,7 +482,6 @@ function App() {
     handleGoHome,
     handleImageSelect,
     handlePasteFiles,
-    handleToggleFullScreen,
     handleZoomChange,
   });
 
@@ -546,6 +530,16 @@ function App() {
       setEditor({ isMaskControlHovered: false });
     }
   }, [activePanel, activeMaskContainerId, activeAiPatchContainerId, setEditor]);
+
+  useEffect(() => {
+    setEditor({
+      isWbPickerActive: false,
+      isStraightenActive: false,
+      isGuidedPerspectiveActive: false,
+      activeMaskId: null,
+      activeAiSubMaskId: null,
+    });
+  }, [activePanel, activeView, setEditor]);
 
   useEffect(() => {
     const unlisten = listen('ai-connector-status-update', (event: any) => {
@@ -685,9 +679,8 @@ function App() {
   const handlePanelSelect = useCallback(
     (panelId: Panel) => {
       setPanel(panelId);
-      setEditor({ activeMaskId: null, activeAiSubMaskId: null, isWbPickerActive: false });
     },
-    [setPanel, setEditor],
+    [setPanel],
   );
 
   const handleToggleFolder = useCallback(
@@ -731,10 +724,14 @@ function App() {
               isResizing={isResizing}
               onContextMenu={handleFolderTreeContextMenu}
               onAlbumContextMenu={handleAlbumTreeContextMenu}
-              onSelectAlbum={handleSelectAlbum}
-              onFolderSelect={(path) => handleSelectSubfolder(path, false)}
+              onSelectAlbum={(id, name, images, skipHistory) => handleSelectAlbum(id, name, images, false, skipHistory)}
+              onFolderSelect={(path, skipHistory) =>
+                handleSelectSubfolder(path, false, undefined, true, false, skipHistory)
+              }
               onToggleFolder={handleToggleFolder}
               onOpenFolder={handleOpenFolder}
+              onNavBack={handleNavBack}
+              onNavForward={handleNavForward}
               style={{ width: '100%', height: '100%' }}
               isInstantTransition={isInstantTransition}
             />
@@ -779,6 +776,8 @@ function App() {
       handleSelectSubfolder,
       handleToggleFolder,
       handleOpenFolder,
+      handleNavBack,
+      handleNavForward,
       setUI,
       isInstantTransition,
       exportState,

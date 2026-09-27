@@ -4,17 +4,21 @@
 
 | Field             | Value                                                              |
 | ----------------- | ------------------------------------------------------------------ |
-| Verified on       | 5 September 2026                                                   |
+| Verified on       | 27 September 2026                                                  |
 | Repository        | `/Users/benjaminspiess/Documents/GitHub/RapidRAW-SCS`              |
 | Branch            | `scs/compact-ui`                                                   |
-| Fork commit       | `HEAD` (`Add library video playback`)                              |
+| Fork commit       | `HEAD` (merge of upstream `v1.6.4`, pending user runtime check)    |
 | Upstream remote   | `https://github.com/CyberTimon/RapidRAW.git` named `upstream`      |
 | Personal remote   | Not configured; GitHub CLI is not installed                        |
-| Current milestone | F1A — Library organization                                         |
-| Next action       | User verifies playback with representative Fujifilm MP4/MOV files. |
+| Current milestone | F5 — Upstream maintenance                                          |
+| Next action       | Restart the already-running app and visually verify the v1.6.4 UI. |
 
 ## Implemented fork changes
 
+- Official RapidRAW `v1.6.4` is integrated as the first reviewed upstream update. Its revised
+  exposure/brightness semantics, RAW highlight and color handling, masonry library layout, navigation
+  history, TIFF export, crop changes, and maintenance fixes are retained alongside the SCS compact UI,
+  Finalize RAW, Lightroom import, slideshow, folder moves, and video support.
 - The start-page brand label is `Spiess Systems` in every bundled locale. Technical RapidRAW naming
   and upstream attribution remain unchanged.
 - The root application carries one `density-compact` class.
@@ -129,6 +133,12 @@
 
 ## Verification evidence
 
+- Upstream `v1.6.4` merge: `npm run build` passed (2,547 modules), Rust 1.98 offline `cargo check`
+  passed, and both focused Finalize RAW tests passed. `git diff --check` passed. The native launch was
+  not duplicated because an existing RapidRAW-SCS dev instance already owned port 1420; user restart
+  remains the visual acceptance step. Pre-update settings and albums were copied to
+  `/private/tmp/rapidraw-scs-pre-v1.6.4-20260926`, and Git branch
+  `backup/pre-upstream-v1.6.4-20260926` preserves the complete pre-merge source state.
 - `npm install`: completed; npm reported zero known vulnerabilities.
 - Touched files pass Prettier.
 - `npm run build`: passed; 2,547 modules transformed and the production frontend bundle completed.

@@ -44,6 +44,7 @@ const ThumbnailComponent = ({
   isCloudPlaceholder,
   groupBadgeLabel,
   isVideo,
+  onAspectRatioLoaded,
 }: any) => {
   const { t } = useTranslation();
   const data = useProcessStore((s) => s.thumbnails[path]);
@@ -170,7 +171,7 @@ const ThumbnailComponent = ({
       {...listeners}
       {...attributes}
       className={clsx(
-        'aspect-square bg-surface rounded-md overflow-hidden cursor-pointer group relative flex flex-col transition-all duration-150 transform-gpu [-webkit-mask-image:-webkit-radial-gradient(white,black)]',
+        'w-full h-full bg-surface rounded-md overflow-hidden cursor-pointer group relative flex flex-col transition-all duration-150 transform-gpu [-webkit-mask-image:-webkit-radial-gradient(white,black)]',
         isDragging && 'opacity-50 ring-2 ring-accent z-50',
       )}
       data-bench-id="thumbnail"
@@ -204,7 +205,15 @@ const ThumbnailComponent = ({
                   decoding="async"
                   loading="lazy"
                   src={layer.url}
-                  onLoad={() => onLoad(path)}
+                  onLoad={(e: any) => {
+                    onLoad(path);
+                    if (thumbnailAspectRatio === ThumbnailAspectRatio.Justified && onAspectRatioLoaded) {
+                      const img = e.target as HTMLImageElement;
+                      if (img.naturalWidth && img.naturalHeight) {
+                        onAspectRatioLoaded(path, img.naturalWidth / img.naturalHeight);
+                      }
+                    }
+                  }}
                 />
               </div>
             ))}
@@ -652,7 +661,7 @@ const ListItemComponent = ({
                   <img
                     alt={baseName}
                     className={`w-full h-full relative ${
-                      thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
+                      thumbnailAspectRatio === ThumbnailAspectRatio.Cover ? 'object-cover' : 'object-contain'
                     }`}
                     decoding="async"
                     loading="lazy"
@@ -797,6 +806,7 @@ const RowComponent = ({
   queueThumbnailRequest,
   onToggleRecursiveFolder,
   groupBadgeInfo,
+  onAspectRatioLoaded,
 }: any) => {
   const { t } = useTranslation();
   const row = rows[index];
@@ -888,7 +898,7 @@ const RowComponent = ({
         boxSizing: 'border-box',
       }}
     >
-      {row.images.map((imageFile: ImageFile) => {
+      {row.images.map((imageFile: ImageFile, imageIndex: number) => {
         let isPrevSelected = false;
         let isNextSelected = false;
 
@@ -904,12 +914,14 @@ const RowComponent = ({
           }
         }
 
+        const currentItemWidth = row.justifiedWidths ? row.justifiedWidths[imageIndex] : itemWidth;
+
         return (
           <div
             key={imageFile.path}
             style={{
-              width: isListView ? '100%' : itemWidth,
-              height: itemHeight,
+              width: isListView ? '100%' : currentItemWidth,
+              height: isListView ? itemHeight : row.rowHeight || itemHeight,
             }}
           >
             {isListView ? (
@@ -949,6 +961,7 @@ const RowComponent = ({
                 isCloudPlaceholder={imageFile.is_cloud_placeholder}
                 groupBadgeLabel={imageFile.group_id && groupBadgeInfo?.get(imageFile.group_id)?.label}
                 isVideo={imageFile.is_video}
+                onAspectRatioLoaded={onAspectRatioLoaded}
               />
             )}
           </div>

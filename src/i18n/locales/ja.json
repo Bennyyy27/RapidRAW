@@ -2,9 +2,9 @@
   "adjustments": {
     "basic": {
       "blacks": "黒レベル",
+      "brightness": "明るさ",
       "contrast": "コントラスト",
-      "evShift": "露出補正",
-      "exposure": "露光量",
+      "exposure": "露出",
       "highlights": "ハイライト",
       "mappers": {
         "agx": "AgX",
@@ -541,6 +541,8 @@
       "savesTo": "外部編集 — 保存先"
     },
     "guided": {
+      "cancel": "キャンセル",
+      "drawingActive": "描画中",
       "hint": "垂直または水平であるべき写真の縁に沿って描画します。",
       "linesStatus": "アクティブなガイドライン",
       "toast": {
@@ -782,6 +784,12 @@
       "mb": "MB",
       "tb": "TB"
     },
+    "destination": {
+      "customFolder": "カスタムフォルダー",
+      "originalFolder": "元の画像フォルダー",
+      "subfolder": "サブフォルダー",
+      "subfolderPlaceholder": "例：final, WebP"
+    },
     "dialog": {
       "saveEditedImageTitle": "編集した画像を保存",
       "selectFolderTitle": "{{count}} 枚の画像を書き出すフォルダを選択",
@@ -790,7 +798,10 @@
     },
     "file": {
       "quality": "画質",
-      "qualityLossless": "画質 (ロスレス)"
+      "qualityLossless": "画質 (ロスレス)",
+      "tiffBitDepth": "TIFF ビット深度",
+      "tiffBitDepth16": "16 ビット",
+      "tiffBitDepth8": "8 ビット"
     },
     "labels": {
       "image": "画像",
@@ -815,6 +826,7 @@
     },
     "sections": {
       "advanced": "詳細設定",
+      "destination": "保存先",
       "fileNaming": "ファイル名の命名",
       "fileSettings": "ファイル設定",
       "imageSizing": "画像サイズ",
@@ -929,7 +941,7 @@
       }
     },
     "folders": {
-      "addFolder": "フォルダを追加",
+      "addFolder": "フォルダーを追加",
       "albumsEmpty": "右クリックでアルバムを作成します。",
       "collapseSection": "{{section}}をたたむ",
       "expandSection": "{{section}}を展開",
@@ -953,6 +965,9 @@
         "clearSearch": "検索をクリア",
         "collapse": "折りたたむ",
         "expand": "展開",
+        "moreOptions": "オプション",
+        "navBack": "戻る",
+        "navForward": "進む",
         "sortFolders": "フォルダーを並べ替え"
       }
     },
@@ -1072,6 +1087,7 @@
     },
     "thumbnailFit": {
       "fillSquare": "正方形にフィット",
+      "justified": "メイソンリー",
       "originalRatio": "オリジナル比率"
     },
     "thumbnailSize": {
@@ -1418,6 +1434,7 @@
       "cancel": "キャンセル",
       "compareTooltip": "長押しで比較",
       "distortion": "歪み歪正",
+      "geometry": "ジオメトリ",
       "guided": "ガイド付きパースペクティブ",
       "horizontal": "水平方向",
       "manual": "手動変形",
@@ -1467,6 +1484,9 @@
       "speed": "速度",
       "title": "マウス操作設定",
       "zoom": "ズーム速度の倍率",
+      "zoomClick": "写真を100%にズーム",
+      "zoomClickDesc": "クリック時にエディターの写真を100%にズーム",
+      "zoomClickInfo": "写真をクリックするとすぐに100%（1:1 ピクセル）にズームされ、シャープネスとノイズを確認できます。無効の場合、クリックすると段階的にズームインします。",
       "zoomDesc": "スクロールホイールやピンチジェスチャを使用したときのズーム速度を調整します。"
     },
     "data": {
@@ -1531,6 +1551,7 @@
       "displayEditIcon": "編集アイコンを表示",
       "displayEditIconDesc": "編集されたサムネイルに小さなスライダーアイコンを表示します。",
       "enableFocusMode": "フォーカスモードを有効にする",
+      "enableNeutralGreyCanvas": "ニュートラルグレーの背景を有効にする",
       "enableOsTitlebar": "OSのタイトルバーを有効にする",
       "enableXmpSync": "XMP同期を有効にする",
       "focusMode": "フォーカスモード",
@@ -1541,6 +1562,8 @@
       "fontDesc": "アプリケーションのフォントを変更します。",
       "nativeTitlebar": "OS標準のタイトルバー",
       "nativeTitlebarDesc": "RapidRAWカスタムのもの代わりに、システムのデフォルトのウィンドウタイトルバーを使用します。",
+      "neutralGreyCanvas": "ニュートラルグレーのキャンバス",
+      "neutralGreyCanvasDesc": "アプリのテーマを変更せずに、より正確な色と露出のグレーディングを行うために、ニュートラルグレーのキャンバスを使用します。",
       "poppins": "Poppins",
       "showImageCounts": "画像数を表示",
       "system": "システムデフォルト",

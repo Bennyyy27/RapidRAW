@@ -2,8 +2,8 @@
   "adjustments": {
     "basic": {
       "blacks": "Czernie",
+      "brightness": "Jasność",
       "contrast": "Kontrast",
-      "evShift": "Przesunięcie EV",
       "exposure": "Ekspozycja",
       "highlights": "Światła",
       "mappers": {
@@ -583,6 +583,8 @@
       "savesTo": "Zewnętrzna edycja — zapisuje do"
     },
     "guided": {
+      "cancel": "Anuluj",
+      "drawingActive": "Rysowanie aktywne",
       "hint": "Rysuj wzdłuż krawędzi na zdjęciu, które powinny być pionowe lub poziome.",
       "linesStatus": "Aktywne linie pomocnicze",
       "toast": {
@@ -826,6 +828,12 @@
       "mb": "MB",
       "tb": "TB"
     },
+    "destination": {
+      "customFolder": "Folder niestandardowy",
+      "originalFolder": "Folder oryginalnego obrazu",
+      "subfolder": "Podfolder",
+      "subfolderPlaceholder": "np. final, WebP"
+    },
     "dialog": {
       "saveEditedImageTitle": "Zapisz edytowany obraz",
       "selectFolderTitle": "Wybierz folder do eksportu {{count}} obrazów",
@@ -836,7 +844,10 @@
     },
     "file": {
       "quality": "Jakość",
-      "qualityLossless": "Jakość (Bezstratna)"
+      "qualityLossless": "Jakość (Bezstratna)",
+      "tiffBitDepth": "Głębia bitowa TIFF",
+      "tiffBitDepth16": "16 bitów",
+      "tiffBitDepth8": "8 bitów"
     },
     "labels": {
       "image": "Obraz",
@@ -861,6 +872,7 @@
     },
     "sections": {
       "advanced": "Zaawansowane",
+      "destination": "Miejsce docelowe",
       "fileNaming": "Nazewnictwo plików",
       "fileSettings": "Ustawienia pliku",
       "imageSizing": "Rozmiar obrazu",
@@ -1001,6 +1013,9 @@
         "clearSearch": "Wyczyść wyszukiwanie",
         "collapse": "Zwiń",
         "expand": "Rozwiń",
+        "moreOptions": "Opcje",
+        "navBack": "Wstecz",
+        "navForward": "Dalej",
         "sortFolders": "Sortuj foldery"
       }
     },
@@ -1122,6 +1137,7 @@
     },
     "thumbnailFit": {
       "fillSquare": "Wypełnij kwadrat",
+      "justified": "Mozaika",
       "originalRatio": "Oryginalne proporcje"
     },
     "thumbnailSize": {
@@ -1482,6 +1498,7 @@
       "cancel": "Anuluj",
       "compareTooltip": "Przytrzymaj, aby porównać",
       "distortion": "Dystorsja",
+      "geometry": "Geometria",
       "guided": "Perspektywa z przewodnikiem",
       "horizontal": "Poziomo",
       "manual": "Ręczne przekształcenie",
@@ -1531,6 +1548,9 @@
       "speed": "Prędkość",
       "title": "Sterowanie myszą",
       "zoom": "Mnożnik szybkości przybliżania",
+      "zoomClick": "Powiększ zdjęcie do 100%",
+      "zoomClickDesc": "Powiększ zdjęcie w edytorze do 100% po kliknięciu",
+      "zoomClickInfo": "Kliknij zdjęcie, aby natychmiast powiększyć je do 100% (piksele 1:1) w celu oceny ostrości i szumu. Jeśli wyłączone, kliknięcie przybliża stopniowo.",
       "zoomDesc": "Dostosuj, jak szybko płótno się powiększa i pomniejsza przy użyciu kółka myszy lub gestu szczypania."
     },
     "data": {
@@ -1601,6 +1621,7 @@
       "displayEditIcon": "Wyświetl ikonę edycji",
       "displayEditIconDesc": "Pokazuje małą ikonkę suwaków na miniaturach, które były edytowane.",
       "enableFocusMode": "Włącz Tryb skupienia",
+      "enableNeutralGreyCanvas": "Włącz neutralne szare tło",
       "enableOsTitlebar": "Włącz systemowy pasek tytułu",
       "enableXmpSync": "Włącz synchronizację XMP",
       "focusMode": "Tryb skupienia",
@@ -1611,6 +1632,8 @@
       "fontDesc": "Zmień czcionkę aplikacji.",
       "nativeTitlebar": "Natywny pasek tytułu",
       "nativeTitlebarDesc": "Użyj domyślnego paska tytułu okna twojego systemu zamiast niestandardowego w RapidRAW.",
+      "neutralGreyCanvas": "Neutralne szare płótno",
+      "neutralGreyCanvasDesc": "Użyj neutralnego, szarego płótna do dokładniejszej korekcji kolorów i ekspozycji bez zmiany motywu aplikacji.",
       "poppins": "Poppins",
       "showImageCounts": "Pokaż licznik obrazów",
       "system": "Domyślna systemowa",

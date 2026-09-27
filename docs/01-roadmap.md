@@ -89,7 +89,7 @@ Status values: `Not started`, `In progress`, `User verification`, `Complete`, `B
 | ----- | ------------------------------------------------------------------------------------- | ----------- |
 | F5-S1 | A repeatable upstream update checklist and known-good revision policy are documented. | Not started |
 | F5-S2 | Compact and Finalize RAW regression checks run before accepting an upstream release.  | Not started |
-| F5-S3 | First upstream update is integrated without broad conflict resolution.                | Not started |
+| F5-S3 | First upstream update is integrated without broad conflict resolution.                | Complete    |
 
 ## Deferred
 

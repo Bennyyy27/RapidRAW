@@ -30,9 +30,12 @@ export const FILENAME_VARIABLES: Array<string> = [
   '{mm}',
 ];
 
+export type TiffBitDepth = 8 | 16;
+
 export interface ExportSettings {
   filenameTemplate: string | null;
   jpegQuality: number;
+  tiffBitDepth: TiffBitDepth;
   keepMetadata: boolean;
   preserveTimestamps: boolean;
   resize: {
@@ -44,6 +47,8 @@ export interface ExportSettings {
   watermark: WatermarkSettings | null;
   exportMasks?: boolean;
   preserveFolders?: boolean;
+  destinationType?: string;
+  subfolder?: string;
 }
 
 export enum WatermarkAnchor {
@@ -100,6 +105,7 @@ export interface ExportPreset {
   name: string;
   fileFormat: string;
   jpegQuality: number;
+  tiffBitDepth?: TiffBitDepth;
   enableResize: boolean;
   resizeMode: string;
   resizeValue: number;
@@ -117,4 +123,6 @@ export interface ExportPreset {
   watermarkSpacing: number;
   watermarkOpacity: number;
   lastExportPath?: string;
+  destinationType?: string;
+  subfolder?: string;
 }

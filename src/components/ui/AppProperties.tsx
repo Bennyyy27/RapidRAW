@@ -173,6 +173,7 @@ export enum Theme {
 export enum ThumbnailAspectRatio {
   Cover = 'cover',
   Contain = 'contain',
+  Justified = 'justified',
 }
 
 export interface WorkspaceState {
@@ -229,8 +230,10 @@ export interface AppSettings {
   waveformHeight?: number;
   activeWaveformChannel?: string;
   useWgpuRenderer?: boolean;
+  editorNeutralGreyBg?: boolean;
   canvasInputMode?: 'mouse' | 'trackpad';
   zoomSpeedMultiplier?: number;
+  zoomPhotoToPixelClick?: boolean;
   keybinds?: { [action: string]: string[] };
   tonemapperOverrideEnabled?: boolean;
   defaultRawTonemapper?: string;
@@ -381,6 +384,7 @@ export interface UiVisibility {
   filmstrip: boolean;
   leftPanel: boolean;
   rightPanel: boolean;
+  quickFilter?: boolean;
 }
 
 export interface WaveformData {

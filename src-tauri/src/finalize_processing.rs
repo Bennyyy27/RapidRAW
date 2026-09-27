@@ -7,7 +7,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::AppState;
-use crate::export_processing::{ExportAdjustmentsMode, ExportSettings, export_images_impl};
+use crate::export_processing::{
+    ExportAdjustmentsMode, ExportSettings, TiffBitDepth, export_images_impl,
+};
 use crate::file_management::{
     AlbumItem, find_all_associated_files, get_albums, parse_virtual_path, sync_album_path_changes,
 };
@@ -152,6 +154,7 @@ pub async fn finalize_raw_prepare(
 
     let export_settings = ExportSettings {
         jpeg_quality: 100,
+        tiff_bit_depth: TiffBitDepth::Eight,
         resize: None,
         keep_metadata: true,
         preserve_timestamps: true,
@@ -160,6 +163,8 @@ pub async fn finalize_raw_prepare(
         watermark: None,
         export_masks: false,
         preserve_folders: false,
+        destination_type: None,
+        subfolder: None,
     };
     let (tx, rx) = tokio::sync::oneshot::channel();
     if let Err(error) = export_images_impl(

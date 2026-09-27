@@ -15,9 +15,17 @@ use little_exif::ifd::ExifTagGroup;
 use little_exif::metadata::Metadata;
 use little_exif::rational::{iR64, uR64};
 use rawler::decoders::RawMetadata;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Clone)]
+struct CachedExifEntry {
+    mtime_ns: u128,
+    size: u64,
+    data: HashMap<String, String>,
+}
 
 struct ExifCacheState {
-    cache: HashMap<PathBuf, HashMap<String, HashMap<String, String>>>,
+    cache: HashMap<PathBuf, HashMap<String, CachedExifEntry>>,
     dirty: HashSet<PathBuf>,
     cache_dir: Option<PathBuf>,
 }
@@ -103,8 +111,7 @@ fn load_rrcache_for_folder(folder: &Path) {
     };
 
     let loaded_map = if let Ok(content) = std::fs::read_to_string(&path) {
-        serde_json::from_str::<HashMap<String, HashMap<String, String>>>(&content)
-            .unwrap_or_default()
+        serde_json::from_str::<HashMap<String, CachedExifEntry>>(&content).unwrap_or_default()
     } else {
         HashMap::new()
     };
@@ -117,17 +124,38 @@ fn load_rrcache_for_folder(folder: &Path) {
     }
 }
 
+fn get_file_stamp(path: &Path) -> Option<(u128, u64)> {
+    let meta = fs::metadata(path).ok()?;
+    let mtime_ns = meta
+        .modified()
+        .ok()?
+        .duration_since(std::time::UNIX_EPOCH)
+        .ok()?
+        .as_nanos();
+    Some((mtime_ns, meta.len()))
+}
+
 fn get_exif_from_rrcache(image_path: &Path) -> Option<HashMap<String, String>> {
     let folder = image_path.parent()?;
     let filename = image_path.file_name()?.to_string_lossy().to_string();
 
+    let (current_mtime, current_size) = get_file_stamp(image_path)?;
+
     load_rrcache_for_folder(folder);
 
-    let state = get_exif_cache().lock().ok()?;
-    state
-        .cache
-        .get(folder)
-        .and_then(|f_map| f_map.get(&filename).cloned())
+    let mut state = get_exif_cache().lock().ok()?;
+    let folder_map = state.cache.get_mut(folder)?;
+
+    if let Some(entry) = folder_map.get(&filename) {
+        if entry.mtime_ns == current_mtime && entry.size == current_size {
+            return Some(entry.data.clone());
+        }
+
+        folder_map.remove(&filename);
+        state.dirty.insert(folder.to_path_buf());
+    }
+
+    None
 }
 
 fn save_exif_to_rrcache(image_path: &Path, exif: HashMap<String, String>) {
@@ -138,6 +166,10 @@ fn save_exif_to_rrcache(image_path: &Path, exif: HashMap<String, String>) {
         return;
     };
 
+    let Some((mtime_ns, size)) = get_file_stamp(image_path) else {
+        return;
+    };
+
     load_rrcache_for_folder(folder);
 
     let mut state = match get_exif_cache().lock() {
@@ -145,7 +177,14 @@ fn save_exif_to_rrcache(image_path: &Path, exif: HashMap<String, String>) {
         Err(_) => return,
     };
     let folder_map = state.cache.entry(folder.to_path_buf()).or_default();
-    folder_map.insert(filename.to_string_lossy().to_string(), exif);
+    folder_map.insert(
+        filename.to_string_lossy().to_string(),
+        CachedExifEntry {
+            mtime_ns,
+            size,
+            data: exif,
+        },
+    );
     state.dirty.insert(folder.to_path_buf());
 }
 
@@ -200,6 +239,32 @@ pub fn load_sidecar(sidecar_path: &Path) -> ImageMetadata {
             "Auto-healed bloated sidecar for: {}",
             sidecar_path.display()
         );
+    }
+
+    meta
+}
+
+pub fn load_sidecar_with_exif(sidecar_path: &Path, source_path: &Path) -> ImageMetadata {
+    let mut meta = load_sidecar(sidecar_path);
+
+    if meta.exif.is_none() {
+        if let Some(cached_exif) = read_rrexif_sidecar(source_path) {
+            meta.exif = Some(cached_exif);
+        } else {
+            let source_path_str = source_path.to_string_lossy();
+            let extracted_exif =
+                if let Ok(mmap) = crate::file_management::read_file_mapped(source_path) {
+                    read_exif_data(&source_path_str, &mmap)
+                } else if let Ok(bytes) = std::fs::read(source_path) {
+                    read_exif_data(&source_path_str, &bytes)
+                } else {
+                    std::collections::HashMap::new()
+                };
+
+            if !extracted_exif.is_empty() {
+                meta.exif = Some(extracted_exif);
+            }
+        }
     }
 
     meta
@@ -583,13 +648,13 @@ pub fn extract_metadata(file_bytes: &[u8]) -> Option<HashMap<String, String>> {
                 _ => match &field.value {
                     exif::Value::Ascii(_) => {
                         if let Some(val) = clean_ascii_value(&field.value) {
-                            map.insert(field.tag.to_string(), val);
+                            map.insert(field.tag.to_string(), truncate_large_exif(&val));
                         }
                     }
                     _ => {
                         let val = field.display_value().with_unit(&exif_obj).to_string();
                         if !val.trim().is_empty() {
-                            map.insert(field.tag.to_string(), val);
+                            map.insert(field.tag.to_string(), truncate_large_exif(&val));
                         }
                     }
                 },
