@@ -19,8 +19,9 @@
   exposure/brightness semantics, RAW highlight and color handling, masonry library layout, navigation
   history, TIFF export, crop changes, and maintenance fixes are retained alongside the SCS compact UI,
   Finalize RAW, Lightroom import, slideshow, folder moves, and video support.
-- The start-page brand label is `Spiess Systems` in every bundled locale. Technical RapidRAW naming
-  and upstream attribution remain unchanged.
+- The start page presents `RapidRAW` as the product and a restrained `modified by Spiess Systems`
+  signature beneath it. The accent treatment is code-native, theme-aware, and motion-reduced when
+  requested; technical RapidRAW naming and upstream attribution remain unchanged.
 - The root application carries one `density-compact` class.
 - The shared Slider component exposes stable density hooks for its container, row, label, value, and
   track.

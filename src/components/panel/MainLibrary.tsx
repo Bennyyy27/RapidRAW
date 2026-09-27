@@ -365,7 +365,17 @@ export default function MainLibrary(props: MainLibraryProps) {
               ) : (
                 <>
                   <div className="my-auto text-left relative z-10">
-                    <Text variant={TextVariants.displayLarge}>{t('library.splash.brand')}</Text>
+                    <div className="splash-wordmark mb-7" aria-label="RapidRAW — modified by Spiess Systems">
+                      <Text variant={TextVariants.displayLarge} className="splash-wordmark-product">
+                        <span>Rapid</span>
+                        <span className="splash-wordmark-raw">RAW</span>
+                      </Text>
+                      <div className="splash-wordmark-signature" aria-hidden="true">
+                        <span className="splash-wordmark-rule" />
+                        <span className="splash-wordmark-modified">modified by</span>
+                        <span className="splash-wordmark-scs">Spiess Systems</span>
+                      </div>
+                    </div>
                     <Text
                       variant={TextVariants.heading}
                       color={TextColors.secondary}

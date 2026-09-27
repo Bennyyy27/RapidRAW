@@ -152,6 +152,67 @@
 }
 
 @layer components {
+  .splash-wordmark {
+    width: fit-content;
+  }
+
+  .splash-wordmark-product {
+    margin-bottom: 0.35rem !important;
+    letter-spacing: -0.055em;
+    line-height: 0.92 !important;
+  }
+
+  .splash-wordmark-raw {
+    color: var(--color-accent);
+    text-shadow: 0 0 24px color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+
+  .splash-wordmark-signature {
+    display: grid;
+    grid-template-columns: 2.5rem auto auto;
+    align-items: center;
+    gap: 0.55rem;
+    padding-left: 0.15rem;
+    font-size: 0.625rem;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .splash-wordmark-rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+    transform-origin: left;
+    animation: splash-signature-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .splash-wordmark-modified {
+    color: var(--color-text-secondary);
+  }
+
+  .splash-wordmark-scs {
+    color: var(--color-text-primary);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+  }
+
+  @keyframes splash-signature-in {
+    from {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    to {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .splash-wordmark-rule {
+      animation: none;
+    }
+  }
+
   /*
    * RapidRAW-SCS desktop density layer. Keep these overrides rooted in one
    * class so upstream component changes remain easy to merge and inspect.
